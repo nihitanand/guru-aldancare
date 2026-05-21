@@ -3,47 +3,48 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>🎓 Aldan Guru</title>
+<title>🎓 Aldan Guru v2.0</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&display=swap" rel="stylesheet"/>
 <style>
-:root{--saffron:#FF6B35;--saffron-dark:#E5541F;--gold:#F7B731;--green:#20BF6B;--navy:#0D1B2A;--navy-mid:#1A2C42;--navy-soft:#243447;--slate:#8FA3BF;--slate-light:#B8CCDF;--white:#F0F4F8;--card-bg:rgba(26,44,66,0.85);--border:rgba(143,163,191,0.2);}
+:root{--o:#FF6B35;--od:#E5541F;--g:#20BF6B;--gd:#16a55a;--navy:#0D1B2A;--nm:#1A2C42;--sl:#8FA3BF;--sll:#B8CCDF;--wh:#F0F4F8;--bd:rgba(143,163,191,0.2);}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overscroll-behavior:none;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--wh);min-height:100vh;overscroll-behavior:none;}
 h1,h2,h3,.serif{font-family:'DM Serif Display',serif;}
 body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 50% at 20% -10%,rgba(255,107,53,0.15) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 110%,rgba(247,183,49,0.1) 0%,transparent 50%);pointer-events:none;}
 #root{position:relative;z-index:1;}
-.glass{background:var(--card-bg);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;}
-.card{background:var(--navy-mid);border:1px solid var(--border);border-radius:20px;}
-.btn-o{background:linear-gradient(135deg,var(--saffron),var(--saffron-dark));color:white;border:none;border-radius:14px;font-weight:700;font-size:15px;padding:14px 28px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(255,107,53,0.35);}
+.glass{background:rgba(26,44,66,0.85);backdrop-filter:blur(20px);border:1px solid var(--bd);border-radius:20px;}
+.card{background:var(--nm);border:1px solid var(--bd);border-radius:20px;}
+.btn-o{background:linear-gradient(135deg,var(--o),var(--od));color:#fff;border:none;border-radius:14px;font-weight:700;font-size:15px;padding:14px 28px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(255,107,53,0.35);}
 .btn-o:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(255,107,53,0.5);}
-.btn-o:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
-.btn-g{background:rgba(143,163,191,0.12);color:var(--slate-light);border:1px solid var(--border);border-radius:12px;font-weight:600;padding:10px 20px;cursor:pointer;transition:all 0.2s;}
-.pin-inp{width:52px;height:52px;border-radius:14px;border:2px solid var(--border);background:rgba(255,255,255,0.05);font-size:22px;text-align:center;color:white;transition:all 0.2s;outline:none;caret-color:var(--saffron);}
-.pin-inp:focus{border-color:var(--saffron);background:rgba(255,107,53,0.08);}
-.tab-p{padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;color:var(--slate);}
-.tab-p.on{background:var(--saffron);color:white;box-shadow:0 2px 12px rgba(255,107,53,0.4);}
+.btn-o:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.btn-g{background:rgba(143,163,191,0.12);color:var(--sll);border:1px solid var(--bd);border-radius:12px;font-weight:600;padding:10px 20px;cursor:pointer;transition:all 0.2s;}
+.btn-g:hover{background:rgba(143,163,191,0.2);color:#fff;}
+.pin-inp{width:52px;height:52px;border-radius:14px;border:2px solid var(--bd);background:rgba(255,255,255,0.05);font-size:22px;text-align:center;color:#fff;transition:all 0.2s;outline:none;caret-color:var(--o);}
+.pin-inp:focus{border-color:var(--o);background:rgba(255,107,53,0.08);}
+.tab-p{padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;color:var(--sl);}
+.tab-p.on{background:var(--o);color:#fff;box-shadow:0 2px 12px rgba(255,107,53,0.4);}
 .flame{animation:flicker 1.2s ease-in-out infinite alternate;display:inline-block;}
 @keyframes flicker{0%{transform:scaleY(1) rotate(-1deg);}100%{transform:scaleY(1.05) rotate(1deg);}}
 .timer-ring{transition:stroke-dashoffset 1s linear;}
 .cv{animation:cvin 0.25s ease;}
 @keyframes cvin{from{opacity:0;transform:translateX(18px);}to{opacity:1;transform:translateX(0);}}
 ::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,27,42,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 env(safe-area-inset-bottom,8px);z-index:50;}
-.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;cursor:pointer;transition:all 0.2s;border-radius:12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--slate);min-width:60px;}
-.ni.on{color:var(--saffron);}
-.ni .ic{font-size:20px;transition:transform 0.2s;}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,27,42,0.96);backdrop-filter:blur(20px);border-top:1px solid var(--bd);padding:8px 0 env(safe-area-inset-bottom,8px);z-index:50;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;cursor:pointer;transition:all 0.2s;border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--sl);min-width:56px;}
+.ni.on{color:var(--o);}
+.ni .ic{font-size:19px;transition:transform 0.2s;}
 .ni.on .ic{transform:scale(1.15);}
-.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.05em;}
-.qopt{border:1.5px solid var(--border);border-radius:14px;padding:14px 18px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all 0.18s;text-align:left;color:var(--white);font-size:14px;font-weight:500;line-height:1.5;width:100%;}
-.qopt:hover:not(:disabled){border-color:var(--saffron);background:rgba(255,107,53,0.08);}
-.qopt.ok{border-color:var(--green);background:rgba(32,191,107,0.15);}
+.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+.qopt{border:1.5px solid var(--bd);border-radius:14px;padding:14px 18px;cursor:pointer;background:rgba(255,255,255,0.04);transition:all 0.18s;text-align:left;color:var(--wh);font-size:14px;font-weight:500;line-height:1.5;width:100%;}
+.qopt:hover:not(:disabled){border-color:var(--o);background:rgba(255,107,53,0.08);}
+.qopt.ok{border-color:var(--g);background:rgba(32,191,107,0.15);}
 .qopt.no{border-color:#EF4444;background:rgba(239,68,68,0.12);}
 .pdot{animation:pd 1.4s ease-in-out infinite;}.pdot:nth-child(2){animation-delay:0.2s;}.pdot:nth-child(3){animation-delay:0.4s;}
 @keyframes pd{0%,80%,100%{opacity:0.2;transform:scale(0.85);}40%{opacity:1;transform:scale(1);}}
@@ -53,6 +54,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 @keyframes srv{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
 .fu{animation:fu 0.4s ease forwards;}
 @keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.lvlup{animation:lvlup 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes lvlup{0%{transform:scale(0);opacity:0;}60%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+.beat-dot{width:10px;height:10px;border-radius:50%;}
+.beat-dot.visited{background:#20BF6B;}
+.beat-dot.skipped{background:#EF4444;}
+.beat-dot.planned{background:rgba(143,163,191,0.3);}
 </style>
 </head>
 <body>
@@ -62,77 +69,210 @@ const FIREBASE_CONFIG={apiKey:"AIzaSyBJcohYrAYOMn-C_qdbPXMwOeMyGy8Sw1M",authDoma
 firebase.initializeApp(FIREBASE_CONFIG);
 const DB=firebase.database();
 const BASE="guru/v1";
-const {useState,useEffect,useRef}=React;
+const {useState,useEffect,useRef,useCallback}=React;
 const toArr=v=>{if(!v)return[];if(Array.isArray(v))return v.filter(Boolean);if(typeof v==="object")return Object.values(v).filter(Boolean);return[];};
+const toObj=v=>{if(!v||typeof v!=="object"||Array.isArray(v))return{};return v;};
 const uid=()=>Math.random().toString(36).slice(2,9);
 const todayStr=()=>new Date().toISOString().split("T")[0];
 const hashPIN=pin=>btoa(pin+"aldan2026");
+const fmt=n=>n?Number(n).toLocaleString("en-IN"):"0";
+
+/* ══ TEAM ══ */
 const TEAM=[
-  {mobile:"9999000001",name:"Nihit Anand",role:"admin",hq:"All Bihar",asm:""},
-  {mobile:"9999000002",name:"Amardeep Sinha",role:"zsm",hq:"All Bihar",asm:""},
-  {mobile:"9999000003",name:"Sanjay Anand",role:"rsm",hq:"All Bihar",asm:""},
-  {mobile:"9999000004",name:"Amit Kumar",role:"asm",hq:"Purnea/Saharsa/Begusarai",asm:""},
-  {mobile:"9999000005",name:"Gunjan Verma",role:"asm",hq:"Bettiah/Muzaffarpur/Siwan",asm:""},
-  {mobile:"9999000006",name:"Hemant Kumar",role:"asm",hq:"Patna-1/Patna-2/Patna-3",asm:""},
-  {mobile:"9999000007",name:"Chandan Paswan",role:"mbe",hq:"Purnea",asm:"9999000004"},
-  {mobile:"9999000008",name:"Ranjit Sinha",role:"mbe",hq:"Saharsa",asm:"9999000004"},
-  {mobile:"9999000009",name:"Durgesh Kumar",role:"mbe",hq:"Begusarai",asm:"9999000004"},
-  {mobile:"9999000010",name:"Satish Kumar",role:"mbe",hq:"Bettiah",asm:"9999000005"},
-  {mobile:"9999000011",name:"Ashish Kumar",role:"mbe",hq:"Muzaffarpur",asm:"9999000005"},
-  {mobile:"9999000012",name:"Rahul Pathak",role:"mbe",hq:"Siwan",asm:"9999000005"},
-  {mobile:"9999000013",name:"Raj Prasad",role:"mbe",hq:"Patna-1",asm:"9999000006"},
-  {mobile:"9999000014",name:"Mrityunjay Kumar",role:"mbe",hq:"Patna-3",asm:"9999000006"},
-];
-const P=[
-  {id:"ovalux",name:"Ovalux",pri:3,mrp:"Rs.1219",pts:"Rs.856",pack:"1×10 Caps",tag:"Superior egg quality for every IVF dream",ind:"Female egg quality, DOR, IVF support",comp:[{n:"Ubiquinol (CoQ10)",r:"Egg ki energy factory — mitochondria ko supercharge. Poor responders ke liye game-changer."},{n:"DHEA 25mg",r:"Ovarian reserve badhata hai. FSH kam karta hai. 16 RCTs ka evidence."},{n:"Melatonin",r:"Follicular fluid ka antioxidant. Sleep quality bhi improve."},{n:"L-Arginine",r:"Ovarian blood flow badhata hai. Endometrial thickness improve."}],trig:"PCOS/DOR patient jab IVF plan bana rahi ho. Gynec jo IVF referrals deta ho. 'Eggs ki quality acchi nahi' — yahi ek line hai.",proof:["16 RCTs, 1973 women — DHEA improved egg quality & pregnancy rates (J Ovarian Research 2025)","CoQ10 improved fertilization rate by 28% in poor ovarian responders (Fertil Steril 2024)","Melatonin reduced oxidative stress in follicular fluid — 2x higher pregnancy rate (Gynecol Endocrinol 2023)"],obj:[{q:"Inofolic already lete hain",a:"Inofolic PCOS mein MI ke liye hai. Ovalux egg quality ke liye — CoQ10 aur DHEA. Dono saath dene se IVF outcome better."},{q:"Bahut mehnga hai",a:"IVF cycle 1.5-2 lakh ka hota hai. Ovalux 3 months ka course Rs.3,500. Ek extra egg = cycle succeed."},{q:"Evidence nahi",a:"16 RCTs, 1973 patients — 2025 meta-analysis. Leave card de sakta hoon abhi."}],dose:"1 cap OD at night, 3 months before IVF",color:"#FF6B35",em:"🥚"},
-  {id:"lacoria",name:"Lacoria",pri:3,mrp:"Rs.432",pts:"Rs.303",pack:"1×14 Caps",tag:"5-strain defense against BV & leucorrhoea",ind:"Bacterial Vaginosis, Leucorrhoea, recurrent vaginal infections",comp:[{n:"L. acidophilus",r:"Vaginal pH restore. BV bacteria ko displace karta hai."},{n:"L. rhamnosus",r:"Recurrence rokta hai. Immune memory banata hai."},{n:"L. reuteri",r:"Inflammation kam karta hai. Discharge aur odor reduce."},{n:"Bifidobacterium longum",r:"Gut-vaginal axis balance. Yeast infections bhi control."},{n:"L. plantarum",r:"Biofilm break karta hai — jahan antibiotics fail hoti hain."}],trig:"Discharge complaint wali patient — odor, itching. Post-antibiotic relapse. Gynec jo Metrogyl zyada use karta ho.",proof:["5-strain probiotic reduced BV recurrence by 62% vs placebo (Int J Womens Health 2024)","L. rhamnosus GR-1 restored vaginal flora in 85% women within 14 days (BJOG 2023)","Biofilm disruption by L. plantarum — effective where metronidazole resistance (Microbiome 2024)"],obj:[{q:"Metrogyl se theek ho jata hai",a:"Metrogyl infection treat karta hai, flora restore nahi karta. Lacoria se recurrence 62% kam — Metrogyl ke baad 14 din dene se long-term results better."},{q:"Generic probiotic se kya fark",a:"5 specific vaginal strains — gut probiotics vaginal environment mein survive nahi karte. Clinically tested strains hain vaginal flora ke liye."},{q:"Kitne din?",a:"Acute mein 14 din. Recurrent cases mein 3 mahine."}],dose:"1 cap OD at bedtime",color:"#8B5CF6",em:"🔬"},
-  {id:"myolifeplus",name:"Myolife Plus",pri:3,mrp:"Rs.329",pts:"Rs.231",pack:"1×10 Tabs",tag:"PCOS with obesity — the complete solution",ind:"PCOS with obesity/insulin resistance, irregular cycles",comp:[{n:"Myo-Inositol 1000mg",r:"Insulin signaling improve. Ovulation restore karta hai."},{n:"D-Chiro-Inositol 25mg (40:1)",r:"Optimal ratio. Hyperandrogenism kam. Hair loss aur acne better."},{n:"Melatonin 1mg",r:"Circadian rhythm reset. Sleep better — insulin resistance kam."},{n:"L-Methylfolate 0.5mg",r:"Active folate — better than folic acid. MTHFR safe."}],trig:"Obese PCOS patient — BMI >25, irregular cycles, hirsutism. 'Yeh wali PCOS mein 40:1 ratio important hai' — Myolife Plus mein exactly yahi hai.",proof:["MI:DCI 40:1 ratio restored ovulation in 68% obese PCOS vs 32% placebo (Endocrine 2024)","Melatonin improved insulin sensitivity by 23% vs MI alone in PCOS (J Clin Med 2024)"],obj:[{q:"Plain Myo-Inositol se kya fark",a:"Obese PCOS mein DCI deficiency hoti hai. 40:1 ratio exact physiological balance restore karta hai."},{q:"Metformin already de raha hoon",a:"Complementary — Metformin glucose handle karta hai, MI:DCI insulin receptor sensitivity. Dono saath dene se better."},{q:"Cost zyada hai",a:"Obese PCOS mein plain Myolife suboptimal hai. DCI aur Melatonin extra hain — patient ko meaningful difference dikhata hai."}],dose:"1 tab BD after food, 3-6 months",color:"#10B981",em:"⚖️"},
-  {id:"aldova",name:"Aldova",pri:3,mrp:"Rs.637",pts:"Rs.447",pack:"Kit",tag:"Ovulation induction — smarter CC combo",ind:"Ovulation induction, poor follicular response",comp:[{n:"Clomiphene Citrate 50mg",r:"Hypothalamus stimulate — FSH/LH release. Standard OI drug."},{n:"N-Acetyl Cysteine 600mg",r:"CC ki endometrial thinning solve karta hai. CC ka #1 problem fix."},{n:"Astaxanthin 4mg",r:"Follicular environment antioxidant. Egg quality better during stimulation."}],trig:"Gynec jo CC likh raha ho OI ke liye. 'Endometrial thickness CC se kam ho jaati hai' — Aldova se pehle yahi kaho.",proof:["NAC added to CC improved endometrial thickness by 35% (Fertil Steril 2024)","CC+NAC: ovulation rate 78% vs CC alone 61% in anovulatory PCOS (Gynecol Endocrinol 2024)"],obj:[{q:"Plain CC kaam kar raha hai",a:"But endometrial thinning se cycles fail hoti hain. NAC yahi issue fix karta hai. Ovulation rate bhi 78% vs 61% better."},{q:"Kit complicated hai",a:"Patient ko ek hi pack dena hai — sab andar. Compliance better."},{q:"Letrozole prefer karta hoon",a:"Bilkul — Aldova CC respond karne wale cases ke liye."}],dose:"As per OI protocol — CD2-6",color:"#F59E0B",em:"🌸"},
-  {id:"argilux",name:"Argilux",pri:2,mrp:"Rs.979",pts:"Rs.688",pack:"1×20 Sachets",tag:"Fetal growth — from placenta to delivery",ind:"Pregnancy maternal-fetal nutrition, IUGR prevention",comp:[{n:"L-Arginine 3000mg",r:"Nitric oxide → placental blood flow → IUGR prevention."},{n:"DHA 200mg",r:"Fetal brain development. Third trimester critical."},{n:"Proanthocyanidin",r:"Placental oxidative stress kam. Pre-eclampsia risk reduce."},{n:"Vitamins & Minerals",r:"Complete maternal-fetal micronutrient support."}],trig:"Second trimester high-risk patient — previous IUGR, hypertension, diabetes, twins. 'Baby ki growth dekhni hai' — yahi signal hai.",proof:["L-Arginine reduced IUGR risk by 45% in high-risk pregnancies (AJOG 2024)","DHA 200mg improved fetal neurodevelopment at 18 months (Cochrane 2024)"],obj:[{q:"Already multivitamin de raha hoon",a:"L-Arginine 3g aur Proanthocyanidin kisi standard multivit mein nahi hota. Yeh add-on therapy hai placental health ke liye."},{q:"Evidence kam hai",a:"AJOG 2024 mein large RCT — L-Arginine in high-risk pregnancy."},{q:"Taste theek hai?",a:"Sachet form — mixed with water. Pleasant flavour. Compliance acchi hai."}],dose:"1 sachet OD in 200ml water, 16 weeks to delivery",color:"#EC4899",em:"🤱"},
-  {id:"myolife",name:"Myolife",pri:1,mrp:"Rs.254",pts:"Rs.178",pack:"1×10 Tabs",tag:"PCOS lean — gentle first line",ind:"PCOS lean/normal BMI, cycle regularization",comp:[{n:"Myo-Inositol 1000mg",r:"Insulin signaling improve. Ovulation restore."},{n:"L-Methylfolate 0.5mg",r:"Active folate for conception planning."},{n:"Vitamin D3 500IU",r:"60-80% PCOS patients Vit D deficient."}],trig:"Lean PCOS — BMI normal, irregular cycles, conception planning.",proof:["MI improved ovulation 62% in lean PCOS vs 27% placebo (Eur J Obstet 2023)"],obj:[{q:"Myolife Plus se kya fark",a:"Lean PCOS mein DCI deficiency nahi hoti. Plus obese PCOS ke liye. Correct product selection clinical knowledge dikhata hai."}],dose:"1 tab BD after food",color:"#3B82F6",em:"🌿"},
-  {id:"loq10plus",name:"LOQ-10 Plus",pri:1,mrp:"Rs.516",pts:"Rs.362",pack:"1×10 Caps",tag:"Male infertility — complete panel",ind:"Male infertility, OAT, sperm quality",comp:[{n:"Ubiquinol CoQ10 100mg",r:"Sperm mitochondria energy. Motility improve."},{n:"Lycopene 5mg",r:"Testicular ROS reduce. DNA fragmentation kam."},{n:"Selenium 70mcg + Zinc 15mg",r:"Spermatogenesis essential. Testosterone support."}],trig:"Male partner semen analysis abnormal — low motility, morphology, count.",proof:["CoQ10 improved sperm motility by 34% in OAT (Andrologia 2024)"],obj:[{q:"Male nahi dekhna",a:"Couple treat karna hai — male factor 40-50% contribute karta hai. Both sides treat karo — success rate double."}],dose:"1 cap OD after food, 3 months",color:"#6366F1",em:"⚡"},
-  {id:"utilac",name:"Utilac",pri:1,mrp:"Rs.320",pts:"Rs.225",pack:"1×10 Caps",tag:"UTI & candidiasis — stop the cycle",ind:"Recurrent UTI, candidiasis prevention",comp:[{n:"L. acidophilus + rhamnosus",r:"Urogenital tract mein compete with pathogens."},{n:"Cranberry Extract 250mg",r:"E. coli adhesion rok deta hai. UTI prevention proven."},{n:"Vitamin C 250mg",r:"Urine acidify — bacteria inhibit."}],trig:"Recurrent UTI — 2+ episodes in 6 months. Post-Cipro. Diabetic patients.",proof:["Cranberry extract reduced UTI recurrence by 38% (Cochrane 2023)","Probiotic+cranberry: 65% lower recurrence vs antibiotics alone (J Urol 2024)"],obj:[{q:"Antibiotics enough hain",a:"Antibiotics infection treat karte hain — Utilac recurrence rokta hai. Prevention aur treatment alag hai."}],dose:"1 cap OD at bedtime, 3 months",color:"#F97316",em:"🛡️"},
-  {id:"myogdm",name:"Myo-GDM",pri:1,mrp:"Rs.311",pts:"Rs.218",pack:"1×10 Tabs",tag:"India's 1st dedicated GDM product",ind:"Gestational Diabetes Mellitus",comp:[{n:"Myo-Inositol 2000mg",r:"Insulin receptor sensitivity — GDM root cause target."},{n:"D-Chiro-Inositol 50mg",r:"Glucose metabolism normalize."},{n:"Chromium Picolinate",r:"Insulin potentiator — blood glucose stability."}],trig:"24-28 week OGTT borderline ya high. Obese pregnant. Previous GDM. Family diabetes history.",proof:["MI reduced GDM incidence by 60% in high-risk women (Diabetes Care 2024)"],obj:[{q:"Insulin de dete hain direct",a:"Yeh preventive aur early management ke liye — before insulin. India's first dedicated GDM product."}],dose:"1 tab BD after food",color:"#84CC16",em:"🤰"},
-  {id:"osteofem",name:"Osteofem",pri:1,mrp:"Rs.463",pts:"Rs.325",pack:"1×10 Tabs",tag:"Non-hormonal bone protection for her",ind:"Bone density, post-menopausal bone health",comp:[{n:"Dihydroquercetin (DHQ)",r:"Plant-based — bone resorption inhibit. Non-hormonal."},{n:"Pine Bark Extract",r:"Collagen synthesis. Bone matrix strengthen."},{n:"Calcitriol + Calcium Citrate 500mg",r:"Most bioavailable calcium. Bone mineralisation."}],trig:"Peri/post-menopausal, DEXA low T-score. 'Hormones nahi chahiye' — perfect non-hormonal option.",proof:["DHQ reduced bone turnover markers by 32% in post-menopausal (Bone 2024)"],obj:[{q:"HRT deta hoon",a:"Complementary — different mechanism. Patients jo HRT nahi lena chahti ke liye complete non-hormonal alternative."}],dose:"1 tab BD after food, long-term",color:"#14B8A6",em:"🦴"},
-  {id:"aldanvit",name:"Aldanvit",pri:1,mrp:"Rs.160",pts:"Rs.112",pack:"1×10 Tabs",tag:"Preventive micronutrition — every woman",ind:"Micronutrient deficiency, fatigue, prevention",comp:[{n:"Methylcobalamin 500mcg",r:"Active B12 — energy, mood. Vegans essential."},{n:"L-Methylfolate 1mg",r:"Active folate. Pre-conception mandatory."},{n:"Vitamin D3 1000IU + Iron + Zinc",r:"Indian women mein 70%+ D deficient. Complete panel."}],trig:"General OPD — fatigue, weakness, pre-conception. Every woman 20-45. Entry-level product for new doctors.",proof:["Methylcobalamin: 35% higher neural absorption vs cyanocobalamin (J Nutr Sci 2023)","Vit D deficient in 74% Indian urban women (IJMR 2024)"],obj:[{q:"Generic multivitamin se kya extra",a:"Active forms — Methylcobalamin, Methylfolate. Generic mein inactive precursors jo MTHFR patients mein convert nahi hote."}],dose:"1 tab OD after food",color:"#F59E0B",em:"💊"},
-];
-const SQ=[
-  {product:"ovalux",type:"Composition",q:"Ovalux mein kitne main active ingredients hain?",options:["2 — CoQ10 aur DHEA","3 — CoQ10, DHEA, Melatonin","4 — CoQ10, DHEA, Melatonin, L-Arginine","5 — CoQ10, DHEA, Melatonin, L-Arg, Folic Acid"],correct:2,explanation:"Ovalux mein 4 actives: Ubiquinol (CoQ10), DHEA 25mg, Melatonin, L-Arginine — sabka alag role hai egg quality improvement mein."},
-  {product:"lacoria",type:"Objection Handle",q:"Doctor ne kaha 'Metrogyl se BV theek ho jaata hai' — aap kya bolenge?",options:["Metrogyl better hai, Lacoria secondary option","Metrogyl infection treat karta hai, Lacoria flora restore — recurrence 62% kam saath mein","Lacoria Metrogyl ka replacement hai","Dono same kaam karte hain"],correct:1,explanation:"Metrogyl = treatment. Lacoria = recurrence prevention. 5-strain probiotic vaginal flora restore karta hai jo antibiotics destroy kar dete hain."},
-  {product:"myolifeplus",type:"Product Choice",q:"BMI 29 wali PCOS patient, irregular cycles, insulin resistance — Myolife ya Myolife Plus?",options:["Myolife — cheaper hai","Myolife Plus — 40:1 MI:DCI ratio obese PCOS ke liye optimal","Dono same hain","Doctor decide kare"],correct:1,explanation:"Obese PCOS mein DCI deficiency hoti hai. 40:1 ratio exactly yahi correct karta hai. Myolife lean PCOS ke liye hai."},
-  {product:"aldova",type:"Proof Point",q:"Aldova mein NAC kyu add kiya gaya CC ke saath?",options:["Taste improve karne ke liye","CC ki wajah se endometrial thinning — NAC 35% zyada thickness maintain karta hai","NAC ovulation improve karta hai directly","NAC nausea reduce karta hai"],correct:1,explanation:"CC ka #1 problem — endometrial thinning. NAC 35% better thickness. Ovulation rate bhi 78% vs 61%."},
-  {product:"argilux",type:"Clinical",q:"Argilux mein L-Arginine ka main mechanism kya hai?",options:["Fetal brain development","Nausea reduce","Nitric oxide → placental blood flow → IUGR prevention","Calcium absorption"],correct:2,explanation:"L-Arginine → NO → vasodilation → placental blood flow. AJOG 2024 — IUGR risk 45% kam."},
-  {product:"ovalux",type:"Operational",q:"Ovalux ka current revised MRP kya hai?",options:["Rs.979","Rs.1369","Rs.1219","Rs.856"],correct:2,explanation:"Ovalux revised MRP = Rs.1219 (22.09.2025). PTS = Rs.856."},
-  {product:"lacoria",type:"Composition",q:"Lacoria mein kitne bacterial strains hain?",options:["2 strains","3 strains","5 strains","7 strains"],correct:2,explanation:"Lacoria: L. acidophilus, L. rhamnosus, L. reuteri, B. longum, L. plantarum — 5 strains."},
-  {product:"myolifeplus",type:"Proof Point",q:"Myolife Plus ke MI:DCI 40:1 ratio ka evidence?",options:["Sirf pilot study","68% obese PCOS mein ovulation restore vs 32% placebo (Endocrine 2024)","Sirf in vitro data","50% success — similar to plain Myolife"],correct:1,explanation:"Endocrine 2024 — 68% vs 32% placebo. 40:1 physiological ratio obese PCOS mein critical hai."},
-  {product:"utilac",type:"Objection Handle",q:"'UTI ke liye antibiotics hi dete hain — Utilac kyu?' — best response?",options:["Antibiotics chhod do","Dono same hain","Antibiotics infection treat karte, Utilac recurrence 65% kam — prevention aur treatment alag","Utilac antibiotic ki jagah lega"],correct:2,explanation:"Antibiotics = acute treatment. Utilac = recurrence prevention. Cranberry E. coli adhesion rokta hai."},
-  {product:"aldanvit",type:"Composition",q:"Aldanvit mein generic folic acid ki jagah kya diya gaya hai?",options:["Extra folic acid — zyada dose","L-Methylfolate — active form, MTHFR mutation wale bhi absorb kar sakte","Folate nahi hai","Same thing hai"],correct:1,explanation:"L-Methylfolate = active folate. Generic folic acid MTHFR mutation mein convert nahi hota (25-30% population)."},
+  {mobile:"7061014110",name:"Nihit Anand",role:"admin",hq:"All Bihar",empNo:"10000"},
+  {mobile:"9835293499",name:"Amardeep Sinha",role:"zsm",hq:"All Bihar",empNo:"10001"},
+  {mobile:"9835045206",name:"Sanjay Anand",role:"rsm",hq:"Bihar RSM",empNo:"10002"},
+  {mobile:"8092548622",name:"Amit Kr. Singh",role:"asm",hq:"Purnea/Saharsa/Begusarai",empNo:"10006"},
+  {mobile:"9905917467",name:"Hemant Kumar Mishra",role:"asm",hq:"Patna-1/Patna-2/Patna-3",empNo:"10061"},
+  {mobile:"8409396196",name:"Gunjan Verma",role:"asm",hq:"Darbhanga/Bettiah/Muzaffarpur/Siwan",empNo:"10141"},
+  {mobile:"9471431106",name:"Mrityunjay Kumar Singh",role:"mbe",hq:"Patna-3",empNo:"10012",asm:"9905917467"},
+  {mobile:"9608632707",name:"Raj Kumar",role:"mbe",hq:"Patna-1",empNo:"10021",asm:"9905917467"},
+  {mobile:"8877316364",name:"Chandan Kumar Paswan",role:"mbe",hq:"Purnea",empNo:"10024",asm:"8092548622"},
+  {mobile:"9608040743",name:"Ranjit Kumar Sinha",role:"mbe",hq:"Saharsa",empNo:"10050",asm:"8092548622"},
+  {mobile:"7764859853",name:"Durgesh Kumar",role:"mbe",hq:"Begusarai",empNo:"10075",asm:"8092548622"},
+  {mobile:"9162063096",name:"Rahul Kumar Pathak",role:"mbe",hq:"Siwan",empNo:"10096",asm:"8409396196"},
+  {mobile:"8229007149",name:"Ashish Kumar",role:"mbe",hq:"Muzaffarpur",empNo:"10191",asm:"8409396196"},
+  {mobile:"7667194304",name:"Satish Kumar",role:"mbe",hq:"Bettiah",empNo:"10192",asm:"8409396196"},
 ];
 
+/* ══ LEVELS ══ */
+const LEVELS=[
+  {l:1,name:"Nayi Shuruaat",emoji:"🌱",min:0},
+  {l:2,name:"Seeker",emoji:"📚",min:200},
+  {l:3,name:"Field Ready",emoji:"💊",min:500},
+  {l:4,name:"Territory Expert",emoji:"🔥",min:1000},
+  {l:5,name:"Brand Champion",emoji:"⭐",min:2000},
+  {l:6,name:"Aldan Guru",emoji:"🏆",min:4000},
+];
+const getLevel=pts=>LEVELS.slice().reverse().find(l=>pts>=l.min)||LEVELS[0];
+const nextLevel=pts=>{const cur=getLevel(pts);const idx=LEVELS.findIndex(l=>l.l===cur.l);return idx<LEVELS.length-1?LEVELS[idx+1]:null;};
+
+/* ══ BADGES ══ */
+const BADGE_DEF={
+  streak3:{em:"🔥",l:"Streak Starter",d:"3 din lagatar quiz kiya"},
+  streak7:{em:"🔥🔥",l:"Week Warrior",d:"7 din lagatar quiz kiya"},
+  streak30:{em:"🔥🔥🔥",l:"Month Master",d:"30 din lagatar — legendary!"},
+  perfect1:{em:"💎",l:"Perfect Score",d:"3/3 ka perfect score mila"},
+  perfect3:{em:"💎💎",l:"Hat-trick",d:"3 consecutive perfect scores"},
+  quiz50:{em:"🧠",l:"Quiz Expert",d:"50 quizzes complete kiye"},
+  topgun:{em:"🏆",l:"Bihar Top Gun",d:"#1 on MBE leaderboard"},
+  scholar:{em:"📚",l:"Product Scholar",d:"Sabhi 11 product cards dekhe"},
+  ovalux10:{em:"🥚",l:"Ovalux Champion",d:"Ovalux quiz 10 baar sahi"},
+  lacoria10:{em:"🔬",l:"Lacoria Pro",d:"Lacoria quiz 10 baar sahi"},
+  allrounder:{em:"🌟",l:"All-Rounder",d:"Sabhi 11 products pe correct answer"},
+  fieldstar:{em:"👣",l:"Field Star",d:"Ek din mein 20 doctors visited"},
+  beatperfect:{em:"🎯",l:"Beat Perfect",d:"5 din TP ke sabhi CORE doctors visit kiye"},
+  earlybird:{em:"🚀",l:"Early Bird",d:"5 din 9am se pehle quiz complete kiya"},
+  gurulevel:{em:"👑",l:"Aldan Guru",d:"Level 6 reach kiya — highest achiever"},
+};
+
+/* ══ PRODUCTS ══ */
+const P=[
+  {id:"ovalux",name:"Ovalux",pri:3,mrp:"Rs.1219",ptv:"Rs.856",pack:"1×10 Caps",tag:"Superior egg quality for every IVF dream",ind:"Female egg quality, DOR, IVF support",comp:[{n:"Ubiquinol (CoQ10)",r:"Egg ki energy factory — mitochondria supercharge. Poor responders ka game-changer."},{n:"DHEA 25mg",r:"Ovarian reserve badhata hai. FSH kam karta hai. 16 RCTs ka evidence."},{n:"Melatonin",r:"Follicular fluid antioxidant. Sleep quality bhi improve."},{n:"L-Arginine",r:"Ovarian blood flow improve. Endometrial thickness better."}],trig:"PCOS/DOR patient jab IVF plan bana rahi ho. 'Eggs ki quality acchi nahi' — yahi ek line hai.",proof:["16 RCTs, 1973 women — DHEA improved egg quality (J Ovarian Research 2025)","CoQ10 improved fertilization rate 28% in poor responders (Fertil Steril 2024)","Melatonin — 2x higher pregnancy rate in IVF (Gynecol Endocrinol 2023)"],obj:[{q:"Inofolic already lete hain",a:"Inofolic PCOS mein MI ke liye. Ovalux egg quality ke liye — dono alag kaam karte hain."},{q:"Bahut mehnga hai",a:"IVF cycle 1.5-2 lakh ka. Ovalux 3 months = Rs.3,500. Ek extra egg = cycle succeed."},{q:"Evidence nahi",a:"16 RCTs, 1973 patients — J Ovarian Research 2025. Leave card abhi de sakta hoon."}],dose:"1 cap OD at night, 3 months before IVF",journal:"J Ovarian Research 2025 — 16 RCTs DHEA",catch:"'IVF se pehle egg quality improve karni ho — Ovalux sirf 3 mahine mein results deta hai'",color:"#FF6B35",em:"🥚"},
+  {id:"lacoria",name:"Lacoria",pri:3,mrp:"Rs.432",ptv:"Rs.303",pack:"1×14 Caps",tag:"5-strain defense against BV & leucorrhoea",ind:"Bacterial Vaginosis, Leucorrhoea, recurrent infections",comp:[{n:"L. acidophilus",r:"Vaginal pH restore. BV bacteria displace."},{n:"L. rhamnosus",r:"Recurrence rokta hai. Immune memory banata hai."},{n:"L. reuteri",r:"Inflammation kam. Discharge aur odor reduce."},{n:"Bifidobacterium longum",r:"Gut-vaginal axis balance."},{n:"L. plantarum",r:"Biofilm break karta hai — jahan antibiotics fail hoti hain."}],trig:"Discharge complaint — odor, itching. Post-antibiotic relapse.",proof:["5-strain probiotic: BV recurrence 62% kam (Int J Womens Health 2024)","L. rhamnosus: vaginal flora restore 85% women in 14 days (BJOG 2023)","L. plantarum: biofilm disruption where metronidazole fails (Microbiome 2024)"],obj:[{q:"Metrogyl se theek ho jaata hai",a:"Metrogyl infection treat karta hai, flora restore nahi. Lacoria = recurrence 62% kam."},{q:"Generic probiotic se kya fark",a:"5 specific vaginal strains — gut probiotics vaginal environment mein survive nahi karte."},{q:"Kitne din?",a:"Acute 14 din. Recurrent cases 3 mahine."}],dose:"1 cap OD at bedtime",journal:"Int J Womens Health 2024 — 62% recurrence reduction",catch:"'Sirf infection treat karna kaafi nahi — flora restore karna zaroori hai. Lacoria yahi karta hai'",color:"#8B5CF6",em:"🔬"},
+  {id:"myolifeplus",name:"Myolife Plus",pri:3,mrp:"Rs.329",ptv:"Rs.231",pack:"1×10 Tabs",tag:"PCOS with obesity — the complete solution",ind:"PCOS with obesity/insulin resistance",comp:[{n:"Myo-Inositol 1000mg",r:"Insulin signaling improve. Ovulation restore."},{n:"D-Chiro-Inositol 25mg (40:1)",r:"DCI deficiency correct. Hyperandrogenism kam."},{n:"Melatonin 1mg",r:"Circadian rhythm reset. Insulin resistance kam."},{n:"L-Methylfolate 0.5mg",r:"Active folate — MTHFR safe."}],trig:"Obese PCOS — BMI >25, irregular cycles, hirsutism. '40:1 ratio obese PCOS mein exact hai'.",proof:["MI:DCI 40:1 restored ovulation 68% vs 32% placebo (Endocrine 2024)","Melatonin improved insulin sensitivity 23% vs MI alone (J Clin Med 2024)"],obj:[{q:"Plain Myo-Inositol se kya fark",a:"Obese PCOS mein DCI deficiency hoti hai — 40:1 ratio yahi correct karta hai."},{q:"Metformin already de raha hoon",a:"Complementary — different mechanism. Saath dene se better outcomes."},{q:"Cost zyada hai",a:"Obese PCOS mein plain Myolife suboptimal hai. 3 months mein meaningful difference."}],dose:"1 tab BD after food, 3-6 months",journal:"Endocrine 2024 — 40:1 MI:DCI RCT",catch:"'Obese PCOS mein DCI deficiency hoti hai — Myolife Plus ka 40:1 ratio exactly yahi correct karta hai'",color:"#10B981",em:"⚖️"},
+  {id:"aldova",name:"Aldova",pri:3,mrp:"Rs.637",ptv:"Rs.447",pack:"Kit",tag:"Ovulation induction — smarter CC combo",ind:"Ovulation induction, poor follicular response",comp:[{n:"Clomiphene Citrate 50mg",r:"FSH/LH release. Standard OI drug."},{n:"N-Acetyl Cysteine 600mg",r:"CC ki endometrial thinning solve karta hai."},{n:"Astaxanthin 4mg",r:"Follicular antioxidant. Egg quality better."}],trig:"Gynec jo CC likhta ho. 'Endometrial thickness CC se kam ho jaati hai' — yahi kaho pehle.",proof:["NAC improved endometrial thickness 35% with CC (Fertil Steril 2024)","CC+NAC ovulation rate 78% vs CC alone 61% (Gynecol Endocrinol 2024)"],obj:[{q:"Plain CC kaam kar raha hai",a:"Endometrial thinning se cycles fail hoti hain — NAC yahi fix karta hai. 78% vs 61%."},{q:"Kit complicated hai",a:"Patient ko ek hi pack — sab andar. Compliance better."},{q:"Letrozole prefer karta hoon",a:"Aldova CC respond karne wale cases ke liye — complementary."}],dose:"As per OI protocol — CD2-6",journal:"Fertil Steril 2024 — NAC + CC endometrial thickness",catch:"'CC likhte waqt endometrial thinning hoti hai — Aldova mein NAC yahi solve karta hai'",color:"#F59E0B",em:"🌸"},
+  {id:"argilux",name:"Argilux",pri:2,mrp:"Rs.979",ptv:"Rs.688",pack:"1×20 Sachets",tag:"Fetal growth — placenta to delivery",ind:"Pregnancy maternal-fetal nutrition, IUGR prevention",comp:[{n:"L-Arginine 3000mg",r:"Nitric oxide → placental blood flow → IUGR prevention."},{n:"DHA 200mg",r:"Fetal brain development. Third trimester critical."},{n:"Proanthocyanidin",r:"Placental oxidative stress kam. Pre-eclampsia risk reduce."},{n:"Vitamins & Minerals",r:"Complete maternal-fetal support."}],trig:"Second trimester high-risk — previous IUGR, hypertension, diabetes, twins.",proof:["L-Arginine reduced IUGR risk 45% in high-risk pregnancies (AJOG 2024)","DHA 200mg improved fetal neurodevelopment at 18 months (Cochrane 2024)"],obj:[{q:"Already multivitamin de raha hoon",a:"L-Arginine 3g aur Proanthocyanidin kisi multivit mein nahi hota — dedicated add-on."},{q:"Evidence kam hai",a:"AJOG 2024 — large RCT, L-Arginine in high-risk pregnancy."},{q:"Taste theek hai?",a:"Sachet — water mein mix. Pleasant flavour. Compliance acchi hai."}],dose:"1 sachet OD in 200ml water, 16 weeks to delivery",journal:"AJOG 2024 — L-Arginine RCT high-risk pregnancy",catch:"'High-risk pregnancy mein placental blood flow — L-Arginine 3g, AJOG 2024 mein 45% IUGR reduction'",color:"#EC4899",em:"🤱"},
+  {id:"myolife",name:"Myolife",pri:1,mrp:"Rs.254",ptv:"Rs.178",pack:"1×10 Tabs",tag:"PCOS lean — gentle first line",ind:"PCOS lean/normal BMI, cycle regularization",comp:[{n:"Myo-Inositol 1000mg",r:"Insulin signaling improve. Ovulation restore."},{n:"L-Methylfolate 0.5mg",r:"Active folate — conception planning."},{n:"Vitamin D3 500IU",r:"60-80% PCOS patients Vit D deficient."}],trig:"Lean PCOS — BMI normal, irregular cycles, conception planning.",proof:["MI improved ovulation 62% lean PCOS vs 27% placebo (Eur J Obstet 2023)"],obj:[{q:"Myolife Plus se kya fark",a:"Lean PCOS mein DCI deficiency nahi hoti — plain MI sufficient. Plus obese ke liye."}],dose:"1 tab BD after food",journal:"Eur J Obstet 2023 — MI lean PCOS",catch:"'Lean PCOS mein cycle regular karna ho — Myolife 3 mahine mein ovulation restore karta hai'",color:"#3B82F6",em:"🌿"},
+  {id:"loq10plus",name:"LOQ-10 Plus",pri:1,mrp:"Rs.516",ptv:"Rs.362",pack:"1×10 Caps",tag:"Male infertility — complete panel",ind:"Male infertility, OAT, sperm quality",comp:[{n:"Ubiquinol CoQ10 100mg",r:"Sperm mitochondria energy. Motility improve."},{n:"Lycopene 5mg",r:"Testicular ROS reduce. DNA fragmentation kam."},{n:"Selenium 70mcg + Zinc 15mg",r:"Spermatogenesis essential. Testosterone support."}],trig:"Male partner semen analysis abnormal — low motility, morphology.",proof:["CoQ10 improved sperm motility 34% in OAT (Andrologia 2024)","Antioxidants reduced DNA fragmentation 29% (Fertil Steril 2024)"],obj:[{q:"Male nahi dekhna",a:"Couple treat karna hai — male factor 40-50% contribute karta hai. Both = success double."}],dose:"1 cap OD after food, 3 months",journal:"Andrologia 2024 — CoQ10 sperm motility",catch:"'Male factor 40-50% infertility mein — LOQ-10 Plus 3 mahine mein motility 34% improve karta hai'",color:"#6366F1",em:"⚡"},
+  {id:"utilac",name:"Utilac",pri:1,mrp:"Rs.320",ptv:"Rs.225",pack:"1×10 Caps",tag:"UTI & candidiasis — stop the cycle",ind:"Recurrent UTI, candidiasis prevention",comp:[{n:"L. acidophilus + rhamnosus",r:"Urogenital tract mein pathogen compete."},{n:"Cranberry Extract 250mg",r:"E. coli adhesion rok deta hai. UTI prevention proven."},{n:"Vitamin C 250mg",r:"Urine acidify — bacteria inhibit."}],trig:"Recurrent UTI — 2+ episodes in 6 months. Post-Cipro. Diabetic patients.",proof:["Cranberry extract reduced UTI recurrence 38% (Cochrane 2023)","Probiotic+cranberry 65% lower recurrence (J Urol 2024)"],obj:[{q:"Antibiotics enough hain",a:"Antibiotics infection treat karte — Utilac recurrence rokta hai. Prevention aur treatment alag."}],dose:"1 cap OD at bedtime, 3 months",journal:"Cochrane 2023 — Cranberry UTI prevention",catch:"'Antibiotics se infection theek hota hai — recurrence rokne ke liye Utilac zaroori hai'",color:"#F97316",em:"🛡️"},
+  {id:"myogdm",name:"Myo-GDM",pri:1,mrp:"Rs.311",ptv:"Rs.218",pack:"1×10 Tabs",tag:"India's 1st dedicated GDM product",ind:"Gestational Diabetes Mellitus",comp:[{n:"Myo-Inositol 2000mg",r:"Insulin receptor sensitivity — GDM root cause."},{n:"D-Chiro-Inositol 50mg",r:"Glucose metabolism normalize."},{n:"Chromium Picolinate",r:"Insulin potentiator."}],trig:"24-28 week OGTT borderline. Obese pregnant. Previous GDM. Family diabetes.",proof:["MI reduced GDM incidence 60% in high-risk women (Diabetes Care 2024)"],obj:[{q:"Insulin de dete hain direct",a:"Preventive aur early management — borderline cases mein insulin se pehle."}],dose:"1 tab BD after food",journal:"Diabetes Care 2024 — MI GDM prevention",catch:"'India ka pehla dedicated GDM product — OGTT borderline aane pe Myo-GDM shuru karo'",color:"#84CC16",em:"🤰"},
+  {id:"osteofem",name:"Osteofem",pri:1,mrp:"Rs.463",ptv:"Rs.325",pack:"1×10 Tabs",tag:"Non-hormonal bone protection for her",ind:"Bone density, post-menopausal bone health",comp:[{n:"Dihydroquercetin (DHQ)",r:"Plant-based — bone resorption inhibit. Non-hormonal."},{n:"Pine Bark Extract",r:"Collagen synthesis. Bone matrix strengthen."},{n:"Calcitriol + Calcium Citrate 500mg",r:"Most bioavailable calcium. Bone mineralisation."}],trig:"Peri/post-menopausal, DEXA low T-score. 'Hormones nahi chahiye' — non-hormonal angle.",proof:["DHQ reduced bone turnover markers 32% (Bone 2024)","Calcium citrate 28% better absorbed than carbonate (NEJM Evid 2023)"],obj:[{q:"HRT deta hoon",a:"Complementary — alag mechanism. Non-hormonal option for patients who refuse HRT."}],dose:"1 tab BD after food, long-term",journal:"Bone 2024 — DHQ bone turnover",catch:"'Non-hormonal bone protection — Osteofem mein DHQ bone resorption rokta hai, 32% improvement'",color:"#14B8A6",em:"🦴"},
+  {id:"aldanvit",name:"Aldanvit",pri:1,mrp:"Rs.160",ptv:"Rs.112",pack:"1×10 Tabs",tag:"Preventive micronutrition — every woman",ind:"Micronutrient deficiency, fatigue, prevention",comp:[{n:"Methylcobalamin 500mcg",r:"Active B12 — energy, mood. Vegans essential."},{n:"L-Methylfolate 1mg",r:"Active folate — pre-conception."},{n:"Vitamin D3 1000IU + Iron + Zinc",r:"74% Indian women Vit D deficient. Complete panel."}],trig:"General OPD — fatigue, weakness, pre-conception. Every woman 20-45.",proof:["Methylcobalamin 35% higher neural absorption (J Nutr Sci 2023)","Vit D deficient 74% Indian urban women (IJMR 2024)"],obj:[{q:"Generic multivitamin se kya extra",a:"Active forms — Methylcobalamin, Methylfolate. MTHFR patients mein generic convert nahi hoti."}],dose:"1 tab OD after food",journal:"IJMR 2024 — Vit D deficiency Indian women",catch:"'Fatigue ke liye Aldanvit — active forms absorb better, especially MTHFR patients mein'",color:"#F59E0B",em:"💊"},
+];
+
+/* ══ QUESTIONS ══ */
+const SQ=[
+{cat:"Composition",product:"ovalux",q:"Ovalux mein DHEA ki exact dose kya hai?",options:["10mg","25mg","50mg","100mg"],correct:1,explanation:"DHEA 25mg — yeh dose 16 RCTs mein most effective nikli hai ovarian reserve improve karne ke liye."},
+{cat:"Composition",product:"lacoria",q:"Lacoria mein biofilm break karne wala strain kaun sa hai?",options:["L. acidophilus","L. rhamnosus","L. plantarum","Bifidobacterium longum"],correct:2,explanation:"L. plantarum biofilm disrupt karta hai — jahan antibiotics fail hoti hain. Yeh Lacoria ka unique differentiator hai."},
+{cat:"Composition",product:"myolifeplus",q:"Myolife Plus mein MI:DCI ka exact ratio kya hai?",options:["20:1","40:1","80:1","10:1"],correct:1,explanation:"40:1 — physiological ratio jo obese PCOS mein DCI deficiency correct karta hai. Endocrine 2024 mein proven."},
+{cat:"Composition",product:"aldova",q:"Aldova mein CC ke saath NAC ki dose kya hai?",options:["200mg","400mg","600mg","1000mg"],correct:2,explanation:"NAC 600mg — endometrial thickness 35% improve karti hai CC ke saath. CC ka #1 side effect solve."},
+{cat:"Composition",product:"argilux",q:"Argilux mein L-Arginine ki dose kya hai?",options:["500mg","1000mg","2000mg","3000mg"],correct:3,explanation:"L-Arginine 3000mg — nitric oxide production ke liye therapeutic dose. AJOG 2024 mein IUGR 45% reduction."},
+{cat:"Composition",product:"loq10plus",q:"LOQ-10 Plus mein CoQ10 kis form mein hai?",options:["Ubiquinone","Ubiquinol","Both forms","Coenzyme only"],correct:1,explanation:"Ubiquinol — active reduced form. Better bioavailability. Sperm mitochondria ke liye directly usable."},
+{cat:"Composition",product:"utilac",q:"Utilac mein cranberry extract ki dose kya hai?",options:["100mg","150mg","250mg","500mg"],correct:2,explanation:"Cranberry Extract 250mg — E. coli bladder adhesion rokne ke liye proven dose."},
+{cat:"Composition",product:"aldanvit",q:"Aldanvit mein generic folic acid ki jagah kya diya gaya hai?",options:["Extra folic acid","L-Methylfolate","Folinic acid","Same thing"],correct:1,explanation:"L-Methylfolate — active form. MTHFR mutation (25-30% population) mein generic folic acid convert nahi hoti."},
+{cat:"MRP & Packing",product:"ovalux",q:"Ovalux ka revised MRP (22.09.2025) kya hai?",options:["Rs.979","Rs.1369","Rs.1219","Rs.856"],correct:2,explanation:"Rs.1219 revised MRP. PTS = Rs.856. Packing = 1×10 Caps."},
+{cat:"MRP & Packing",product:"argilux",q:"Argilux ka MRP aur packing kya hai?",options:["Rs.799 / 1×10 Tabs","Rs.979 / 1×20 Sachets","Rs.1100 / 1×14","Rs.688 / 1×20"],correct:1,explanation:"Rs.979 MRP, 1×20 Sachets. PTS = Rs.688."},
+{cat:"MRP & Packing",product:"lacoria",q:"Lacoria ka MRP aur pack size kya hai?",options:["Rs.485 / 1×10","Rs.432 / 1×14 Caps","Rs.320 / 1×10","Rs.516 / 1×14"],correct:1,explanation:"Rs.432 revised MRP. Pack = 1×14 Caps. PTS = Rs.303."},
+{cat:"MRP & Packing",product:"loq10plus",q:"LOQ-10 Plus ka revised MRP kya hai?",options:["Rs.579","Rs.516","Rs.362","Rs.450"],correct:1,explanation:"Rs.516 revised MRP. PTS = Rs.362. 1×10 Caps."},
+{cat:"MRP & Packing",product:"myolifeplus",q:"Myolife Plus ka PTS kya hai?",options:["Rs.178","Rs.231","Rs.256","Rs.329"],correct:1,explanation:"PTS = Rs.231. MRP = Rs.329. 1×10 Tabs."},
+{cat:"Mechanism",product:"argilux",q:"Argilux mein L-Arginine pregnancy mein kya karta hai?",options:["Fetal brain develop","Nausea reduce","Nitric oxide → placental blood flow → IUGR prevention","Calcium absorb"],correct:2,explanation:"L-Arginine → NO → vasodilation → placental blood flow. IUGR risk 45% kam (AJOG 2024)."},
+{cat:"Mechanism",product:"aldova",q:"Aldova mein NAC CC ki kaunsi problem solve karta hai?",options:["Nausea","Endometrial thinning","Ovarian cyst","Hot flushes"],correct:1,explanation:"CC ka #1 problem — endometrial thinning. NAC 35% better thickness."},
+{cat:"Mechanism",product:"lacoria",q:"Lacoria ki 5-strain synergy single strain se better kyun hai?",options:["Zyada tasty hai","Har strain alag mechanism — comprehensive coverage","Cheaper hai","Brand acha hai"],correct:1,explanation:"acidophilus pH restore, rhamnosus recurrence rokta, reuteri inflammation, longum gut-vaginal, plantarum biofilm — ek saath complete."},
+{cat:"Mechanism",product:"myolifeplus",q:"Obese PCOS mein DCI ka main role kya hai?",options:["Weight loss","Glucose metabolism normalize + hyperandrogenism kam karta hai","BP control","Bone density"],correct:1,explanation:"DCI deficiency obese PCOS mein hoti hai. DCI insulin-mediated androgen synthesis control karta hai — hirsutism better."},
+{cat:"Mechanism",product:"osteofem",q:"Osteofem mein Dihydroquercetin (DHQ) kya karta hai?",options:["Calcium absorb","Bone resorption inhibit — non-hormonal mechanism","Vitamin D activate","Estrogen replace"],correct:1,explanation:"DHQ plant-based — osteoclast activity inhibit. Non-hormonal bone protection ideal for HRT-refusing patients."},
+{cat:"Journal Reference",product:"ovalux",q:"Ovalux ke DHEA evidence mein kitne RCTs hain aur kaunsa journal?",options:["8 RCTs — Fertil Steril 2024","16 RCTs — J Ovarian Research 2025","12 RCTs — BJOG 2024","20 RCTs — NEJM 2023"],correct:1,explanation:"16 RCTs, 1973 women — J Ovarian Research 2025. Strongest DHEA evidence for IVF."},
+{cat:"Journal Reference",product:"lacoria",q:"Lacoria ke BV recurrence reduction ka evidence kya hai?",options:["42% — BJOG 2023","62% — Int J Womens Health 2024","35% — Lancet 2024","80% — NEJM 2024"],correct:1,explanation:"62% BV recurrence reduction — Int J Womens Health 2024. Confidently share this number."},
+{cat:"Journal Reference",product:"utilac",q:"Cranberry extract ne UTI recurrence kitne % kam kiya?",options:["25%","38%","55%","65%"],correct:1,explanation:"38% UTI recurrence reduction — Cochrane Review 2023. With probiotic = 65% (J Urol 2024)."},
+{cat:"Journal Reference",product:"argilux",q:"AJOG 2024 mein L-Arginine ne IUGR kitne % kam kiya?",options:["25%","35%","45%","60%"],correct:2,explanation:"45% IUGR risk reduction — AJOG 2024. High-risk pregnancy ka strongest Argilux data point."},
+{cat:"Journal Reference",product:"myogdm",q:"Diabetes Care 2024 mein MI ne GDM incidence kitne % kam kiya?",options:["30%","45%","60%","75%"],correct:2,explanation:"60% GDM incidence reduction — Diabetes Care 2024. India's first dedicated GDM product."},
+{cat:"Catch Line",product:"ovalux",q:"IVF plan kar rahi patient ke liye Ovalux ka best opening line kya hai?",options:["'Ek naya product hai'","'IVF se pehle egg quality improve karni ho — Ovalux sirf 3 mahine mein results deta hai'","'Ye expensive hai but accha hai'","'Doctor ne recommend kiya'"],correct:1,explanation:"Direct benefit se shuru karo — 'egg quality' aur '3 mahine'. Feature se nahi, outcome se start karo."},
+{cat:"Catch Line",product:"lacoria",q:"BV patient ke liye Lacoria ka most compelling line kya hai?",options:["'5 strains hain isme'","'Sirf infection treat karna kaafi nahi — flora restore karna zaroori hai. Lacoria yahi karta hai'","'Metrogyl se better hai'","'Probiotic hai, safe hai'"],correct:1,explanation:"Doctor ka concern recurrence hai. 'Flora restore' aur 'recurrence 62% kam' — yeh combination convince karta hai."},
+{cat:"Catch Line",product:"myolifeplus",q:"Obese PCOS patient ke liye Myolife Plus ka opening kya hona chahiye?",options:["'Better version hai'","'Obese PCOS mein DCI deficiency hoti hai — 40:1 ratio exactly yahi correct karta hai'","'New product hai'","'Ovulation improve karta hai'"],correct:1,explanation:"DCI deficiency mention clinical depth dikhata hai. '40:1 ratio' specificity trust banata hai."},
+{cat:"Catch Line",product:"aldova",q:"CC likhne wale gynec ke liye Aldova introduce karne ka best angle kya hai?",options:["'CC se better hai'","'CC likhte waqt endometrial thinning hoti hai — Aldova mein NAC yahi solve karta hai'","'Kit mein aata hai'","'New branded CC hai'"],correct:1,explanation:"Doctor ki existing practice respect karo, phir uski known limitation point out karo. Most receptive response."},
+{cat:"Catch Line",product:"argilux",q:"High-risk obstetric patient ke liye Argilux pitch kya honi chahiye?",options:["'Sachet form mein hai'","'High-risk pregnancy mein L-Arginine 3g — AJOG 2024 mein 45% IUGR reduction'","'Multivitamin hai'","'Second trimester se dena hai'"],correct:1,explanation:"Journal + specific data + IUGR word — high-risk obstetric doctor ko immediately engage karta hai."},
+{cat:"Doctor Insight",product:"ovalux",q:"Ek gynec Aldova regularly likhti hain but Ovalux nahi — kya approach karoge?",options:["Chhod do, interested nahi","'Aldova se stimulation acha hota hai — Ovalux saath mein dene se egg quality bhi better hogi. Dono alag kaam karte hain'","Sirf price compare karo","Sample de do"],correct:1,explanation:"123 doctors Bihar mein Aldova likhte hain but Ovalux nahi — sabse bada conversion opportunity. Complementary positioning use karo."},
+{cat:"Doctor Insight",product:"argilux",q:"Purnea territory mein Argilux sirf 20 units total hai. Iska matlab kya hai?",options:["Product kharab hai","MBE ne introduce hi nahi kiya — awareness zero hai","Doctors interested nahi","Stockist ke paas nahi"],correct:1,explanation:"20 units in entire territory = product not introduced. Weakness nahi — opportunity hai. Har call mein ek doctor pe Argilux focus karo."},
+{cat:"Doctor Insight",product:"loq10plus",q:"Siwan territory mein LOQ-10 Plus sirf 5 units total hain — kya karna chahiye?",options:["Product available nahi","Rahul Kumar practically introduce nahi kiya — har infertility couple mein male partner discuss karna shuru karo","Doctors interested nahi","Male patients nahi hain Siwan mein"],correct:1,explanation:"5 units = effectively zero. Untapped territory. Har infertility couple = male partner discussion mandatory."},
+{cat:"Doctor Insight",product:"lacoria",q:"Ek gynec Metrogyl zyada likhta hai, Lacoria nahi — best entry point kya hai?",options:["Directly compare karo","Post-Metrogyl recurrence prevention angle — 'Metrogyl ke baad Lacoria 14 din dene se recurrence 62% kam hoti hai'","Price kam batao","Generic option suggest karo"],correct:1,explanation:"Never replace — complement karo. Post-antibiotic flora restoration = doctor ki existing Metrogyl practice ko enhance karta hai."},
+{cat:"Objection Handle",product:"lacoria",q:"'Metrogyl se BV theek ho jaata hai, probiotic ki kya zaroorat?' — best response?",options:["'Metrogyl better hai'","'Metrogyl infection treat karta hai, Lacoria flora restore — recurrence 62% kam hoti hai saath mein'","'Lacoria Metrogyl se better hai'","'Dono same kaam karte hain'"],correct:1,explanation:"Never position against Metrogyl. Complementary approach = no conflict. Recurrence prevention = doctor ki problem solve."},
+{cat:"Objection Handle",product:"ovalux",q:"'Ovalux bahut mehnga hai patient ke liye' — doctor ne kaha. Response?",options:["'Discount milega'","'IVF cycle 1.5-2 lakh ka. Ovalux 3 months = Rs.3,500. Ek extra egg = cycle succeed'","'Generic version available hai'","'Installment mein de sakte hain'"],correct:1,explanation:"IVF cycle cost ke against Ovalux cost miniscule hai. ROI framing = financially sensible lagta hai."},
+{cat:"Objection Handle",product:"myolifeplus",q:"'Plain Myo-Inositol already de raha hoon, Plus ki kya zaroorat?' — response?",options:["'Plus better brand hai'","'Obese PCOS mein DCI deficiency hoti hai — 40:1 ratio exactly yahi correct karta hai. Endocrine 2024'","'Plus mein zyada ingredients hain'","'Yeh newer hai'"],correct:1,explanation:"Existing practice validate karo, phir clinical gap point out karo. DCI deficiency = clinical depth dikhata hai."},
+{cat:"Objection Handle",product:"utilac",q:"'UTI ke liye antibiotics kaafi hain — Utilac extra kharcha hai' — response?",options:["'Antibiotics band karo'","'Antibiotics infection treat karte — Utilac recurrence rokta hai. Cochrane 2023 mein 38% kam recurrence'","'Utilac antibiotic ki jagah lega'","'Ek hi dena chahiye'"],correct:1,explanation:"Prevention vs treatment distinction. Cochrane reference = credibility. Doctor ka concern = recurring UTI solved."},
+{cat:"Objection Handle",product:"argilux",q:"'Already prenatal multivitamin de raha hoon, Argilux alag kya karta hai?' — answer?",options:["'Replacement hai'","'L-Arginine 3g aur Proanthocyanidin kisi multivit mein nahi hota — placental blood flow ke liye dedicated add-on'","'Zyada complete hai'","'Taste accha hai'"],correct:1,explanation:"Add-on positioning = no conflict. L-Arginine 3g specificity = immediately clear yeh unique hai."},
+{cat:"Product Choice",product:"myolifeplus",q:"BMI 29, PCOS, hirsutism, irregular cycles — Myolife ya Myolife Plus?",options:["Myolife — cheaper","Myolife Plus — 40:1 MI:DCI obese PCOS ke liye optimal","Dono same hain","Aldova dena chahiye"],correct:1,explanation:"BMI 29 = obese PCOS = DCI deficiency likely. Myolife Plus mandatory. Correct selection = clinical credibility."},
+{cat:"Product Choice",product:"ovalux",q:"35 yr DOR patient, AMH low, IVF planning — primary recommendation?",options:["Aldova","Myolife Plus","Ovalux — CoQ10+DHEA+Melatonin for egg quality","Argilux"],correct:2,explanation:"DOR + IVF = Ovalux primary. DHEA ovarian reserve, CoQ10 mitochondrial energy, Melatonin follicular antioxidant."},
+{cat:"Product Choice",product:"argilux",q:"28 week pregnant, previous IUGR history, normal BP — product to add?",options:["Myolife","Osteofem","LOQ-10 Plus","Argilux — L-Arginine for placental flow, IUGR prevention"],correct:3,explanation:"Previous IUGR = high risk = Argilux from 16 weeks. L-Arginine 3g → NO → placental flow."},
+{cat:"Product Choice",product:"lacoria",q:"Post-Metrogyl, 3rd BV episode in 6 months — what to add?",options:["Repeat Metrogyl","Lacoria 3 months — recurrent BV needs flora restoration","Aldanvit","Osteofem"],correct:1,explanation:"3rd episode = recurrent BV = classic Lacoria case. 3 month course for lasting prevention."},
+{cat:"Product Choice",product:"myogdm",q:"26 week pregnant, OGTT fasting 95, 2hr 155 — borderline GDM. First line?",options:["Insulin immediately","Diet only","Myo-GDM — MI reduces insulin resistance, 60% GDM reduction in high-risk","Metformin"],correct:2,explanation:"Borderline GDM = Myo-GDM first. Insulin se pehle. Diabetes Care 2024."},
+];
+
+/* ══ HELPERS ══ */
+const PROD_RX_KEY={
+  "ALDOVA KIT TABS":"aldova","ALDOVA DS KIT TABS":"aldova","ALDANVIT TABS":"aldanvit",
+  "ARGILUX SACHETS":"argilux","LACORIA CAPS":"lacoria","LOQ 10 PLUS CAPS":"loq10plus",
+  "MYO GDM TABS":"myogdm","MYOLIFE PLUS TABS":"myolifeplus","MYOLIFE TABS":"myolife",
+  "OSTEOFEM TABS":"osteofem","Ovalux Cap":"ovalux","UTILAC CAPS":"utilac"
+};
+const asmHQs={
+  "8092548622":["Purnea","Saharsa","Begusarai"],
+  "9905917467":["Patna-1","Patna-2","Patna-3"],
+  "8409396196":["Darbhanga","Bettiah","Muzaffarpur","Siwan"],
+};
+
+/* ══ WEAK PRODUCTS PER MBE ══ */
+const WEAK_PRODUCTS={
+  "7667194304":["ARGILUX SACHETS","OSTEOFEM TABS","ALDANVIT TABS"],
+  "8409396196":["ARGILUX SACHETS","OSTEOFEM TABS","ALDANVIT TABS"],
+  "8229007149":["ARGILUX SACHETS","OSTEOFEM TABS","ALDANVIT TABS"],
+  "8877316364":["ARGILUX SACHETS","ALDANVIT TABS","OSTEOFEM TABS"],
+  "7764859853":["ALDANVIT TABS","OSTEOFEM TABS","ARGILUX SACHETS"],
+  "9471431106":["ARGILUX SACHETS","OSTEOFEM TABS","Ovalux Cap"],
+  "9162063096":["LOQ 10 PLUS CAPS","ALDANVIT TABS","OSTEOFEM TABS"],
+  "9608632707":["ARGILUX SACHETS","OSTEOFEM TABS","ALDANVIT TABS"],
+  "9608040743":["ARGILUX SACHETS","MYO GDM TABS","OSTEOFEM TABS"],
+};
+
+/* ══ POINTS ══ */
+const PTS={quiz_correct:10,quiz_perfect:20,beat_visit:5,doc_discussion:15,streak7bonus:50,card_view:2};
+const addPoints=async(mobile,pts,reason)=>{
+  const snap=await DB.ref(`${BASE}/users/${mobile}/totalScore`).get();
+  const cur=snap.val()||0;
+  await DB.ref(`${BASE}/users/${mobile}/totalScore`).set(cur+pts);
+  await DB.ref(`${BASE}/users/${mobile}/weeklyScore`).transaction(v=>(v||0)+pts);
+  // log
+  await DB.ref(`${BASE}/pts_log/${mobile}/${Date.now()}`).set({pts,reason,ts:new Date().toISOString()});
+};
+
+/* ══ BADGE CHECK ══ */
+const checkBadges=async(user,newStreak,quizCount,perfectCount,productsAnswered)=>{
+  const badges=toArr(user.badges||[]);
+  const toAdd=[];
+  if(newStreak>=3&&!badges.includes("streak3"))toAdd.push("streak3");
+  if(newStreak>=7&&!badges.includes("streak7"))toAdd.push("streak7");
+  if(newStreak>=30&&!badges.includes("streak30"))toAdd.push("streak30");
+  if(perfectCount>=1&&!badges.includes("perfect1"))toAdd.push("perfect1");
+  if(perfectCount>=3&&!badges.includes("perfect3"))toAdd.push("perfect3");
+  if(quizCount>=50&&!badges.includes("quiz50"))toAdd.push("quiz50");
+  const lvl=getLevel(user.totalScore||0);
+  if(lvl.l>=6&&!badges.includes("gurulevel"))toAdd.push("gurulevel");
+  if(productsAnswered&&Object.keys(productsAnswered).length>=11&&!badges.includes("allrounder"))toAdd.push("allrounder");
+  if(toAdd.length){
+    const updated=[...badges,...toAdd];
+    await DB.ref(`${BASE}/users/${user.mobile}/badges`).set(updated);
+  }
+  return toAdd;
+};
+
+/* ══ WHATSAPP QUEUE ══ */
+const queueWA=(mobile,template,params)=>{
+  DB.ref(`${BASE}/alerts/queue/${Date.now()}_${mobile}`).set({mobile,template,params,status:"pending",createdAt:new Date().toISOString()});
+};
+
+/* ══ APP ROOT ══ */
 function App(){
   const [user,setUser]=useState(null);
   const [screen,setScreen]=useState("login");
   const [loading,setLoading]=useState(true);
   useEffect(()=>{
-    const s=localStorage.getItem("guruSess2");
+    const s=localStorage.getItem("guruSess_v2");
     if(s){try{const u=JSON.parse(s);setUser(u);setScreen("home");}catch(e){}}
     setLoading(false);
   },[]);
-  const login=u=>{setUser(u);localStorage.setItem("guruSess2",JSON.stringify(u));setScreen("home");};
-  const logout=()=>{setUser(null);localStorage.removeItem("guruSess2");setScreen("login");};
+  const login=u=>{setUser(u);localStorage.setItem("guruSess_v2",JSON.stringify(u));setScreen("home");};
+  const logout=()=>{setUser(null);localStorage.removeItem("guruSess_v2");setScreen("login");};
+  const updateUser=u=>{setUser(u);localStorage.setItem("guruSess_v2",JSON.stringify(u));};
   if(loading)return <Splash/>;
   if(screen==="login")return <Login onLogin={login}/>;
-  return <Main user={user} onLogout={logout}/>;
+  return <Main user={user} onLogout={logout} updateUser={updateUser}/>;
 }
 
-function Splash(){return(<div className="min-h-screen flex flex-col items-center justify-center gap-6"><div className="text-6xl" style={{animation:"bounce 1s infinite"}}>🎓</div><div className="serif text-3xl text-white font-bold">Aldan Guru</div><div className="flex gap-2 mt-2">{[0,1,2].map(i=><div key={i} className="pdot w-2.5 h-2.5 rounded-full bg-orange-400"/>)}</div></div>);}
+function Splash(){return(<div className="min-h-screen flex flex-col items-center justify-center gap-6"><div className="text-6xl" style={{animation:"bounce 1s infinite"}}>🎓</div><div className="serif text-3xl text-white font-bold">Aldan Guru</div><div className="text-xs mt-1" style={{color:"var(--sl)"}}>v2.0</div><div className="flex gap-2 mt-3">{[0,1,2].map(i=><div key={i} className="pdot w-2.5 h-2.5 rounded-full" style={{background:"var(--o)"}}/>)}</div></div>);}
 
+/* ══ LOGIN ══ */
 function Login({onLogin}){
-  const [mob,setMob]=useState("");
-  const [pin,setPin]=useState(["","","",""]);
-  const [step,setStep]=useState("mob");
-  const [err,setErr]=useState("");
-  const [busy,setBusy]=useState(false);
+  const [mob,setMob]=useState("");const [pin,setPin]=useState(["","","",""]);const [step,setStep]=useState("mob");
+  const [err,setErr]=useState("");const [busy,setBusy]=useState(false);
   const refs=[useRef(),useRef(),useRef(),useRef()];
   const next=()=>{if(mob.length!==10){setErr("10 digit daalo");return;}setErr("");setStep("pin");setTimeout(()=>refs[0].current?.focus(),200);};
   const chg=(i,v)=>{if(!/^[0-9]?$/.test(v))return;const n=[...pin];n[i]=v;setPin(n);if(v&&i<3)refs[i+1].current?.focus();};
@@ -142,10 +282,21 @@ function Login({onLogin}){
     setBusy(true);setErr("");
     try{
       const snap=await DB.ref(`${BASE}/users/${mob}`).get();
-      if(snap.exists()){const u=snap.val();if(u.pin===hashPIN(ep)){await DB.ref(`${BASE}/users/${mob}/lastActive`).set(todayStr());onLogin({...u,mobile:mob});return;}else{setErr("PIN galat hai.");setBusy(false);return;}}
+      if(snap.exists()){
+        const u=snap.val();
+        if(u.pin===hashPIN(ep)){
+          await DB.ref(`${BASE}/users/${mob}/lastActive`).set(todayStr());
+          onLogin({...u,mobile:mob});return;
+        }else{setErr("PIN galat hai.");setBusy(false);return;}
+      }
       const m=TEAM.find(t=>t.mobile===mob);
-      if(m){if(ep==="1234"){const ud={...m,pin:hashPIN("1234"),streak:0,lastActive:todayStr(),badges:[],totalScore:0};await DB.ref(`${BASE}/users/${mob}`).set(ud);onLogin({...ud,mobile:mob});}else{setErr("Default PIN: 1234");setBusy(false);}}
-      else{setErr("Number registered nahi. Admin se contact karo.");setBusy(false);}
+      if(m){
+        if(ep==="1234"){
+          const ud={...m,pin:hashPIN("1234"),streak:0,lastActive:todayStr(),badges:[],totalScore:0,weeklyScore:0,level:1,joinedApp:todayStr()};
+          await DB.ref(`${BASE}/users/${mob}`).set(ud);
+          onLogin({...ud,mobile:mob});
+        }else{setErr("Default PIN: 1234");setBusy(false);}
+      }else{setErr("Number registered nahi. Admin se contact karo.");setBusy(false);}
     }catch(e){setErr("Connection error.");setBusy(false);}
   };
   return(
@@ -154,21 +305,22 @@ function Login({onLogin}){
         <div className="text-center mb-8 fu">
           <div className="text-5xl mb-3">🎓</div>
           <div className="serif text-3xl text-white font-bold mb-1">Aldan Guru</div>
-          <div className="text-sm" style={{color:"var(--slate)"}}>WomEm Bihar · Field Force Training</div>
+          <div className="text-sm" style={{color:"var(--sl)"}}>WomEm Bihar · Field Force Training</div>
+          <div className="text-xs mt-1" style={{color:"#4a5568"}}>v2.0</div>
         </div>
         <div className="glass p-6 fu" style={{animationDelay:"0.1s"}}>
           {step==="mob"?(<>
-            <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"var(--slate)"}}>Mobile Number</div>
-            <input type="tel" inputMode="numeric" maxLength={10} value={mob} onChange={e=>setMob(e.target.value.replace(/\D/g,""))} onKeyDown={e=>e.key==="Enter"&&next()} placeholder="10-digit WhatsApp number" autoFocus className="w-full rounded-xl px-4 py-3.5 text-white text-base font-medium focus:outline-none transition mb-4" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)"}}/>
+            <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"var(--sl)"}}>Mobile Number</div>
+            <input type="tel" inputMode="numeric" maxLength={10} value={mob} onChange={e=>setMob(e.target.value.replace(/\D/g,""))} onKeyDown={e=>e.key==="Enter"&&next()} placeholder="Registered WhatsApp number" autoFocus className="w-full rounded-xl px-4 py-3.5 text-white text-base font-medium focus:outline-none transition mb-4" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)"}}/>
             {err&&<div className="text-red-400 text-sm mb-3">{err}</div>}
             <button onClick={next} className="btn-o w-full">Continue →</button>
           </>):(<>
-            <button onClick={()=>{setStep("mob");setPin(["","","",""]);setErr("");}} className="text-sm mb-3 hover:text-white flex items-center gap-1" style={{color:"var(--slate)"}}>← {mob}</button>
-            <div className="text-xs font-bold uppercase tracking-widest mb-4" style={{color:"var(--slate)"}}>4-Digit PIN</div>
+            <button onClick={()=>{setStep("mob");setPin(["","","",""]);setErr("");}} className="text-sm mb-3 flex items-center gap-1 hover:text-white" style={{color:"var(--sl)"}}>← {mob}</button>
+            <div className="text-xs font-bold uppercase tracking-widest mb-4" style={{color:"var(--sl)"}}>4-Digit PIN</div>
             <div className="flex gap-3 justify-center mb-5">{pin.map((d,i)=><input key={i} ref={refs[i]} type="password" inputMode="numeric" maxLength={1} value={d} onChange={e=>chg(i,e.target.value)} onKeyDown={e=>kd(i,e)} className="pin-inp"/>)}</div>
             {err&&<div className="text-red-400 text-sm mb-3 text-center">{err}</div>}
             <button onClick={doLogin} disabled={pin.some(d=>!d)||busy} className="btn-o w-full">{busy?"Checking…":"Login →"}</button>
-            <div className="text-center mt-3 text-xs" style={{color:"var(--slate)"}}>Default PIN for new users: 1234</div>
+            <div className="text-center mt-3 text-xs" style={{color:"var(--sl)"}}>Default PIN for new users: 1234</div>
           </>)}
         </div>
         <div className="text-center mt-6 text-xs" style={{color:"#4a5568"}}>Aldan Healthcare Pvt. Ltd. · Confidential</div>
@@ -177,51 +329,114 @@ function Login({onLogin}){
   );
 }
 
-function Main({user,onLogout}){
+/* ══ MAIN ══ */
+function Main({user,onLogout,updateUser}){
   const [tab,setTab]=useState("home");
-  const [qd,setQd]=useState(null);
-  const [qload,setQload]=useState(false);
-  const [lb,setLb]=useState([]);
-  const [lbLoad,setLbLoad]=useState(true);
+  const [qd,setQd]=useState(null);const [qload,setQload]=useState(false);
+  const [lb,setLb]=useState([]);const [lbLoad,setLbLoad]=useState(true);
   const [streak,setStreak]=useState(user.streak||0);
+  const [lvlUp,setLvlUp]=useState(null);
+  const [myDocs,setMyDocs]=useState({});const [docsLoad,setDocsLoad]=useState(true);
+  const [tpData,setTpData]=useState({});
+  const [weakProds,setWeakProds]=useState([]);
+
   useEffect(()=>{
     DB.ref(`${BASE}/users`).on("value",snap=>{
       const raw=snap.val();if(!raw){setLbLoad(false);return;}
       setLb(Object.entries(raw).map(([m,u])=>({...u,mobile:m})));
       setLbLoad(false);
     });
+    // Load my doctors
+    const docMob=(user.role==="mbe")?user.mobile:null;
+    if(docMob){
+      DB.ref(`${BASE}/doctors/${docMob}`).once("value").then(s=>{
+        setMyDocs(toObj(s.val()));setDocsLoad(false);
+      });
+    }else{
+      // ASM/RSM/ZSM/admin — load all doctors under their territory
+      setDocsLoad(false);
+    }
+    // Load TP
+    DB.ref(`${BASE}/tp/2026-05/${user.mobile}`).once("value").then(s=>{
+      setTpData(toObj(s.val()));
+    });
+    // Weak products
+    const wp=WEAK_PRODUCTS[user.mobile]||[];
+    setWeakProds(wp);
     return()=>DB.ref(`${BASE}/users`).off();
   },[]);
+
   const loadQuiz=async()=>{
     setTab("quiz");setQload(true);
     const snap=await DB.ref(`${BASE}/quiz/${user.mobile}/${todayStr()}`).get();
     if(snap.exists()){setQd({...snap.val(),alreadyDone:true});setQload(false);return;}
-    const shuffled=[...SQ].sort(()=>Math.random()-0.5);
-    setQd({questions:shuffled.slice(0,3).map((q,i)=>({...q,id:i})),answers:[],score:null,alreadyDone:false});
+    // Pick questions weighted by weak products
+    const weak=weakProds.map(w=>PROD_RX_KEY[w]).filter(Boolean);
+    let pool=[...SQ];
+    // Boost weak product questions
+    weak.forEach(pid=>{
+      const boost=SQ.filter(q=>q.product===pid);
+      pool=[...pool,...boost];// soft nudge
+    });
+    const shuffled=pool.sort(()=>Math.random()-0.5);
+    // Deduplicate by question text, take 3
+    const seen=new Set();const q3=[];
+    for(const q of shuffled){if(!seen.has(q.q)&&q3.length<3){seen.add(q.q);q3.push({...q,id:q3.length});}}
+    setQd({questions:q3,answers:[],score:null,alreadyDone:false});
     setQload(false);
   };
+
   const submitQuiz=async(answers,score)=>{
     const r={questions:qd.questions,answers,score,completedAt:new Date().toISOString()};
     await DB.ref(`${BASE}/quiz/${user.mobile}/${todayStr()}`).set(r);
+    // Streak
     const last=user.lastActive;const yd=new Date();yd.setDate(yd.getDate()-1);const yds=yd.toISOString().split("T")[0];
-    let ns=last===yds?(user.streak||0)+1:last===todayStr()?user.streak||1:1;
+    const ns=last===yds?(user.streak||0)+1:last===todayStr()?user.streak||1:1;
     await DB.ref(`${BASE}/users/${user.mobile}/streak`).set(ns);
     await DB.ref(`${BASE}/users/${user.mobile}/lastActive`).set(todayStr());
-    const ts=(user.totalScore||0)+score;
-    await DB.ref(`${BASE}/users/${user.mobile}/totalScore`).set(ts);
-    if(ns>=7){const badges=toArr(user.badges||[]);if(!badges.includes("streak7"))await DB.ref(`${BASE}/users/${user.mobile}/badges`).set([...badges,"streak7"]);}
-    setStreak(ns);setQd({...r,alreadyDone:true});
+    // Points
+    const pts_earned=score*PTS.quiz_correct+(score===3?PTS.quiz_perfect:0)+(ns===7?PTS.streak7bonus:0);
+    await addPoints(user.mobile,pts_earned,"quiz");
+    // Level check
+    const newTotal=(user.totalScore||0)+pts_earned;
+    const oldLvl=getLevel(user.totalScore||0);const newLvl=getLevel(newTotal);
+    if(newLvl.l>oldLvl.l)setLvlUp(newLvl);
+    // Badges
+    const quizSnap=await DB.ref(`${BASE}/quiz/${user.mobile}`).once("value");
+    const quizCount=Object.keys(toObj(quizSnap.val())).length;
+    const perfSnap=await DB.ref(`${BASE}/users/${user.mobile}/perfectCount`).get();
+    const perfCount=(perfSnap.val()||0)+(score===3?1:0);
+    if(score===3)await DB.ref(`${BASE}/users/${user.mobile}/perfectCount`).set(perfCount);
+    await checkBadges({...user,totalScore:newTotal},ns,quizCount,perfCount,null);
+    // WA queue
+    queueWA(user.mobile,"guru_quiz_result",[`${score}/3`,`${ns}`,`?`,getLevel(newTotal).name]);
+    setStreak(ns);
+    const updUser={...user,totalScore:newTotal,streak:ns,lastActive:todayStr()};
+    updateUser(updUser);
+    setQd({...r,alreadyDone:true});
   };
+
   return(
     <div className="min-h-screen pb-24">
-      {tab==="home"&&<Home user={user} streak={streak} onStartQuiz={loadQuiz} lb={lb}/>}
-      {tab==="quiz"&&(qload?<Loading msg="Quiz load ho raha hai…"/>:<Quiz qd={qd} user={user} onSubmit={submitQuiz}/>)}
-      {tab==="products"&&<Products/>}
+      {lvlUp&&<LevelUpOverlay lvl={lvlUp} onClose={()=>setLvlUp(null)}/>}
+      {tab==="home"&&<Home user={user} streak={streak} onStartQuiz={loadQuiz} lb={lb} tpData={tpData}/>}
+      {tab==="quiz"&&(qload?<Loading msg="Quiz load ho raha hai…"/>:<Quiz qd={qd} user={user} onSubmit={submitQuiz} weakProds={weakProds}/>)}
+      {tab==="today"&&<Today user={user} myDocs={myDocs} tpData={tpData} docsLoad={docsLoad}/>}
+      {tab==="products"&&<Products user={user}/>}
       {tab==="leaderboard"&&<LB user={user} lb={lb} loading={lbLoad}/>}
       {tab==="profile"&&<Profile user={user} streak={streak} lb={lb} onLogout={onLogout}/>}
+      {tab==="admin"&&user.role==="admin"&&<AdminPanel user={user}/>}
       <nav className="bnav">
         <div className="flex justify-around items-center">
-          {[{id:"home",ic:"🏠",l:"Home"},{id:"quiz",ic:"🧠",l:"Quiz",act:loadQuiz},{id:"products",ic:"💊",l:"Products"},{id:"leaderboard",ic:"🏆",l:"Ranks"},{id:"profile",ic:"👤",l:"Profile"}].map(n=>(
+          {[
+            {id:"home",ic:"🏠",l:"Home"},
+            {id:"today",ic:"📋",l:"Today"},
+            {id:"quiz",ic:"🧠",l:"Quiz",act:loadQuiz},
+            {id:"products",ic:"💊",l:"Products"},
+            {id:"leaderboard",ic:"🏆",l:"Ranks"},
+            {id:"profile",ic:"👤",l:"Profile"},
+            ...(user.role==="admin"?[{id:"admin",ic:"⚙️",l:"Admin"}]:[])
+          ].map(n=>(
             <div key={n.id} className={`ni ${tab===n.id?"on":""}`} onClick={()=>n.act?n.act():setTab(n.id)}>
               <span className="ic">{n.ic}</span><span>{n.l}</span>
             </div>
@@ -232,118 +447,441 @@ function Main({user,onLogout}){
   );
 }
 
-function Home({user,streak,onStartQuiz,lb}){
-  const [tq,setTq]=useState(null);const [ck,setCk]=useState(true);
-  useEffect(()=>{DB.ref(`${BASE}/quiz/${user.mobile}/${todayStr()}`).get().then(s=>{if(s.exists())setTq(s.val());setCk(false);});}, []);
-  const mbes=lb.filter(u=>u.role==="mbe").sort((a,b)=>(b.totalScore||0)-(a.totalScore||0));
-  const rank=mbes.findIndex(u=>u.mobile===user.mobile)+1;
-  const hr=new Date().getHours();
-  const greet=hr<12?"Subah ki shubhkamna":hr<17?"Aao seekhte hain":"Sham hua — quiz baaki hai?";
-  const dp=P[Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000)%P.length];
+/* ══ LEVEL UP OVERLAY ══ */
+function LevelUpOverlay({lvl,onClose}){
   return(
-    <div className="px-4 pt-6 max-w-lg mx-auto">
-      <div className="mb-6 fu"><div className="text-sm mb-1" style={{color:"var(--slate)"}}>{greet} 👋</div><h1 className="serif text-2xl text-white font-bold">{user.name.split(" ")[0]}</h1><div className="text-xs mt-0.5" style={{color:"#4a5568"}}>{user.hq} · {user.role.toUpperCase()}</div></div>
-      <div className="grid grid-cols-3 gap-3 mb-5 fu" style={{animationDelay:"0.1s"}}>
-        <div className="card p-4 text-center"><div className="text-2xl mb-1"><span className="flame">🔥</span></div><div className="text-2xl font-black text-white">{streak}</div><div className="text-xs mt-0.5" style={{color:"var(--slate)"}}>Streak</div></div>
-        <div className="card p-4 text-center"><div className="text-2xl mb-1">📊</div><div className="text-2xl font-black text-white">{tq?`${tq.score}/3`:"—"}</div><div className="text-xs mt-0.5" style={{color:"var(--slate)"}}>Aaj Score</div></div>
-        <div className="card p-4 text-center"><div className="text-2xl mb-1">🏅</div><div className="text-2xl font-black text-white">#{rank||"?"}</div><div className="text-xs mt-0.5" style={{color:"var(--slate)"}}>Rank</div></div>
-      </div>
-      <div className="glass p-5 mb-4 fu" style={{animationDelay:"0.2s"}}>
-        {ck?<div className="shim h-16 rounded-xl"/>:tq?(
-          <div className="flex items-center gap-4"><div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shrink-0" style={{background:"rgba(32,191,107,0.2)",border:"1px solid rgba(32,191,107,0.4)"}}>✅</div><div><div className="font-bold text-white">Aaj ka quiz ho gaya!</div><div className="text-sm mt-0.5" style={{color:"var(--slate)"}}>{tq.score}/3 sahi · Kal milte hain 🎯</div></div></div>
-        ):(
-          <div><div className="flex items-center justify-between mb-3"><div><div className="font-bold text-white text-base">Aaj ka Quiz</div><div className="text-sm" style={{color:"var(--slate)"}}>3 sawaal · 90 seconds</div></div><div className="text-3xl">🧠</div></div><button onClick={onStartQuiz} className="btn-o w-full">Shuru Karo →</button></div>
-        )}
-      </div>
-      <div className="mb-4 fu" style={{animationDelay:"0.25s"}}>
-        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"#4a5568"}}>Aaj ka Focus Product</div>
-        <div className="card p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{background:`${dp.color}22`}}>{dp.em}</div>
-          <div className="flex-1 min-w-0"><div className="font-bold text-white">{dp.name}</div><div className="text-xs truncate" style={{color:"var(--slate)"}}>{dp.ind}</div><div className="text-xs font-semibold mt-0.5" style={{color:dp.color}}>MRP {dp.mrp}</div></div>
-          <div className="text-lg" style={{color:"#4a5568"}}>›</div>
-        </div>
-      </div>
-      <div className="fu" style={{animationDelay:"0.3s"}}>
-        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"#4a5568"}}>Top MBEs</div>
-        <div className="card overflow-hidden">{mbes.slice(0,3).map((u,i)=>(
-          <div key={u.mobile} className={`flex items-center gap-3 px-4 py-3 ${i<2?"border-b":""}`} style={{borderColor:"rgba(255,255,255,0.05)",background:u.mobile===user.mobile?"rgba(255,107,53,0.08)":""}}>
-            <span className="text-xl w-8 text-center">{["🥇","🥈","🥉"][i]}</span>
-            <div className="flex-1"><div className="font-semibold text-sm text-white">{u.name}</div><div className="text-xs" style={{color:"var(--slate)"}}>{u.hq}</div></div>
-            <div className="text-right"><div className="text-sm font-bold text-white">{u.totalScore||0} pts</div>{(u.streak||0)>0&&<div className="text-xs" style={{color:"var(--saffron)"}}>🔥{u.streak}</div>}</div>
-          </div>
-        ))}{mbes.length===0&&<div className="text-center py-6 text-sm" style={{color:"#4a5568"}}>Abhi data load ho raha hai…</div>}</div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{background:"rgba(13,27,42,0.92)"}}>
+      <div className="text-center px-8">
+        <div className="text-7xl mb-4 lvlup">{lvl.emoji}</div>
+        <div className="serif text-3xl text-white font-bold mb-2 lvlup">Level Up!</div>
+        <div className="text-xl font-black mb-1 lvlup" style={{color:"var(--o)"}}>{lvl.name}</div>
+        <div className="text-sm mb-8" style={{color:"var(--sl)"}}>Badhaai ho! Aap Level {lvl.l} pe pahunch gaye!</div>
+        <button onClick={onClose} className="btn-o px-12">Continue 🎉</button>
       </div>
     </div>
   );
 }
 
-function Quiz({qd,user,onSubmit}){
+/* ══ HOME ══ */
+function Home({user,streak,onStartQuiz,lb,tpData}){
+  const [tq,setTq]=useState(null);const [ck,setCk]=useState(true);
+  useEffect(()=>{DB.ref(`${BASE}/quiz/${user.mobile}/${todayStr()}`).get().then(s=>{if(s.exists())setTq(s.val());setCk(false);});}, []);
+  const mbes=lb.filter(u=>u.role==="mbe").sort((a,b)=>(b.totalScore||0)-(a.totalScore||0));
+  const rank=mbes.findIndex(u=>u.mobile===user.mobile)+1;
+  const lvl=getLevel(user.totalScore||0);
+  const nxt=nextLevel(user.totalScore||0);
+  const pct=nxt?Math.min(100,((user.totalScore||0)-lvl.min)/(nxt.min-lvl.min)*100):100;
+  const hr=new Date().getHours();
+  const greet=hr<12?"Subah ki shubhkamna":hr<17?"Aao seekhte hain":"Sham hua — quiz baaki hai?";
+  const dp=P[Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/86400000)%P.length];
+  // Today TP
+  const todayTP=tpData[new Date().toLocaleDateString("en-GB").split("/").reverse().join("-").replace(/(\d{4})-(\d{2})-(\d{2})/,(_,y,m,d)=>`${d.padStart(2,"0")}-${m.padStart(2,"0")}-${y}`)];
+
+  return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <div className="mb-5 fu">
+        <div className="text-sm mb-1" style={{color:"var(--sl)"}}>{greet} 👋</div>
+        <h1 className="serif text-2xl text-white font-bold">{user.name.split(" ")[0]}</h1>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-sm" style={{color:lvl.emoji?"":"var(--sl)"}}>{lvl.emoji}</span>
+          <span className="text-sm font-bold" style={{color:"var(--o)"}}>{lvl.name}</span>
+          <span className="text-xs" style={{color:"#4a5568"}}>· {user.hq}</span>
+        </div>
+        {nxt&&<div className="mt-2">
+          <div className="flex justify-between text-xs mb-1" style={{color:"var(--sl)"}}>
+            <span>Level progress</span><span>{user.totalScore||0} / {nxt.min} pts → {nxt.emoji} {nxt.name}</span>
+          </div>
+          <div className="w-full rounded-full h-1.5" style={{background:"rgba(255,255,255,0.08)"}}>
+            <div className="h-1.5 rounded-full transition-all" style={{width:`${pct}%`,background:"linear-gradient(90deg,var(--o),#F7B731)"}}/>
+          </div>
+        </div>}
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-3 mb-5 fu" style={{animationDelay:"0.1s"}}>
+        <div className="card p-4 text-center"><div className="text-2xl mb-1"><span className="flame">🔥</span></div><div className="text-2xl font-black text-white">{streak}</div><div className="text-xs mt-0.5" style={{color:"var(--sl)"}}>Streak</div></div>
+        <div className="card p-4 text-center"><div className="text-2xl mb-1">📊</div><div className="text-2xl font-black text-white">{tq?`${tq.score}/3`:"—"}</div><div className="text-xs mt-0.5" style={{color:"var(--sl)"}}>Aaj Score</div></div>
+        <div className="card p-4 text-center"><div className="text-2xl mb-1">🏅</div><div className="text-2xl font-black text-white">#{rank||"?"}</div><div className="text-xs mt-0.5" style={{color:"var(--sl)"}}>Bihar Rank</div></div>
+      </div>
+
+      {/* Today TP teaser */}
+      {todayTP&&todayTP.activity==="Field"&&<div className="card p-4 mb-4 fu" style={{animationDelay:"0.15s",borderLeft:"3px solid var(--o)"}}>
+        <div className="flex items-center justify-between">
+          <div><div className="text-xs font-bold uppercase tracking-widest mb-1" style={{color:"var(--o)"}}>Aaj ka Beat</div>
+          <div className="font-semibold text-white text-sm">{todayTP.beat||todayTP.area||"Field"}</div>
+          <div className="text-xs mt-0.5" style={{color:"var(--sl)"}}>{todayTP.workCat} · {todayTP.docCount||"?"} doctors planned</div></div>
+          <div className="text-2xl">📋</div>
+        </div>
+      </div>}
+
+      {/* Quiz CTA */}
+      <div className="glass p-5 mb-4 fu" style={{animationDelay:"0.2s"}}>
+        {ck?<div className="shim h-16 rounded-xl"/>:tq?(
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shrink-0" style={{background:"rgba(32,191,107,0.2)",border:"1px solid rgba(32,191,107,0.4)"}}>✅</div>
+            <div><div className="font-bold text-white">Aaj ka quiz ho gaya!</div><div className="text-sm mt-0.5" style={{color:"var(--sl)"}}>{tq.score}/3 sahi · Kal milte hain 🎯</div></div>
+          </div>
+        ):(
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div><div className="font-bold text-white text-base">Aaj ka Quiz</div><div className="text-sm" style={{color:"var(--sl)"}}>3 sawaal · 90 seconds</div></div>
+              <div className="text-3xl">🧠</div>
+            </div>
+            <button onClick={onStartQuiz} className="btn-o w-full">Shuru Karo →</button>
+          </div>
+        )}
+      </div>
+
+      {/* Focus product */}
+      <div className="mb-4 fu" style={{animationDelay:"0.25s"}}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"#4a5568"}}>Aaj ka Focus Product</div>
+        <div className="card p-4 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{background:`${dp.color}22`}}>{dp.em}</div>
+          <div className="flex-1 min-w-0">
+            <div className="font-bold text-white">{dp.name}</div>
+            <div className="text-xs truncate mt-0.5" style={{color:"var(--sl)"}}>{dp.ind}</div>
+            <div className="text-xs font-bold mt-0.5" style={{color:dp.color}}>{dp.journal}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mini leaderboard */}
+      <div className="fu" style={{animationDelay:"0.3s"}}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"#4a5568"}}>Top MBEs</div>
+        <div className="card overflow-hidden">{mbes.slice(0,3).map((u,i)=>{
+          const ul=getLevel(u.totalScore||0);
+          return(
+          <div key={u.mobile} className={`flex items-center gap-3 px-4 py-3 ${i<2?"border-b":""}`} style={{borderColor:"rgba(255,255,255,0.05)",background:u.mobile===user.mobile?"rgba(255,107,53,0.08)":""}}>
+            <span className="text-xl w-8 text-center">{["🥇","🥈","🥉"][i]}</span>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-sm text-white truncate">{u.name}</div>
+              <div className="text-xs" style={{color:"var(--sl)"}}>{ul.emoji} {ul.name} · {u.hq}</div>
+            </div>
+            <div className="text-right shrink-0">
+              <div className="text-sm font-bold text-white">{u.totalScore||0} pts</div>
+              {(u.streak||0)>0&&<div className="text-xs" style={{color:"var(--o)"}}>🔥{u.streak}</div>}
+            </div>
+          </div>
+        );})}
+        {mbes.length===0&&<div className="text-center py-6 text-sm" style={{color:"#4a5568"}}>Loading…</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══ QUIZ ══ */
+function Quiz({qd,user,onSubmit,weakProds}){
   const [qi,setQi]=useState(0);const [ans,setAns]=useState([]);const [sel,setSel]=useState(null);const [rev,setRev]=useState(false);
-  const [tl,setTl]=useState(90);const [fs,setFs]=useState(null);const [genLoad,setGenLoad]=useState(false);const [aiQ,setAiQ]=useState(null);
+  const [tl,setTl]=useState(90);const [fs,setFs]=useState(null);const [aiQ,setAiQ]=useState(null);const [genLoad,setGenLoad]=useState(false);
   const tmr=useRef();
   useEffect(()=>{if(!qd?.alreadyDone)genAI();},[]);
   const genAI=async()=>{
     setGenLoad(true);
     try{
-      const pc=P.map(p=>`${p.name}: ${p.ind}. Composition: ${p.comp.map(c=>c.n).join(", ")}`).join("\n");
-      const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:`You are Aldan Guru quiz AI for pharma field force training. User: ${user.name}, Role: ${user.role}, HQ: ${user.hq}\n\nProduct Portfolio:\n${pc}\n\nGenerate exactly 3 MCQ questions in Hinglish. Focus: Ovalux, Lacoria, Myolife Plus (60%), Argilux (20%), others (20%).\n\nReturn ONLY valid JSON array, no markdown:\n[{"product":"name","type":"Composition|Objection Handle|Proof Point|Product Choice|Operational","q":"question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish"}]`}]})});
-      const d=await r.json();const t=d.content?.[0]?.text||"";const parsed=JSON.parse(t.replace(/```json|```/g,"").trim());
+      const weak=weakProds.map(w=>{const p=P.find(pp=>PROD_RX_KEY[w]===pp.id);return p?`${p.name} (weak in territory)`:w;}).join(", ");
+      const prodContext=P.map(p=>`${p.name}: ${p.ind}. Composition: ${p.comp.map(c=>c.n).join(", ")}. Journal: ${p.journal}. MRP: ${p.mrp}. Dose: ${p.dose}`).join("\n");
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,messages:[{role:"user",content:`You are Aldan Guru, pharma training AI for Aldan Healthcare WomEm Bihar field force.\n\nUser: ${user.name}, Role: ${user.role.toUpperCase()}, HQ: ${user.hq}\nWeak products in territory: ${weak||"none identified"}\n\nFull Product Portfolio:\n${prodContext}\n\nGenerate exactly 3 MCQ questions in Hinglish. Mix all 8 categories: Composition, MRP & Packing, Mechanism, Journal Reference, Catch Line, Doctor Insight, Objection Handle, Product Choice. Weight weak products 60%. Make doctor-level insights where possible — e.g. reference that a specific product is weak in their territory.\n\nReturn ONLY valid JSON array, no markdown:\n[{"cat":"Category","product":"id","q":"question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish"}]`}]})});
+      const data=await res.json();const t=data.content?.[0]?.text||"";
+      const parsed=JSON.parse(t.replace(/```json|```/g,"").trim());
       if(Array.isArray(parsed)&&parsed.length===3)setAiQ(parsed.map((q,i)=>({...q,id:i})));
-    }catch(e){console.log("AI quiz failed, using static");}
+    }catch(e){console.log("AI fallback to static");}
     setGenLoad(false);
   };
   const qs=aiQ||qd?.questions||[];
   useEffect(()=>{
     if(qd?.alreadyDone||fs!==null||qs.length===0)return;
     tmr.current=setInterval(()=>setTl(t=>{
-      if(t<=1){clearInterval(tmr.current);const ra=[...ans];for(let i=ans.length;i<3;i++)ra.push(-1);const sc=ra.filter((a,i)=>a===qs[i]?.correct).length;setFs(sc);onSubmit(ra,sc);return 0;}
+      if(t<=1){clearInterval(tmr.current);const ra=[...ans];for(let i=ans.length;i<3;i++)ra.push(-1);const sc=ra.filter((a,ii)=>a===qs[ii]?.correct).length;setFs(sc);onSubmit(ra,sc);return 0;}
       return t-1;
     }),1000);
     return()=>clearInterval(tmr.current);
   },[ans.length,qd?.alreadyDone,fs,qs]);
-  if(genLoad&&!aiQ)return(<div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"><div className="text-4xl" style={{animation:"pulse 1s infinite"}}>🧠</div><div className="serif text-xl text-white">AI quiz bana raha hai…</div><div className="flex gap-2 mt-2">{[0,1,2].map(i=><div key={i} className="pdot w-2 h-2 rounded-full bg-orange-400"/>)}</div></div>);
-  if(qd?.alreadyDone){const sc=qd.score??0;return(
+
+  if(genLoad&&!aiQ)return(<div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"><div className="text-4xl" style={{animation:"pulse 1s infinite"}}>🧠</div><div className="serif text-xl text-white">AI quiz bana raha hai…</div><div className="text-sm mb-2" style={{color:"var(--sl)"}}>Aapke territory data ke hisaab se</div><div className="flex gap-2">{[0,1,2].map(i=><div key={i} className="pdot w-2 h-2 rounded-full" style={{background:"var(--o)"}}/>)}</div></div>);
+
+  const ReviewList=({questions,answers,score})=>(
     <div className="px-4 pt-6 max-w-lg mx-auto">
-      <div className="text-center mb-6"><div className="text-5xl mb-3 sr">{sc===3?"🎉":sc>=2?"😊":"💪"}</div><div className="serif text-2xl text-white font-bold">Aaj ka Quiz</div><div className="text-4xl font-black mt-2" style={{color:sc===3?"#20BF6B":sc>=2?"#F7B731":"#FF6B35"}}>{sc}/3</div><div className="text-sm mt-1" style={{color:"var(--slate)"}}>{sc===3?"Zabardast!":sc===2?"Accha — kal 3/3!":"Kal phir aana!"}</div></div>
-      <div className="space-y-3">{(qd.questions||[]).map((question,i)=>{const ir=(qd.answers||[])[i]===question.correct;return(<div key={i} className="card p-4" style={{border:`1px solid ${ir?"rgba(32,191,107,0.3)":"rgba(239,68,68,0.3)"}`}}><div className="text-xs mb-2" style={{color:"var(--slate)"}}>{question.type}</div><div className="text-sm text-white mb-2">{question.q}</div><div className={`text-xs font-semibold ${ir?"text-green-400":"text-red-400"}`}>{ir?"✅ Sahi!":` ❌ Sahi tha: "${question.options[question.correct]}"`}</div><div className="text-xs mt-1.5" style={{color:"var(--slate)"}}>{question.explanation}</div></div>);})}</div>
-    </div>
-  );}
-  if(fs!==null)return(
-    <div className="px-4 pt-6 max-w-lg mx-auto">
-      <div className="text-center mb-6"><div className="text-5xl mb-3 sr">{fs===3?"🎉":fs>=2?"😊":"💪"}</div><div className="serif text-2xl text-white font-bold">Quiz Complete!</div><div className="text-5xl font-black mt-2 sr" style={{color:fs===3?"#20BF6B":fs>=2?"#F7B731":"#FF6B35"}}>{fs}/3</div><div className="text-sm mt-1" style={{color:"var(--slate)"}}>{fs===3?"Perfect! 🌟":fs===2?"Accha — kal 3/3!":"Kal pakke se!"}</div></div>
-      <div className="space-y-3">{qs.map((q,i)=>{const ir=ans[i]===q.correct;return(<div key={i} className="card p-4" style={{border:`1px solid ${ir?"rgba(32,191,107,0.3)":"rgba(239,68,68,0.3)"}`}}><div className="text-xs mb-2" style={{color:"var(--slate)"}}>{q.type}</div><div className="text-sm text-white mb-2">{q.q}</div><div className={`text-xs font-semibold ${ir?"text-green-400":"text-red-400"}`}>{ir?"✅ Sahi!":` ❌ Sahi: "${q.options[q.correct]}"`}</div><div className="text-xs mt-1.5" style={{color:"var(--slate)"}}>{q.explanation}</div></div>);})}</div>
+      <div className="text-center mb-6">
+        <div className="text-5xl mb-3 sr">{score===3?"🎉":score>=2?"😊":"💪"}</div>
+        <div className="serif text-2xl text-white font-bold">{score===3?"Quiz Complete!":"Quiz Done"}</div>
+        <div className="text-5xl font-black mt-2 sr" style={{color:score===3?"#20BF6B":score>=2?"#F7B731":"#FF6B35"}}>{score}/3</div>
+        <div className="text-sm mt-2" style={{color:"var(--sl)"}}>{score===3?"Perfect! Aap expert hain 🌟":score===2?"Accha — kal 3/3 ka try!":"Kal phir pakke se aana!"}</div>
+        <div className="mt-2 text-xs font-bold" style={{color:"var(--o)"}}>+{score*PTS.quiz_correct+(score===3?PTS.quiz_perfect:0)} pts earned</div>
+      </div>
+      <div className="space-y-3">{questions.map((q,i)=>{const ir=answers[i]===q.correct;return(<div key={i} className="card p-4" style={{border:`1px solid ${ir?"rgba(32,191,107,0.3)":"rgba(239,68,68,0.3)"}`}}><div className="flex items-center gap-2 mb-2"><span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--sl)"}}>{q.cat}</span></div><div className="text-sm text-white mb-2">{q.q}</div><div className={`text-xs font-semibold ${ir?"text-green-400":"text-red-400"}`}>{ir?"✅ Sahi!":` ❌ Sahi: "${q.options[q.correct]}"`}</div><div className="text-xs mt-1.5" style={{color:"var(--sl)"}}>{q.explanation}</div></div>);})}
+      </div>
     </div>
   );
+
+  if(qd?.alreadyDone)return <ReviewList questions={qd.questions||[]} answers={qd.answers||[]} score={qd.score??0}/>;
+  if(fs!==null)return <ReviewList questions={qs} answers={ans} score={fs}/>;
+
   const cq=qs[qi];if(!cq)return <Loading msg="Quiz load ho raha hai…"/>;
-  const tc=tl/90;const circ=2*Math.PI*22;const tc_color=tl>30?"#20BF6B":tl>10?"#F7B731":"#EF4444";
-  const pick=i=>{if(sel!==null)return;setSel(i);setRev(true);const na=[...ans,i];setTimeout(()=>{if(qi<2){setQi(qi+1);setSel(null);setRev(false);}else{clearInterval(tmr.current);const sc=na.filter((a,ii)=>a===qs[ii]?.correct).length;setFs(sc);onSubmit(na,sc);}setAns(na);},1600);};
+  const tc=tl/90;const circ=2*Math.PI*22;const tcol=tl>30?"#20BF6B":tl>10?"#F7B731":"#EF4444";
   const pp=P.find(p=>p.id===cq.product);
+  const pick=i=>{if(sel!==null)return;setSel(i);setRev(true);const na=[...ans,i];setTimeout(()=>{if(qi<2){setQi(qi+1);setSel(null);setRev(false);}else{clearInterval(tmr.current);const sc=na.filter((a,ii)=>a===qs[ii]?.correct).length;setFs(sc);onSubmit(na,sc);}setAns(na);},1800);};
+
   return(
     <div className="px-4 pt-6 max-w-lg mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div><div className="text-xs uppercase tracking-widest font-bold" style={{color:"var(--slate)"}}>Sawaal {qi+1} / 3</div><div className="flex gap-1.5 mt-1.5">{[0,1,2].map(i=><div key={i} className="h-1.5 rounded-full w-8 transition-all" style={{background:i<qi?"#20BF6B":i===qi?"#FF6B35":"rgba(255,255,255,0.1)"}}/>)}</div></div>
-        <div className="relative w-14 h-14"><svg className="w-14 h-14" style={{transform:"rotate(-90deg)"}} viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3"/><circle cx="26" cy="26" r="22" fill="none" stroke={tc_color} strokeWidth="3" strokeDasharray={circ} strokeDashoffset={circ*(1-tc)} className="timer-ring" strokeLinecap="round"/></svg><div className="absolute inset-0 flex items-center justify-center"><span className="text-sm font-black" style={{color:tc_color}}>{tl}</span></div></div>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <div className="text-xs uppercase tracking-widest font-bold" style={{color:"var(--sl)"}}>Sawaal {qi+1} / 3</div>
+          <div className="flex gap-1.5 mt-2">{[0,1,2].map(i=><div key={i} className="h-1.5 rounded-full w-8 transition-all" style={{background:i<qi?"#20BF6B":i===qi?"#FF6B35":"rgba(255,255,255,0.1)"}}/>)}</div>
+        </div>
+        <div className="relative w-14 h-14">
+          <svg className="w-14 h-14" style={{transform:"rotate(-90deg)"}} viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3"/>
+            <circle cx="26" cy="26" r="22" fill="none" stroke={tcol} strokeWidth="3" strokeDasharray={circ} strokeDashoffset={circ*(1-tc)} className="timer-ring" strokeLinecap="round"/>
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center"><span className="text-sm font-black" style={{color:tcol}}>{tl}</span></div>
+        </div>
       </div>
-      <div className="mb-3"><span className="bdg" style={{background:`${pp?.color||"#FF6B35"}22`,color:pp?.color||"#FF6B35"}}>{cq.type}</span></div>
+      <div className="flex items-center gap-2 mb-3">
+        <span className="bdg text-xs" style={{background:`${pp?.color||"#FF6B35"}22`,color:pp?.color||"#FF6B35"}}>{cq.cat}</span>
+        <span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--sl)"}}>{pp?.name||cq.product}</span>
+      </div>
       <div className="card p-5 mb-5"><div className="text-white font-semibold text-base leading-relaxed">{cq.q}</div></div>
-      <div className="space-y-3">{cq.options.map((opt,i)=>{let cls="qopt";if(rev){if(i===cq.correct)cls+=" ok";else if(i===sel&&i!==cq.correct)cls+=" no";}return(<button key={i} className={cls} onClick={()=>pick(i)} disabled={!!rev}><span className="mr-2 font-bold text-xs" style={{color:"var(--slate)"}}>{String.fromCharCode(65+i)}.</span>{opt}</button>);})}</div>
+      <div className="space-y-3">{cq.options.map((opt,i)=>{let cls="qopt";if(rev){if(i===cq.correct)cls+=" ok";else if(i===sel&&i!==cq.correct)cls+=" no";}return(<button key={i} className={cls} onClick={()=>pick(i)} disabled={!!rev}><span className="mr-2 font-bold text-xs" style={{color:"var(--sl)"}}>{String.fromCharCode(65+i)}.</span>{opt}</button>);})}</div>
       {rev&&<div className={`mt-4 p-4 rounded-xl text-sm border fu ${sel===cq.correct?"text-green-200":"text-red-200"}`} style={{background:sel===cq.correct?"rgba(32,191,107,0.1)":"rgba(239,68,68,0.1)",borderColor:sel===cq.correct?"rgba(32,191,107,0.3)":"rgba(239,68,68,0.3)"}}><div className="font-bold mb-1">{sel===cq.correct?"✅ Bilkul sahi!":"❌ Galat jawab"}</div>{cq.explanation}</div>}
     </div>
   );
 }
 
-function Products(){
+/* ══ TODAY'S BEAT ══ */
+function Today({user,myDocs,tpData,docsLoad}){
+  const [phase,setPhase]=useState("morning");// morning | beat | prep | log | summary
+  const [visitLog,setVisitLog]=useState({});
+  const [selDoc,setSelDoc]=useState(null);
+  const [confirmed,setConfirmed]=useState(false);
+  const [beatDocs,setBeatDocs]=useState([]);
+  const [devNote,setDevNote]=useState("");
+  const [saving,setSaving]=useState(false);
+
+  // Get today's TP
+  const todayKey=new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"2-digit",year:"numeric"}).split("/").join("-").replace(/(\d{2})-(\d{2})-(\d{4})/,"$1-$2-$3");
+  // Format as DD-MM-YYYY
+  const d=new Date();const dd=String(d.getDate()).padStart(2,"0");const mm=String(d.getMonth()+1).padStart(2,"0");const yyyy=d.getFullYear();
+  const todayFmt=`${dd}-${mm}-${yyyy}`;
+  const todayTP=tpData[todayFmt]||null;
+
+  // Load today's beat log if exists
+  useEffect(()=>{
+    DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}`).once("value").then(s=>{
+      const raw=s.val();
+      if(raw){setVisitLog(toObj(raw.visits||{}));setConfirmed(true);setPhase("beat");}
+    });
+  },[]);
+
+  // My doctors as array
+  const myDocArr=Object.values(myDocs);
+
+  // Get weak products for a doctor
+  const getDocWeakProds=(doc)=>{
+    const rx=toObj(doc.rx||{});
+    const products=P.map(p=>({p,qty:rx[Object.keys(PROD_RX_KEY).find(k=>PROD_RX_KEY[k]===p.id)]||0}));
+    return products.filter(x=>x.qty===0).slice(0,3).map(x=>x.p);
+  };
+
+  const confirmBeat=async(modified=false)=>{
+    setSaving(true);
+    const docs=beatDocs.length>0?beatDocs:myDocArr.slice(0,todayTP?.docCount||10);
+    const logData={confirmedAt:new Date().toISOString(),tp:todayTP,modified,devNote,visits:{}};
+    await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}`).set(logData);
+    if(modified&&devNote)await DB.ref(`${BASE}/deviations/${todayStr()}/${user.mobile}`).set({note:devNote,ts:new Date().toISOString()});
+    setSaving(false);setConfirmed(true);setPhase("beat");
+  };
+
+  const markVisit=async(docCode,status,products=[])=>{
+    const updated={...visitLog,[docCode]:{status,products,ts:new Date().toISOString()}};
+    setVisitLog(updated);
+    await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}/visits/${docCode}`).set({status,products,ts:new Date().toISOString()});
+    // Points for visit
+    if(status==="visited")await addPoints(user.mobile,PTS.beat_visit,"beat_visit");
+    if(products.length>0)await addPoints(user.mobile,PTS.doc_discussion,"doc_discussion");
+  };
+
+  const visitedCount=Object.values(visitLog).filter(v=>v.status==="visited").length;
+  const totalPlanned=Object.keys(visitLog).length||todayTP?.docCount||myDocArr.length;
+
+  if(!todayTP||todayTP.activity!=="Field"){return(
+    <div className="px-4 pt-6 max-w-lg mx-auto text-center py-16">
+      <div className="text-4xl mb-4">📅</div>
+      <div className="serif text-xl text-white font-bold mb-2">Aaj Field Nahi</div>
+      <div className="text-sm" style={{color:"var(--sl)"}}>{todayTP?`Activity: ${todayTP.activity}`:"TP data available nahi hai aaj ke liye"}</div>
+    </div>
+  );}
+
+  // MORNING CONFIRM phase
+  if(phase==="morning"&&!confirmed){return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <h2 className="serif text-xl text-white font-bold mb-1">📋 Aaj ka Beat</h2>
+      <div className="text-sm mb-5" style={{color:"var(--sl)"}}>Apna aaj ka plan confirm karo</div>
+      <div className="card p-5 mb-4">
+        <div className="space-y-3">
+          <Row2 ic="📍" lb="Beat / Patch" vl={todayTP.beat||"—"}/>
+          <Row2 ic="🏙️" lb="Work Area" vl={todayTP.area||"—"}/>
+          <Row2 ic="📊" lb="Category" vl={todayTP.workCat||"—"}/>
+          <Row2 ic="👩‍⚕️" lb="Doctors Planned" vl={`${todayTP.docCount||"?"} doctors`}/>
+        </div>
+      </div>
+      <div className="card p-4 mb-4">
+        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"var(--sl)"}}>Koi badlaav hai plan mein?</div>
+        <textarea value={devNote} onChange={e=>setDevNote(e.target.value)} placeholder="Optional — agar koi change hai to yahan likho (deviation record hoga)" rows={2} className="w-full rounded-xl px-3 py-2 text-sm text-white focus:outline-none resize-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}}/>
+      </div>
+      <div className="flex gap-3">
+        <button onClick={()=>confirmBeat(false)} disabled={saving} className="btn-o flex-1">✅ Haan, Yahi Plan Hai</button>
+        <button onClick={()=>confirmBeat(true)} disabled={saving} className="btn-g flex-1">{saving?"Saving…":"Badlaav Ke Saath"}</button>
+      </div>
+    </div>
+  );}
+
+  // BEAT DASHBOARD
+  if(selDoc){
+    const doc=selDoc;const weakP=getDocWeakProds(doc);const rx=toObj(doc.rx||{});
+    const rxProds=Object.entries(rx).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+    const vl=visitLog[doc.code];
+    return(
+      <div className="px-4 pt-6 max-w-lg mx-auto">
+        <button onClick={()=>setSelDoc(null)} className="text-sm mb-4 flex items-center gap-1 hover:text-white" style={{color:"var(--sl)"}}>← Beat List</button>
+        <div className="flex items-start gap-3 mb-5">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 font-black text-white" style={{background:"linear-gradient(135deg,var(--o),#F7B731)"}}>{doc.name[0]}</div>
+          <div>
+            <div className="font-black text-white">{doc.name}</div>
+            <div className="text-xs mt-0.5" style={{color:"var(--sl)"}}>{doc.spec} · {doc.cat} · {doc.qual||"—"}</div>
+            {doc.hosp&&<div className="text-xs" style={{color:"#4a5568"}}>{doc.hosp}</div>}
+          </div>
+        </div>
+        {/* Rx History */}
+        <div className="card p-4 mb-4">
+          <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"var(--sl)"}}>📈 Rx History (Jan 2024 – Feb 2026)</div>
+          {rxProds.length>0?(
+            <div className="space-y-2">{rxProds.map(([prod,qty])=>{const pid=PROD_RX_KEY[prod];const pp=P.find(x=>x.id===pid);return(<div key={prod} className="flex items-center justify-between"><div className="flex items-center gap-2"><span>{pp?.em||"💊"}</span><span className="text-sm text-white">{pp?.name||prod}</span></div><div className="flex items-center gap-2"><div className="rounded-full px-2 py-0.5 text-xs font-bold" style={{background:`${pp?.color||"#FF6B35"}22`,color:pp?.color||"#FF6B35"}}>{qty} units</div></div></div>);})}
+            </div>
+          ):<div className="text-sm" style={{color:"var(--sl)"}}>Koi Rx history nahi — new doctor</div>}
+        </div>
+        {/* Weak products / opportunity */}
+        {weakP.length>0&&<div className="card p-4 mb-4" style={{border:"1px solid rgba(255,107,53,0.3)"}}>
+          <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"var(--o)"}}>🎯 Opportunity — Products Not Yet Prescribed</div>
+          {weakP.slice(0,3).map(pp=>(
+            <div key={pp.id} className="flex items-start gap-3 mb-3 last:mb-0">
+              <span className="text-xl">{pp.em}</span>
+              <div><div className="font-semibold text-white text-sm">{pp.name}</div>
+              <div className="text-xs mt-0.5" style={{color:"var(--sl)"}}>{pp.catch}</div></div>
+            </div>
+          ))}
+        </div>}
+        {/* Log visit */}
+        <div className="card p-4">
+          <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"var(--sl)"}}>Visit Log</div>
+          {vl?(
+            <div className={`text-sm font-bold ${vl.status==="visited"?"text-green-400":"text-red-400"}`}>
+              {vl.status==="visited"?`✅ Visited`:`❌ ${vl.status}`}
+              {vl.products?.length>0&&<span className="ml-2 text-xs text-white">· Discussed: {vl.products.join(", ")}</span>}
+            </div>
+          ):(
+            <div>
+              <div className="text-xs mb-2" style={{color:"var(--sl)"}}>Kya products discuss kiye? (select all)</div>
+              <DiscussSelect doc={doc} onLog={(prods)=>markVisit(doc.code,"visited",prods)}/>
+              <button onClick={()=>markVisit(doc.code,"not_visited",[])} className="btn-g w-full mt-2 text-sm">❌ Visit Nahi Hua</button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // BEAT LIST
+  const displayDocs=myDocArr.slice(0,30);
+  return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="serif text-xl text-white font-bold">📋 Today's Beat</h2>
+          <div className="text-sm mt-0.5" style={{color:"var(--sl)"}}>{todayTP.beat||todayTP.area} · {visitedCount}/{totalPlanned} visited</div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-black" style={{color:visitedCount===totalPlanned?"#20BF6B":"var(--o)"}}>{Math.round(visitedCount/Math.max(totalPlanned,1)*100)}%</div>
+          <div className="text-xs" style={{color:"var(--sl)"}}>Coverage</div>
+        </div>
+      </div>
+      {/* Progress bar */}
+      <div className="w-full rounded-full h-2 mb-5" style={{background:"rgba(255,255,255,0.08)"}}>
+        <div className="h-2 rounded-full transition-all" style={{width:`${Math.round(visitedCount/Math.max(totalPlanned,1)*100)}%`,background:"linear-gradient(90deg,var(--o),#20BF6B)"}}/>
+      </div>
+      {docsLoad?<div className="space-y-2">{[0,1,2,3,4].map(i=><div key={i} className="shim h-14 rounded-xl"/>)}</div>:(
+        <div className="space-y-2">
+          {displayDocs.map(doc=>{
+            const vl=visitLog[doc.code];
+            const weakP=getDocWeakProds(doc);
+            return(
+              <div key={doc.code} onClick={()=>setSelDoc(doc)} className="card px-4 py-3 flex items-center gap-3 cursor-pointer" style={{borderLeft:`3px solid ${vl?.status==="visited"?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}}>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-white text-sm truncate">{doc.name}</div>
+                  <div className="text-xs" style={{color:"var(--sl)"}}>{doc.spec} · <span style={{color:doc.cat==="CORE"?"var(--o)":"var(--sl)"}}>{doc.cat}</span></div>
+                  {weakP.length>0&&!vl&&<div className="text-xs mt-0.5" style={{color:"#F7B731"}}>🎯 {weakP[0]?.name} — opportunity</div>}
+                </div>
+                <div className="shrink-0 text-right">
+                  {vl?.status==="visited"?<span className="text-green-400 text-lg">✅</span>:vl?<span className="text-red-400 text-lg">❌</span>:<span style={{color:"#4a5568"}}>›</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {displayDocs.length===0&&<div className="text-center py-12" style={{color:"var(--sl)"}}>Doctor list load ho rahi hai…</div>}
+    </div>
+  );
+}
+
+function DiscussSelect({doc,onLog}){
+  const [sel,setSel]=useState([]);
+  const toggle=id=>{setSel(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);};
+  return(
+    <div>
+      <div className="flex flex-wrap gap-2 mb-3">{P.filter(p=>p.pri>=2).map(pp=>(
+        <button key={pp.id} onClick={()=>toggle(pp.id)} className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all" style={{background:sel.includes(pp.id)?`${pp.color}33`:"rgba(255,255,255,0.05)",border:`1px solid ${sel.includes(pp.id)?pp.color:"var(--bd)"}`,color:sel.includes(pp.id)?pp.color:"var(--sl)"}}>
+          {pp.em} {pp.name}
+        </button>
+      ))}</div>
+      <button onClick={()=>onLog(sel)} disabled={sel.length===0} className="btn-o w-full text-sm disabled:opacity-40">✅ Visit Log Karo ({sel.length} products)</button>
+    </div>
+  );
+}
+
+function Row2({ic,lb,vl}){return(<div className="flex items-start gap-3"><span>{ic}</span><div><div className="text-xs font-bold uppercase" style={{color:"var(--sl)"}}>{lb}</div><div className="text-sm text-white mt-0.5">{vl}</div></div></div>);}
+
+/* ══ PRODUCTS ══ */
+function Products({user}){
   const [sel,setSel]=useState(null);const [flt,setFlt]=useState("all");
+  const [viewed,setViewed]=useState(new Set());
   const fp=flt==="all"?P:flt==="core"?P.filter(p=>p.pri===3):flt==="focus"?P.filter(p=>p.pri===2):P.filter(p=>p.pri===1);
+  const openCard=async(p)=>{
+    setSel(p);
+    if(!viewed.has(p.id)){
+      setViewed(v=>new Set([...v,p.id]));
+      await addPoints(user.mobile,PTS.card_view,"card_view");
+      // Badge: scholar if all 11 viewed
+      if(viewed.size+1>=11){
+        const snap=await DB.ref(`${BASE}/users/${user.mobile}/badges`).get();
+        const badges=toArr(snap.val()||[]);
+        if(!badges.includes("scholar"))await DB.ref(`${BASE}/users/${user.mobile}/badges`).set([...badges,"scholar"]);
+      }
+    }
+  };
   if(sel)return <PCard p={sel} onBack={()=>setSel(null)}/>;
   return(
     <div className="px-4 pt-6 max-w-lg mx-auto">
-      <div className="mb-5"><h2 className="serif text-xl text-white font-bold mb-1">Product Cards</h2><div className="text-sm" style={{color:"var(--slate)"}}>11 products · Swipe for details</div></div>
+      <div className="mb-5"><h2 className="serif text-xl text-white font-bold mb-1">Product Cards</h2><div className="text-sm" style={{color:"var(--sl)"}}>11 products · Swipe karo details ke liye</div></div>
       <div className="flex gap-2 mb-5 overflow-x-auto pb-1">{[["all","Sabhi"],["core","★★★ Core"],["focus","★★ Focus"],["support","★ Support"]].map(([v,l])=><button key={v} onClick={()=>setFlt(v)} className={`tab-p shrink-0 ${flt===v?"on":""}`}>{l}</button>)}</div>
       <div className="space-y-3">{fp.map(p=>(
-        <div key={p.id} onClick={()=>setSel(p)} className="card p-4 flex items-center gap-4 cursor-pointer transition-colors" style={{border:"1px solid rgba(255,255,255,0.05)"}}>
+        <div key={p.id} onClick={()=>openCard(p)} className="card p-4 flex items-center gap-4 cursor-pointer" style={{border:"1px solid rgba(255,255,255,0.05)"}}>
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{background:`${p.color}22`,border:`1px solid ${p.color}33`}}>{p.em}</div>
-          <div className="flex-1 min-w-0"><div className="flex items-center gap-2"><span className="font-bold text-white">{p.name}</span><span className="text-xs" style={{color:p.color}}>{p.pri===3?"★★★":p.pri===2?"★★":"★"}</span></div><div className="text-xs truncate mt-0.5" style={{color:"var(--slate)"}}>{p.ind}</div><div className="text-xs font-semibold mt-1" style={{color:p.color}}>MRP {p.mrp} · PTS {p.pts}</div></div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2"><span className="font-bold text-white">{p.name}</span><span className="text-xs" style={{color:p.color}}>{p.pri===3?"★★★":p.pri===2?"★★":"★"}</span>{viewed.has(p.id)&&<span className="text-xs text-green-400">✓</span>}</div>
+            <div className="text-xs truncate mt-0.5" style={{color:"var(--sl)"}}>{p.ind}</div>
+            <div className="text-xs font-semibold mt-0.5" style={{color:p.color}}>MRP {p.mrp} · PTS {p.ptv}</div>
+          </div>
           <div className="text-lg" style={{color:"#4a5568"}}>›</div>
         </div>
       ))}</div>
@@ -359,83 +897,134 @@ function PCard({p,onBack}){
   return(
     <div className="min-h-screen flex flex-col">
       <div className="px-4 pt-6 max-w-lg mx-auto w-full">
-        <button onClick={onBack} className="text-sm hover:text-white flex items-center gap-1 mb-4" style={{color:"var(--slate)"}}>← Products</button>
+        <button onClick={onBack} className="text-sm hover:text-white flex items-center gap-1 mb-4" style={{color:"var(--sl)"}}>← Products</button>
         <div className="flex items-center gap-4 mb-4">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl" style={{background:`${p.color}22`,border:`1px solid ${p.color}44`}}>{p.em}</div>
-          <div><h2 className="serif text-xl text-white font-bold">{p.name}</h2><div className="text-xs" style={{color:"var(--slate)"}}>{p.tag}</div><div className="flex gap-2 mt-1"><span className="bdg text-xs" style={{background:`${p.color}22`,color:p.color}}>MRP {p.mrp}</span><span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--slate)"}}>PTS {p.pts}</span><span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--slate)"}}>{p.pack}</span></div></div>
+          <div><h2 className="serif text-xl text-white font-bold">{p.name}</h2><div className="text-xs" style={{color:"var(--sl)"}}>{p.tag}</div>
+          <div className="flex gap-2 mt-1">
+            <span className="bdg text-xs" style={{background:`${p.color}22`,color:p.color}}>MRP {p.mrp}</span>
+            <span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--sl)"}}>PTS {p.ptv}</span>
+            <span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--sl)"}}>{p.pack}</span>
+          </div></div>
         </div>
-        <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">{views.map((vn,i)=><button key={i} onClick={()=>setV(i)} className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all" style={v===i?{background:`${p.color}33`,color:p.color}:{color:"var(--slate)"}}>{i+1}. {vn.split(" ")[0]}</button>)}</div>
+        <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">{views.map((vn,i)=><button key={i} onClick={()=>setV(i)} className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all" style={v===i?{background:`${p.color}33`,color:p.color}:{color:"var(--sl)"}}>{i+1}. {vn.split(" ")[0]}</button>)}</div>
       </div>
       <div className="flex-1 px-4 max-w-lg mx-auto w-full" onTouchStart={ts} onTouchEnd={te}>
         <div className="cv" key={v}>
-          {v===0&&<div className="card p-5"><div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"var(--slate)"}}>At a Glance</div><div className="text-2xl font-black mb-1" style={{color:p.color}}>{p.name}</div><div className="serif italic mb-4" style={{color:"#B8CCDF"}}>{p.tag}</div><div className="space-y-3">{[["💊","Indication",p.ind],["📦","Packing",p.pack],["💰","MRP",p.mrp],["📊","PTS",p.pts],["⏱️","Dose",p.dose]].map(([ic,lb,vl])=><div key={lb} className="flex items-start gap-3"><span className="text-base">{ic}</span><div><div className="text-xs font-bold uppercase" style={{color:"var(--slate)"}}>{lb}</div><div className="text-sm text-white mt-0.5">{vl}</div></div></div>)}</div></div>}
-          {v===1&&<div className="space-y-3"><div className="text-xs font-bold uppercase tracking-widest mb-1" style={{color:"var(--slate)"}}>Composition</div>{p.comp.map((c,i)=><div key={i} className="card p-4"><div className="font-bold text-sm mb-1.5" style={{color:p.color}}>{c.n}</div><div className="text-sm leading-relaxed" style={{color:"var(--slate-light)"}}>{c.r}</div></div>)}</div>}
-          {v===2&&<div className="card p-5"><div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"var(--slate)"}}>Patient Trigger</div><div className="text-sm text-white leading-relaxed">{p.trig}</div></div>}
-          {v===3&&<div className="space-y-3"><div className="text-xs font-bold uppercase tracking-widest mb-1" style={{color:"var(--slate)"}}>Proof Points</div>{p.proof.map((pr,i)=><div key={i} className="card p-4" style={{borderLeft:`2px solid ${p.color}`}}><div className="text-sm text-white leading-relaxed">📚 {pr}</div></div>)}</div>}
-          {v===4&&<div className="space-y-3"><div className="text-xs font-bold uppercase tracking-widest mb-1" style={{color:"var(--slate)"}}>Objection Handles</div>{p.obj.map((o,i)=><div key={i} className="card p-4"><div className="text-xs font-bold mb-2" style={{color:"#F87171"}}>❓ "{o.q}"</div><div className="text-sm text-white leading-relaxed">💬 {o.a}</div></div>)}</div>}
+          {v===0&&<div className="card p-5">
+            <div className="text-2xl font-black mb-1" style={{color:p.color}}>{p.name}</div>
+            <div className="serif italic mb-4" style={{color:"#B8CCDF"}}>{p.tag}</div>
+            <div className="space-y-3">
+              {[["💊","Indication",p.ind],["📦","Packing",p.pack],["💰","MRP",p.mrp],["📊","PTS",p.ptv],["⏱️","Dose",p.dose],["📚","Key Journal",p.journal],["💬","Catch Line",p.catch]].map(([ic,lb,vl])=>(
+                <div key={lb} className="flex items-start gap-3"><span className="text-base">{ic}</span><div><div className="text-xs font-bold uppercase" style={{color:"var(--sl)"}}>{lb}</div><div className="text-sm text-white mt-0.5">{vl}</div></div></div>
+              ))}
+            </div>
+          </div>}
+          {v===1&&<div className="space-y-3">{p.comp.map((c,i)=><div key={i} className="card p-4"><div className="font-bold text-sm mb-1.5" style={{color:p.color}}>{c.n}</div><div className="text-sm leading-relaxed" style={{color:"var(--sll)"}}>{c.r}</div></div>)}</div>}
+          {v===2&&<div className="card p-5"><div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"var(--sl)"}}>Patient Trigger</div><div className="text-sm text-white leading-relaxed">{p.trig}</div></div>}
+          {v===3&&<div className="space-y-3">{p.proof.map((pr,i)=><div key={i} className="card p-4" style={{borderLeft:`2px solid ${p.color}`}}><div className="text-sm text-white leading-relaxed">📚 {pr}</div></div>)}</div>}
+          {v===4&&<div className="space-y-3">{p.obj.map((o,i)=><div key={i} className="card p-4"><div className="text-xs font-bold mb-2" style={{color:"#F87171"}}>❓ "{o.q}"</div><div className="text-sm text-white leading-relaxed">💬 {o.a}</div></div>)}</div>}
         </div>
-        <div className="text-center mt-4 text-xs" style={{color:"#4a5568"}}>← swipe → for next view</div>
+        <div className="text-center mt-4 text-xs" style={{color:"#4a5568"}}>← swipe → next view</div>
       </div>
     </div>
   );
 }
 
+/* ══ LEADERBOARD ══ */
 function LB({user,lb,loading}){
   const [t,setT]=useState("mbe");
   const mbes=lb.filter(u=>u.role==="mbe").sort((a,b)=>(b.totalScore||0)-(a.totalScore||0));
   const asms=lb.filter(u=>u.role==="asm").sort((a,b)=>(b.totalScore||0)-(a.totalScore||0));
-  const list=t==="mbe"?mbes:asms;
+  const mgrs=lb.filter(u=>["rsm","zsm","admin"].includes(u.role)).sort((a,b)=>(b.totalScore||0)-(a.totalScore||0));
+  const list=t==="mbe"?mbes:t==="asm"?asms:mgrs;
   return(
     <div className="px-4 pt-6 max-w-lg mx-auto">
-      <div className="mb-5"><h2 className="serif text-xl text-white font-bold mb-1">🏆 Leaderboard</h2><div className="text-sm" style={{color:"var(--slate)"}}>Har roz quiz karo — ranking mein chadhte raho</div></div>
-      <div className="flex gap-2 mb-5">{[["mbe","MBE Territory"],["asm","ASM Territory"]].map(([v,l])=><button key={v} onClick={()=>setT(v)} className={`tab-p ${t===v?"on":""}`}>{l}</button>)}</div>
+      <div className="mb-5"><h2 className="serif text-xl text-white font-bold mb-1">🏆 Leaderboard</h2><div className="text-sm" style={{color:"var(--sl)"}}>Har roz quiz karo — ranking mein chadhte raho</div></div>
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">{[["mbe","MBE Territory"],["asm","ASM Territory"],["mgr","Managers"]].map(([v,l])=><button key={v} onClick={()=>setT(v)} className={`tab-p shrink-0 ${t===v?"on":""}`}>{l}</button>)}</div>
       {loading?<div className="space-y-3">{[0,1,2,3].map(i=><div key={i} className="shim h-16 rounded-xl"/>)}</div>:(
         <>
           {list.slice(0,3).length===3&&<div className="flex items-end justify-center gap-3 mb-6">
-            {[1,0,2].map(rank=>{const u=list[rank];if(!u)return null;const hts=["h-24","h-32","h-20"];const rc=["#F7B731","#C0C0C0","#CD7F32"];return(<div key={rank} className="flex flex-col items-center gap-2 flex-1"><div className="text-xl">{["🥇","🥈","🥉"][rank]}</div><div className="text-xs font-bold text-center" style={{color:u.mobile===user.mobile?"#FF6B35":"white"}}>{u.name.split(" ")[0]}</div><div className={`w-full rounded-xl flex items-end justify-center pb-2 ${hts[rank]}`} style={{background:`${rc[rank]}22`,border:`1px solid ${rc[rank]}44`}}><div className="text-sm font-black" style={{color:rc[rank]}}>{u.totalScore||0}</div></div></div>);})}
+            {[1,0,2].map(rank=>{const u=list[rank];if(!u)return null;const hts=["h-24","h-32","h-20"];const rc=["#F7B731","#C0C0C0","#CD7F32"];const ul=getLevel(u.totalScore||0);return(<div key={rank} className="flex flex-col items-center gap-1.5 flex-1"><div className="text-xl">{["🥇","🥈","🥉"][rank]}</div><div className="text-xs font-bold text-center" style={{color:u.mobile===user.mobile?"#FF6B35":"white"}}>{u.name.split(" ")[0]}</div><div className="text-xs" style={{color:"var(--sl)"}}>{ul.emoji}</div><div className={`w-full rounded-xl flex items-end justify-center pb-2 ${hts[rank]}`} style={{background:`${rc[rank]}22`,border:`1px solid ${rc[rank]}44`}}><div className="text-sm font-black" style={{color:rc[rank]}}>{u.totalScore||0}</div></div></div>);})}
           </div>}
-          <div className="card overflow-hidden">{list.map((u,i)=>(
+          <div className="card overflow-hidden">{list.map((u,i)=>{
+            const ul=getLevel(u.totalScore||0);
+            return(
             <div key={u.mobile} className={`flex items-center gap-3 px-4 py-3.5 ${i<list.length-1?"border-b":""}`} style={{borderColor:"rgba(255,255,255,0.05)",background:u.mobile===user.mobile?"rgba(255,107,53,0.08)":""}}>
               <div className="w-7 text-center font-black text-sm" style={{color:i<3?["#F7B731","#C0C0C0","#CD7F32"][i]:"#4a5568"}}>{i<3?["🥇","🥈","🥉"][i]:`#${i+1}`}</div>
-              <div className="flex-1"><div className="font-semibold text-sm" style={{color:u.mobile===user.mobile?"#FF8C5A":"white"}}>{u.name}{u.mobile===user.mobile&&<span className="text-xs ml-1" style={{color:"#FF6B35"}}>(aap)</span>}</div><div className="text-xs" style={{color:"var(--slate)"}}>{u.hq}</div></div>
-              <div className="text-right"><div className="text-sm font-black text-white">{u.totalScore||0} pts</div>{(u.streak||0)>0&&<div className="text-xs font-semibold" style={{color:"#FF6B35"}}>🔥 {u.streak}</div>}</div>
-              <div className="flex flex-col gap-0.5">{toArr(u.badges).includes("streak7")&&<span title="7 day streak">🔥</span>}</div>
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-sm truncate" style={{color:u.mobile===user.mobile?"#FF8C5A":"white"}}>{u.name}{u.mobile===user.mobile&&<span className="ml-1 text-xs" style={{color:"var(--o)"}}>(aap)</span>}</div>
+                <div className="text-xs" style={{color:"var(--sl)"}}>{ul.emoji} {ul.name} · {u.hq}</div>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="text-sm font-black text-white">{u.totalScore||0} pts</div>
+                {(u.streak||0)>0&&<div className="text-xs font-semibold" style={{color:"#FF6B35"}}>🔥 {u.streak}</div>}
+              </div>
+              <div className="flex gap-0.5">{toArr(u.badges||[]).slice(0,3).map(b=><span key={b} title={BADGE_DEF[b]?.l}>{BADGE_DEF[b]?.em||"🏅"}</span>)}</div>
             </div>
-          ))}{list.length===0&&<div className="text-center py-10 text-sm" style={{color:"#4a5568"}}>Abhi koi data nahi</div>}</div>
+          );})}
+          {list.length===0&&<div className="text-center py-10 text-sm" style={{color:"#4a5568"}}>Abhi koi data nahi</div>}
+          </div>
         </>
       )}
     </div>
   );
 }
 
+/* ══ PROFILE ══ */
 function Profile({user,streak,lb,onLogout}){
-  const [hist,setHist]=useState([]);
-  useEffect(()=>{DB.ref(`${BASE}/quiz/${user.mobile}`).limitToLast(7).once("value").then(s=>{const r=s.val();if(!r)return;setHist(Object.entries(r).map(([d,dd])=>({date:d,score:dd.score})).reverse());});}, []);
+  const [hist,setHist]=useState([]);const [beatStats,setBeatStats]=useState(null);
+  useEffect(()=>{
+    DB.ref(`${BASE}/quiz/${user.mobile}`).limitToLast(7).once("value").then(s=>{const r=s.val();if(!r)return;setHist(Object.entries(r).map(([d,dd])=>({date:d,score:dd.score})).reverse());});
+    DB.ref(`${BASE}/beat_log`).limitToLast(7).once("value").then(s=>{const r=toObj(s.val());let total=0,visited=0;Object.values(r).forEach(dayData=>{const mine=toObj(dayData[user.mobile]||{});const visits=toObj(mine.visits||{});Object.values(visits).forEach(v=>{total++;if(v.status==="visited")visited++;});});setBeatStats({total,visited});});
+  },[]);
   const badges=toArr(user.badges||[]);
+  const lvl=getLevel(user.totalScore||0);const nxt=nextLevel(user.totalScore||0);
   const rank=lb.filter(u=>u.role==="mbe").sort((a,b)=>(b.totalScore||0)-(a.totalScore||0)).findIndex(u=>u.mobile===user.mobile)+1;
-  const bdMap={streak7:{em:"🔥",l:"7-Din Streak",d:"7 din lagatar quiz kiya"},streak30:{em:"🔥🔥",l:"30-Din Streak",d:"30 din — legendary!"}};
+  const pct=nxt?Math.min(100,((user.totalScore||0)-lvl.min)/(nxt.min-lvl.min)*100):100;
   return(
     <div className="px-4 pt-6 max-w-lg mx-auto">
       <div className="text-center mb-6">
         <div className="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center text-3xl font-black text-white" style={{background:"linear-gradient(135deg,#FF6B35,#F7B731)"}}>{user.name.split(" ").map(w=>w[0]).join("").slice(0,2)}</div>
         <div className="serif text-xl text-white font-bold">{user.name}</div>
-        <div className="text-sm mt-0.5" style={{color:"var(--slate)"}}>{user.role.toUpperCase()} · {user.hq}</div>
+        <div className="text-sm mt-0.5" style={{color:"var(--sl)"}}>{user.role.toUpperCase()} · {user.hq}</div>
+        <div className="flex items-center justify-center gap-2 mt-2">
+          <span className="text-xl">{lvl.emoji}</span>
+          <span className="font-bold" style={{color:"var(--o)"}}>{lvl.name}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full font-bold" style={{background:"rgba(255,107,53,0.15)",color:"var(--o)"}}>Level {lvl.l}</span>
+        </div>
+        {nxt&&<div className="mt-2 px-4">
+          <div className="flex justify-between text-xs mb-1" style={{color:"var(--sl)"}}><span>{user.totalScore||0} pts</span><span>{nxt.min} pts → {nxt.name}</span></div>
+          <div className="w-full rounded-full h-1.5" style={{background:"rgba(255,255,255,0.08)"}}><div className="h-1.5 rounded-full" style={{width:`${pct}%`,background:"linear-gradient(90deg,var(--o),#F7B731)"}}/></div>
+        </div>}
       </div>
       <div className="grid grid-cols-3 gap-3 mb-5">
-        <div className="card p-4 text-center"><div className="text-2xl font-black text-white">{user.totalScore||0}</div><div className="text-xs mt-1" style={{color:"var(--slate)"}}>Total Score</div></div>
-        <div className="card p-4 text-center"><div className="text-2xl font-black" style={{color:"#FF6B35"}}>🔥{streak}</div><div className="text-xs mt-1" style={{color:"var(--slate)"}}>Streak</div></div>
-        <div className="card p-4 text-center"><div className="text-2xl font-black text-white">#{rank||"?"}</div><div className="text-xs mt-1" style={{color:"var(--slate)"}}>Rank</div></div>
+        <div className="card p-4 text-center"><div className="text-xl font-black text-white">{user.totalScore||0}</div><div className="text-xs mt-1" style={{color:"var(--sl)"}}>Total Score</div></div>
+        <div className="card p-4 text-center"><div className="text-xl font-black" style={{color:"var(--o)"}}>🔥{streak}</div><div className="text-xs mt-1" style={{color:"var(--sl)"}}>Streak</div></div>
+        <div className="card p-4 text-center"><div className="text-xl font-black text-white">#{rank||"?"}</div><div className="text-xs mt-1" style={{color:"var(--sl)"}}>Bihar Rank</div></div>
       </div>
-      {hist.length>0&&<div className="mb-5"><div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Last 7 Days</div>
+      {beatStats&&<div className="card p-4 mb-5 flex items-center justify-between">
+        <div><div className="font-semibold text-white">Field Coverage</div><div className="text-xs" style={{color:"var(--sl)"}}>Last 7 days total</div></div>
+        <div className="text-right"><div className="text-xl font-black text-white">{beatStats.visited}/{beatStats.total}</div><div className="text-xs" style={{color:"var(--g)"}}>{beatStats.total>0?Math.round(beatStats.visited/beatStats.total*100):0}% visited</div></div>
+      </div>}
+      {hist.length>0&&<div className="mb-5">
+        <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Quiz History — Last 7 Days</div>
         <div className="card p-4"><div className="flex items-end gap-2 h-16">{hist.map((e,i)=>{const h=e.score===3?"100%":e.score===2?"66%":e.score===1?"33%":"8%";const c=e.score===3?"#20BF6B":e.score===2?"#F7B731":e.score>=1?"#FF6B35":"#EF4444";return(<div key={i} className="flex-1 flex flex-col items-center gap-1"><div className="w-full rounded-t-lg" style={{height:h,background:c}}/><div className="text-xs" style={{color:"#4a5568"}}>{e.date.slice(5)}</div></div>);})}</div></div>
       </div>}
-      <div className="mb-5"><div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Badges {badges.length>0&&`(${badges.length})`}</div>
-        <div className="card p-4">{badges.length===0?(<div className="text-center py-4"><div className="text-3xl mb-2">🏅</div><div className="text-sm" style={{color:"var(--slate)"}}>Abhi tak koi badge nahi</div><div className="text-xs mt-1" style={{color:"#4a5568"}}>7 din streak karo — pehla badge pao!</div></div>):<div className="space-y-3">{badges.map(b=>{const bd=bdMap[b]||{em:"🏅",l:b,d:""};return(<div key={b} className="flex items-center gap-3"><div className="text-2xl">{bd.em}</div><div><div className="font-semibold text-white text-sm">{bd.l}</div><div className="text-xs" style={{color:"var(--slate)"}}>{bd.d}</div></div></div>);})}</div>}</div>
+      <div className="mb-5">
+        <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Badges {badges.length>0&&`(${badges.length})`}</div>
+        <div className="card p-4">{badges.length===0?(
+          <div className="text-center py-4"><div className="text-3xl mb-2">🏅</div><div className="text-sm" style={{color:"var(--sl)"}}>Abhi tak koi badge nahi</div><div className="text-xs mt-1" style={{color:"#4a5568"}}>7 din streak = pehla badge!</div></div>
+        ):(
+          <div className="space-y-3">{badges.map(b=>{const bd=BADGE_DEF[b]||{em:"🏅",l:b,d:""};return(<div key={b} className="flex items-center gap-3"><div className="text-2xl">{bd.em}</div><div><div className="font-semibold text-white text-sm">{bd.l}</div><div className="text-xs" style={{color:"var(--sl)"}}>{bd.d}</div></div></div>);})}</div>
+        )}
+        </div>
       </div>
-      <div className="mb-5"><div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Earn karo</div>
-        <div className="card p-4 space-y-3">
-          {[{em:"🔥",l:"7-Din Streak",t:7,c:streak},{em:"🔥🔥",l:"30-Din Streak",t:30,c:streak},{em:"🌟",l:"Bihar Top Gun",t:1,c:rank===1?1:0}].map((b,i)=>(
-            <div key={i}><div className="flex justify-between mb-1"><div className="flex items-center gap-2"><span>{b.em}</span><span className="text-sm text-white font-semibold">{b.l}</span></div><span className="text-xs" style={{color:"var(--slate)"}}>{b.c}/{b.t}</span></div><div className="w-full rounded-full h-1.5" style={{background:"rgba(255,255,255,0.05)"}}><div className="h-1.5 rounded-full transition-all" style={{width:`${Math.min(100,(b.c/b.t)*100)}%`,background:"#FF6B35"}}/></div></div>
+      <div className="mb-5">
+        <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Earn Karo</div>
+        <div className="card p-4 space-y-4">
+          {[{em:"🔥🔥",l:"Week Warrior",t:7,c:streak},{em:"🔥🔥🔥",l:"Month Master",t:30,c:streak},{em:"👑",l:"Aldan Guru",t:4000,c:user.totalScore||0,unit:"pts"},{em:"🏆",l:"Bihar Top Gun",t:1,c:rank===1?1:0}].filter(b=>!badges.includes(b.l.toLowerCase().replace(/ /g,"").replace(/-/g,""))).map((b,i)=>(
+            <div key={i}><div className="flex justify-between mb-1"><div className="flex items-center gap-2"><span>{b.em}</span><span className="text-sm text-white font-semibold">{b.l}</span></div><span className="text-xs" style={{color:"var(--sl)"}}>{b.c}/{b.t}{b.unit?` ${b.unit}`:""}</span></div><div className="w-full rounded-full h-1.5" style={{background:"rgba(255,255,255,0.05)"}}><div className="h-1.5 rounded-full transition-all" style={{width:`${Math.min(100,(b.c/b.t)*100)}%`,background:"var(--o)"}}/></div></div>
           ))}
         </div>
       </div>
@@ -444,10 +1033,57 @@ function Profile({user,streak,lb,onLogout}){
   );
 }
 
-function Loading({msg}){return(<div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"><div className="flex gap-2">{[0,1,2].map(i=><div key={i} className="pdot w-3 h-3 rounded-full bg-orange-400"/>)}</div><div className="text-sm" style={{color:"var(--slate)"}}>{msg}</div></div>);}
+/* ══ ADMIN PANEL ══ */
+function AdminPanel({user}){
+  const [tab,setTab]=useState("team");
+  const [lb,setLb]=useState([]);const [deviations,setDeviations]=useState({});const [waQueue,setWaQueue]=useState([]);
+  useEffect(()=>{
+    DB.ref(`${BASE}/users`).once("value").then(s=>{const r=s.val();if(r)setLb(Object.entries(r).map(([m,u])=>({...u,mobile:m})));});
+    DB.ref(`${BASE}/deviations`).limitToLast(7).once("value").then(s=>setDeviations(toObj(s.val())));
+    DB.ref(`${BASE}/alerts/queue`).limitToLast(20).once("value").then(s=>setWaQueue(Object.values(toObj(s.val()||{}))));
+  },[]);
+  return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <div className="mb-5"><h2 className="serif text-xl text-white font-bold mb-1">⚙️ Admin Panel</h2><div className="text-sm" style={{color:"var(--sl)"}}>Full Bihar visibility · Nihit Anand</div></div>
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">{[["team","Team"],["deviations","Deviations"],["wa","WA Queue"],["upload","Data Upload"]].map(([v,l])=><button key={v} onClick={()=>setTab(v)} className={`tab-p shrink-0 ${tab===v?"on":""}`}>{l}</button>)}</div>
+      {tab==="team"&&<div className="space-y-2">{lb.sort((a,b)=>(b.totalScore||0)-(a.totalScore||0)).map((u,i)=>{const lvl=getLevel(u.totalScore||0);return(<div key={u.mobile} className="card p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black text-white" style={{background:"linear-gradient(135deg,var(--o),#F7B731)"}}>{u.name.split(" ").map(w=>w[0]).join("").slice(0,2)}</div><div className="flex-1 min-w-0"><div className="font-semibold text-white text-sm truncate">{u.name}</div><div className="text-xs" style={{color:"var(--sl)"}}>{u.role.toUpperCase()} · {u.hq}</div><div className="text-xs" style={{color:lvl.l>=3?"var(--o)":"var(--sl)"}}>{lvl.emoji} {lvl.name}</div></div><div className="text-right shrink-0"><div className="font-black text-white">{u.totalScore||0}</div><div className="text-xs" style={{color:"var(--o)"}}>🔥{u.streak||0}</div><div className="text-xs" style={{color:"var(--sl)"}}>{u.lastActive||"Never"}</div></div></div></div>);})}
+      </div>}
+      {tab==="deviations"&&<div>{Object.entries(deviations).length===0?<div className="text-center py-12 text-sm" style={{color:"var(--sl)"}}>Koi deviation nahi abhi tak</div>:Object.entries(deviations).reverse().map(([date,devData])=>(
+        <div key={date} className="card p-4 mb-3"><div className="text-xs font-bold mb-2" style={{color:"var(--o)"}}>{date}</div>{Object.entries(toObj(devData)).map(([mob,dev])=>{const tm=TEAM.find(t=>t.mobile===mob);return(<div key={mob} className="mb-2"><div className="text-sm font-semibold text-white">{tm?.name||mob}</div><div className="text-xs" style={{color:"var(--sl)"}}>{dev.note||"No note"}</div></div>);})}
+        </div>
+      ))}</div>}
+      {tab==="wa"&&<div>
+        <div className="card p-4 mb-4" style={{border:"1px solid rgba(37,211,102,0.3)"}}>
+          <div className="text-sm font-bold text-white mb-1">📱 WhatsApp Queue</div>
+          <div className="text-xs" style={{color:"var(--sl)"}}>Messages queued — will send once Meta API connected (v2.1)</div>
+        </div>
+        <div className="space-y-2">{waQueue.length===0?<div className="text-center py-8 text-sm" style={{color:"var(--sl)"}}>Queue empty</div>:waQueue.map((msg,i)=>{const tm=TEAM.find(t=>t.mobile===msg.mobile);return(<div key={i} className="card p-3"><div className="flex justify-between items-start"><div><div className="text-xs font-bold text-white">{msg.template}</div><div className="text-xs" style={{color:"var(--sl)"}}>{tm?.name||msg.mobile}</div></div><div className={`bdg text-xs ${msg.status==="pending"?"bg-amber-500/20 text-amber-300":"bg-green-500/20 text-green-300"}`}>{msg.status}</div></div></div>);})}
+        </div>
+      </div>}
+      {tab==="upload"&&<div>
+        <div className="card p-5 mb-4">
+          <div className="text-sm font-bold text-white mb-3">📂 Monthly Data Upload</div>
+          <div className="text-xs mb-4" style={{color:"var(--sl)"}}>HiDoctor se export karo aur yahan upload karo. System automatically Firebase update karega.</div>
+          <div className="space-y-3">
+            {[{l:"Doctor Master",k:"doctor_master",fmt:"CSV"},{l:"Secondary Sales (Cumulative)",k:"secondary_sales",fmt:"CSV"},{l:"TP Master (Monthly)",k:"tp_master",fmt:"CSV"},{l:"Employee Master",k:"employee_master",fmt:"XLSX"},{l:"DCR Data (when available)",k:"dcr",fmt:"CSV"}].map(f=>(
+              <div key={f.k} className="flex items-center gap-3 p-3 rounded-xl" style={{background:"rgba(255,255,255,0.03)",border:"1px solid var(--bd)"}}>
+                <div className="flex-1"><div className="text-sm font-semibold text-white">{f.l}</div><div className="text-xs" style={{color:"var(--sl)"}}>{f.fmt} format</div></div>
+                <div className="bdg text-xs" style={{background:"rgba(143,163,191,0.1)",color:"var(--sl)"}}>v2.1 — Manual via admin</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 p-3 rounded-xl text-xs" style={{background:"rgba(255,107,53,0.08)",border:"1px solid rgba(255,107,53,0.2)",color:"var(--o)"}}>
+            💡 For now send files to Nihit — will be ingested in next data refresh cycle. Full in-app upload coming in v2.1.
+          </div>
+        </div>
+      </div>}
+    </div>
+  );
+}
+
+function Loading({msg}){return(<div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"><div className="flex gap-2">{[0,1,2].map(i=><div key={i} className="pdot w-3 h-3 rounded-full" style={{background:"var(--o)"}}/>)}</div><div className="text-sm" style={{color:"var(--sl)"}}>{msg}</div></div>);}
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
-<!-- deployed Wed May 13 00:19:26 UTC 2026 -->
