@@ -425,13 +425,17 @@ function Main({user,onLogout,updateUser}){
       {tab==="products"&&<Products user={user}/>}
       {tab==="leaderboard"&&<LB user={user} lb={lb} loading={lbLoad}/>}
       {tab==="profile"&&<Profile user={user} streak={streak} lb={lb} onLogout={onLogout}/>}
-      {tab==="admin"&&user.role==="admin"&&<AdminPanel user={user}/>}
+      {tab==="practice"&&<PracticeMode user={user} weakProds={weakProds}/>}
+      {tab==="dost"&&<AldanDost user={user} weakProds={weakProds}/>}
+      {tab==="admin"&&user.role==="admin"&&<AdminPanel user={user} lb={lb}/>}
       <nav className="bnav">
         <div className="flex justify-around items-center">
           {[
             {id:"home",ic:"🏠",l:"Home"},
             {id:"today",ic:"📋",l:"Today"},
             {id:"quiz",ic:"🧠",l:"Quiz",act:loadQuiz},
+            {id:"practice",ic:"🎯",l:"Practice"},
+            {id:"dost",ic:"🤝",l:"Dost"},
             {id:"products",ic:"💊",l:"Products"},
             {id:"leaderboard",ic:"🏆",l:"Ranks"},
             {id:"profile",ic:"👤",l:"Profile"},
@@ -1045,7 +1049,8 @@ function AdminPanel({user}){
   return(
     <div className="px-4 pt-6 max-w-lg mx-auto">
       <div className="mb-5"><h2 className="serif text-xl text-white font-bold mb-1">⚙️ Admin Panel</h2><div className="text-sm" style={{color:"var(--sl)"}}>Full Bihar visibility · Nihit Anand</div></div>
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">{[["team","Team"],["deviations","Deviations"],["wa","WA Queue"],["upload","Data Upload"]].map(([v,l])=><button key={v} onClick={()=>setTab(v)} className={`tab-p shrink-0 ${tab===v?"on":""}`}>{l}</button>)}</div>
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">{[["team","Team"],["accuracy","Accuracy"],["deviations","Deviations"],["wa","WA Queue"],["upload","Data Upload"]].map(([v,l])=><button key={v} onClick={()=>setTab(v)} className={`tab-p shrink-0 ${tab===v?"on":""}`}>{l}</button>)}</div>
+      {tab==="accuracy"&&<AccuracyPanel/>}
       {tab==="team"&&<div className="space-y-2">{lb.sort((a,b)=>(b.totalScore||0)-(a.totalScore||0)).map((u,i)=>{const lvl=getLevel(u.totalScore||0);return(<div key={u.mobile} className="card p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black text-white" style={{background:"linear-gradient(135deg,var(--o),#F7B731)"}}>{u.name.split(" ").map(w=>w[0]).join("").slice(0,2)}</div><div className="flex-1 min-w-0"><div className="font-semibold text-white text-sm truncate">{u.name}</div><div className="text-xs" style={{color:"var(--sl)"}}>{u.role.toUpperCase()} · {u.hq}</div><div className="text-xs" style={{color:lvl.l>=3?"var(--o)":"var(--sl)"}}>{lvl.emoji} {lvl.name}</div></div><div className="text-right shrink-0"><div className="font-black text-white">{u.totalScore||0}</div><div className="text-xs" style={{color:"var(--o)"}}>🔥{u.streak||0}</div><div className="text-xs" style={{color:"var(--sl)"}}>{u.lastActive||"Never"}</div></div></div></div>);})}
       </div>}
       {tab==="deviations"&&<div>{Object.entries(deviations).length===0?<div className="text-center py-12 text-sm" style={{color:"var(--sl)"}}>Koi deviation nahi abhi tak</div>:Object.entries(deviations).reverse().map(([date,devData])=>(
@@ -1082,6 +1087,538 @@ function AdminPanel({user}){
 }
 
 function Loading({msg}){return(<div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"><div className="flex gap-2">{[0,1,2].map(i=><div key={i} className="pdot w-3 h-3 rounded-full" style={{background:"var(--o)"}}/>)}</div><div className="text-sm" style={{color:"var(--sl)"}}>{msg}</div></div>);}
+
+
+/* ══ DOST AVATAR COMPONENT ══ */
+function DostAvatar({size=56}){
+  const scale=size/160;
+  return(
+    <svg width={size} height={size} viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="dost-bg" cx="50%" cy="40%" r="60%"><stop offset="0%" stopColor="#FF8C5A"/><stop offset="100%" stopColor="#E5541F"/></radialGradient>
+        <radialGradient id="dost-face" cx="50%" cy="35%" r="55%"><stop offset="0%" stopColor="#FDDBB0"/><stop offset="100%" stopColor="#F5C48A"/></radialGradient>
+        <radialGradient id="dost-turban" cx="50%" cy="30%" r="60%"><stop offset="0%" stopColor="#FF8C5A"/><stop offset="100%" stopColor="#C94B1A"/></radialGradient>
+        <clipPath id="dost-clip"><circle cx="80" cy="80" r="72"/></clipPath>
+      </defs>
+      <circle cx="80" cy="80" r="72" fill="#1A2C42"/>
+      <circle cx="80" cy="80" r="72" fill="url(#dost-bg)" fillOpacity="0.12"/>
+      <g clipPath="url(#dost-clip)">
+        <ellipse cx="80" cy="148" rx="48" ry="30" fill="#243447"/>
+        <path d="M62 128 Q80 138 98 128 L100 155 Q80 162 60 155 Z" fill="#0D1B2A"/>
+        <path d="M72 128 L80 140 L88 128" fill="none" stroke="#FF6B35" strokeWidth="1.5" opacity="0.7"/>
+        <rect x="72" y="112" width="16" height="18" rx="4" fill="#F5C48A"/>
+        <ellipse cx="80" cy="86" rx="28" ry="32" fill="url(#dost-face)"/>
+        <ellipse cx="52" cy="88" rx="6" ry="8" fill="#F5C48A"/>
+        <ellipse cx="108" cy="88" rx="6" ry="8" fill="#F5C48A"/>
+        <ellipse cx="52" cy="88" rx="3.5" ry="5" fill="#FDDBB0" opacity="0.6"/>
+        <ellipse cx="108" cy="88" rx="3.5" ry="5" fill="#FDDBB0" opacity="0.6"/>
+        <path d="M50 74 Q50 52 80 50 Q110 52 110 74" fill="none" stroke="#FF6B35" strokeWidth="3.5" strokeLinecap="round"/>
+        <path d="M53 78 Q53 56 80 54 Q107 56 107 78" fill="none" stroke="#E5541F" strokeWidth="2.5" strokeLinecap="round" opacity="0.8"/>
+        <path d="M56 81 Q56 60 80 58 Q104 60 104 81" fill="none" stroke="#FF8C5A" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+        <path d="M52 74 Q52 56 80 54 Q108 56 108 74 L108 82 Q108 72 80 70 Q52 72 52 82 Z" fill="url(#dost-turban)" opacity="0.9"/>
+        <path d="M52 76 Q80 68 108 76" fill="none" stroke="#FF6B35" strokeWidth="1" opacity="0.5"/>
+        <path d="M64 80 Q70 77 76 79" stroke="#5C3D1E" strokeWidth="2" strokeLinecap="round" fill="none"/>
+        <path d="M84 79 Q90 77 96 80" stroke="#5C3D1E" strokeWidth="2" strokeLinecap="round" fill="none"/>
+        <ellipse cx="70" cy="87" rx="6" ry="6.5" fill="white"/>
+        <ellipse cx="90" cy="87" rx="6" ry="6.5" fill="white"/>
+        <ellipse cx="70" cy="87" rx="4" ry="4.5" fill="#3D2000"/>
+        <ellipse cx="90" cy="87" rx="4" ry="4.5" fill="#3D2000"/>
+        <circle cx="70.5" cy="87" r="2.5" fill="#1A0A00"/>
+        <circle cx="90.5" cy="87" r="2.5" fill="#1A0A00"/>
+        <circle cx="72" cy="85.5" r="1.2" fill="white" opacity="0.9"/>
+        <circle cx="92" cy="85.5" r="1.2" fill="white" opacity="0.9"/>
+        <path d="M78 92 Q80 97 82 92" fill="none" stroke="#D4956A" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="76.5" cy="94" r="2" fill="#D4956A" opacity="0.4"/>
+        <circle cx="83.5" cy="94" r="2" fill="#D4956A" opacity="0.4"/>
+        <path d="M66 102 Q80 114 94 102" fill="none" stroke="#C06020" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M70 104 Q80 112 90 104" fill="white" opacity="0.6"/>
+        <ellipse cx="62" cy="100" rx="6" ry="4" fill="#FF8C5A" opacity="0.25"/>
+        <ellipse cx="98" cy="100" rx="6" ry="4" fill="#FF8C5A" opacity="0.25"/>
+      </g>
+      <circle cx="80" cy="80" r="72" fill="none" stroke="url(#dost-bg)" strokeWidth="2" opacity="0.5"/>
+    </svg>
+  );
+}
+
+/* ══ DOST EXAMPLES ══ */
+const DOST_EXAMPLES=[
+  {cat:"Product Knowledge",q:"Ovalux aur Inofolic mein exact clinical difference kya hai?",em:"🥚"},
+  {cat:"Composition Deep Dive",q:"Lacoria ke 5 strains ke naam aur har ek ka specific role batao",em:"🔬"},
+  {cat:"Role Play",q:"Role play karo — main ek skeptical gynec hoon, Ovalux sell karo mujhe",em:"🎭"},
+  {cat:"Journal Reference",q:"Argilux ke AJOG 2024 evidence ko 2 lines mein summarize karo",em:"📚"},
+  {cat:"Product Choice",q:"Obese PCOS mein Myolife vs Myolife Plus — decision tree batao",em:"⚖️"},
+  {cat:"Mechanism",q:"Aldova mein NAC kyun add kiya — CC ke saath exact mechanism kya hai?",em:"🌸"},
+  {cat:"Objection Handle",q:"'CoQ10 ka koi solid evidence nahi' — doctor ne kaha. Best response?",em:"💪"},
+  {cat:"Territory Insight",q:"Mere Purnea territory mein Argilux weak hai — kya angle loon?",em:"🎯"},
+  {cat:"Full Product Brief",q:"LOQ-10 Plus ke sabhi ingredients aur sperm pe unka exact role batao",em:"⚡"},
+  {cat:"Patient Communication",q:"GDM patient ko Myo-GDM explain karne ka sabse simple tarika kya hai?",em:"🤰"},
+  {cat:"Comparison",q:"Aldova DS aur Aldova mein kya fark hai — kab kaunsa dena chahiye?",em:"💊"},
+  {cat:"Clinical Scenario",q:"28 week pregnant, previous IUGR, BP normal — Argilux ka exact pitch kya hoga?",em:"🤱"},
+  {cat:"Quick Revision",q:"Sabhi 11 products ke MRP ek baar quickly batao",em:"💰"},
+  {cat:"Doubt Clearing",q:"L-Methylfolate aur plain folic acid mein difference kya hai — simply samjhao",em:"🧬"},
+  {cat:"Role Play",q:"Main BV patient ka doctor hoon — Lacoria introduce karo, main objections karunga",em:"🎭"},
+];
+
+/* ══ PRACTICE MODE ══ */
+const PRACTICE_CATS=["Composition","MRP & Packing","Mechanism","Journal Reference","Catch Line","Doctor Insight","Objection Handle","Product Choice"];
+
+function PracticeMode({user,weakProds}){
+  const [mode,setMode]=useState(null); // null | 'product' | 'category' | 'mock'
+  const [drillProd,setDrillProd]=useState(null);
+  const [drillCat,setDrillCat]=useState(null);
+  const [session,setSession]=useState(null); // {questions, answers, score, done, accuracy}
+  const [qi,setQi]=useState(0);
+  const [sel,setSel]=useState(null);
+  const [rev,setRev]=useState(false);
+  const [loading,setLoading]=useState(false);
+  const [tl,setTl]=useState(180); // 3 min for mock
+  const tmr=useRef();
+
+  const reset=()=>{setMode(null);setDrillProd(null);setDrillCat(null);setSession(null);setQi(0);setSel(null);setRev(false);clearInterval(tmr.current);};
+
+  const startDrill=async(type,target)=>{
+    setLoading(true);
+    try{
+      const weak=weakProds.map(w=>{const p=P.find(pp=>PROD_RX_KEY[w]===pp.id);return p?p.name:w;}).join(", ")||"none";
+      let prompt="";
+      const prodContext=P.map(p=>`${p.name}: ${p.ind}. Composition: ${p.comp.map(c=>c.n).join(", ")}. MRP: ${p.mrp}. PTS: ${p.ptv}. Dose: ${p.dose}. Journal: ${p.journal}. Catch: ${p.catch}`).join("\n");
+
+      if(type==="product"){
+        const pp=P.find(x=>x.id===target);
+        prompt=`You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nProduct focus: ${pp?.name}\nFull details: ${JSON.stringify(pp)}\nUser weak products in territory: ${weak}\n\nGenerate 5 MCQ questions ONLY about ${pp?.name}. Cover: composition, mechanism, MRP/dose, journal evidence, objection handling, catch line, clinical scenarios. Start MEDIUM difficulty. Vary question types.\n\nReturn ONLY valid JSON array:\n[{"cat":"type","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
+      }else if(type==="category"){
+        prompt=`You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nCategory focus: ${target}\nFull product portfolio:\n${prodContext}\nUser weak products: ${weak}\n\nGenerate 5 MCQ questions ALL in the "${target}" category across different products. Distribute products — don't repeat same product twice. Start MEDIUM difficulty.\n\nReturn ONLY valid JSON array:\n[{"cat":"${target}","product":"product_id","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
+      }else{
+        // mock — 10 questions, mixed
+        prompt=`You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nFull product portfolio:\n${prodContext}\nUser weak products in territory: ${weak}\n\nGenerate a 10-question FULL MOCK QUIZ. Mix all 8 categories evenly. Cover all products — no product more than twice. Start MEDIUM difficulty. Weight weak products (${weak}) at 40%.\n\nReturn ONLY valid JSON array:\n[{"cat":"type","product":"id","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
+      }
+
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,messages:[{role:"user",content:prompt}]})});
+      const data=await res.json();
+      const t=data.content?.[0]?.text||"";
+      const parsed=JSON.parse(t.replace(/```json|```/g,"").trim());
+      if(Array.isArray(parsed)&&parsed.length>0){
+        setSession({questions:parsed,answers:[],score:0,done:false,type});
+        setQi(0);setSel(null);setRev(false);
+        if(type==="mock"){setTl(180);/* start timer in effect */}
+      }
+    }catch(e){console.error("Practice AI error",e);alert("AI connection error. Retry karo.");}
+    setLoading(false);
+  };
+
+  // Adaptive: get next question prompt based on performance
+  const getAdaptiveNext=async(questions,answers,nextIdx)=>{
+    if(nextIdx>=questions.length)return null;
+    // Check last 2 answers
+    const recent=answers.slice(-2);
+    const recentCorrect=recent.filter((a,i)=>a===questions[answers.length-2+i]?.correct).length;
+    const perfSoFar=answers.filter((a,i)=>a===questions[i]?.correct).length/answers.length;
+    // If scoring >80% last 2 — go harder. If <40% — go easier
+    const currentDiff=questions[nextIdx]?.difficulty||"medium";
+    let targetDiff=currentDiff;
+    if(recent.length>=2){
+      if(recentCorrect===2)targetDiff="hard";
+      else if(recentCorrect===0)targetDiff="easy";
+      else targetDiff="medium";
+    }
+    // If difficulty needs to change, regenerate that question
+    if(targetDiff!==currentDiff&&questions.length>nextIdx){
+      try{
+        const pp=P.find(x=>x.id===questions[nextIdx]?.product);
+        const prompt=`Generate 1 ${targetDiff} difficulty MCQ question about ${pp?.name||"any WomEm product"} in category "${questions[nextIdx]?.cat||"any"}". User is ${user.name}, ${user.role}. Previous score: ${Math.round(perfSoFar*100)}%.\n\nReturn ONLY valid JSON object (not array):\n{"cat":"type","product":"id","q":"Hinglish question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines","difficulty":"${targetDiff}"}`;
+        const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,messages:[{role:"user",content:prompt}]})});
+        const data=await res.json();const t=data.content?.[0]?.text||"";
+        const newQ=JSON.parse(t.replace(/```json|```/g,"").trim());
+        if(newQ&&newQ.q){
+          const updated=[...questions];updated[nextIdx]=newQ;
+          setSession(s=>({...s,questions:updated}));
+        }
+      }catch(e){/* keep original */}
+    }
+    return targetDiff;
+  };
+
+  const pick=async(optIdx)=>{
+    if(sel!==null)return;
+    setSel(optIdx);setRev(true);
+    const qs=session.questions;
+    const na=[...session.answers,optIdx];
+    const isCorrect=optIdx===qs[qi]?.correct;
+    setTimeout(async()=>{
+      if(qi<qs.length-1){
+        // Adaptive: adjust next question
+        await getAdaptiveNext(qs,na,qi+1);
+        setQi(qi+1);setSel(null);setRev(false);
+      }else{
+        // Done
+        clearInterval(tmr.current);
+        const score=na.filter((a,i)=>a===qs[i]?.correct).length;
+        const accuracy=Math.round(score/qs.length*100);
+        // Save accuracy to Firebase
+        const prodMap={};
+        qs.forEach((q,i)=>{if(q.product){if(!prodMap[q.product])prodMap[q.product]={correct:0,total:0};prodMap[q.product].total++;if(na[i]===q.correct)prodMap[q.product].correct++;}});
+        for(const [prod,stat] of Object.entries(prodMap)){
+          await DB.ref(`${BASE}/practice_accuracy/${user.mobile}/${prod}`).transaction(cur=>{
+            const prev=cur||{correct:0,total:0};
+            return{correct:prev.correct+stat.correct,total:prev.total+stat.total};
+          });
+        }
+        setSession(s=>({...s,answers:na,score,accuracy,done:true}));
+      }
+      setSession(s=>({...s,answers:na}));
+    },1800);
+  };
+
+  // Mock timer
+  useEffect(()=>{
+    if(session?.type==="mock"&&!session?.done&&mode==="mock"){
+      tmr.current=setInterval(()=>setTl(t=>{
+        if(t<=1){clearInterval(tmr.current);const na=[...session.answers];for(let i=session.answers.length;i<session.questions.length;i++)na.push(-1);const score=na.filter((a,i)=>a===session.questions[i]?.correct).length;setSession(s=>({...s,answers:na,score,done:true}));return 0;}
+        return t-1;
+      }),1000);
+      return()=>clearInterval(tmr.current);
+    }
+  },[session?.type,session?.done,mode]);
+
+  // RESULTS screen
+  if(session?.done){
+    const {questions,answers,score,accuracy,type}=session;
+    const catBreakdown={};
+    questions.forEach((q,i)=>{if(!catBreakdown[q.cat])catBreakdown[q.cat]={c:0,t:0};catBreakdown[q.cat].t++;if(answers[i]===q.correct)catBreakdown[q.cat].c++;});
+    return(
+      <div className="px-4 pt-6 max-w-lg mx-auto pb-8">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-3 sr">{accuracy>=80?"🌟":accuracy>=60?"😊":"💪"}</div>
+          <div className="serif text-xl text-white font-bold">Practice Complete!</div>
+          <div className="text-4xl font-black mt-2 sr" style={{color:accuracy>=80?"#20BF6B":accuracy>=60?"#F7B731":"#FF6B35"}}>{score}/{questions.length}</div>
+          <div className="text-sm mt-1" style={{color:"var(--sl)"}}>{accuracy}% accuracy · {type==="mock"?"Full Mock":"Drill"}</div>
+          <div className="text-xs mt-1" style={{color:"#4a5568"}}>No points — practice mode</div>
+        </div>
+        {/* Category breakdown */}
+        <div className="card p-4 mb-4">
+          <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"var(--sl)"}}>Category Breakdown</div>
+          {Object.entries(catBreakdown).map(([cat,{c,t}])=>(
+            <div key={cat} className="mb-2">
+              <div className="flex justify-between text-xs mb-1"><span style={{color:"var(--sl)"}}>{cat}</span><span style={{color:c/t>=0.7?"#20BF6B":c/t>=0.5?"#F7B731":"#EF4444"}}>{c}/{t}</span></div>
+              <div className="w-full rounded-full h-1.5" style={{background:"rgba(255,255,255,0.06)"}}><div className="h-1.5 rounded-full" style={{width:`${Math.round(c/t*100)}%`,background:c/t>=0.7?"#20BF6B":c/t>=0.5?"#F7B731":"#EF4444"}}/></div>
+            </div>
+          ))}
+        </div>
+        {/* Question review */}
+        <div className="space-y-3 mb-5">{questions.map((q,i)=>{const ir=answers[i]===q.correct;return(<div key={i} className="card p-4" style={{border:`1px solid ${ir?"rgba(32,191,107,0.3)":"rgba(239,68,68,0.3)"}`}}><div className="flex gap-2 mb-2"><span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--sl)"}}>{q.cat}</span><span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"#4a5568"}}>{q.difficulty}</span></div><div className="text-sm text-white mb-2">{q.q}</div><div className={`text-xs font-semibold ${ir?"text-green-400":"text-red-400"}`}>{ir?"✅ Sahi!":` ❌ Sahi: "${q.options[q.correct]}"`}</div><div className="text-xs mt-1.5" style={{color:"var(--sl)"}}>{q.explanation}</div></div>);})}</div>
+        <div className="flex gap-3">
+          <button onClick={reset} className="btn-g flex-1">← Back to Practice</button>
+          <button onClick={()=>startDrill(session.type,drillProd||drillCat)} className="btn-o flex-1">🔄 Again</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ACTIVE DRILL
+  if(session&&!session.done){
+    const qs=session.questions;const cq=qs[qi];if(!cq)return <Loading msg="Next question aa raha hai…"/>;
+    const pp=P.find(x=>x.id===cq.product);
+    const isMock=session.type==="mock";
+    const tcol=tl>60?"#20BF6B":tl>30?"#F7B731":"#EF4444";
+    const perfSoFar=session.answers.length>0?Math.round(session.answers.filter((a,i)=>a===qs[i]?.correct).length/session.answers.length*100):null;
+    const diffColor=cq.difficulty==="hard"?"#EF4444":cq.difficulty==="medium"?"#F7B731":"#20BF6B";
+    return(
+      <div className="px-4 pt-6 max-w-lg mx-auto">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <button onClick={reset} className="text-xs" style={{color:"var(--sl)"}}>✕</button>
+              <div className="text-xs uppercase tracking-widest font-bold" style={{color:"var(--sl)"}}>Q {qi+1}/{qs.length}</div>
+              <span className="bdg text-xs" style={{background:`${diffColor}22`,color:diffColor}}>{cq.difficulty}</span>
+            </div>
+            <div className="flex gap-1 mt-1.5">{qs.map((_,i)=><div key={i} className="h-1 rounded-full w-5 transition-all" style={{background:i<qi?"#20BF6B":i===qi?"#FF6B35":"rgba(255,255,255,0.1)"}}/>)}</div>
+          </div>
+          <div className="text-right">
+            {isMock&&<div className="text-sm font-black" style={{color:tcol}}>{Math.floor(tl/60)}:{String(tl%60).padStart(2,"0")}</div>}
+            {perfSoFar!==null&&<div className="text-xs" style={{color:perfSoFar>=70?"#20BF6B":"#F7B731"}}>{perfSoFar}% so far</div>}
+          </div>
+        </div>
+        <div className="flex gap-2 mb-3">
+          <span className="bdg text-xs" style={{background:`${pp?.color||"#FF6B35"}22`,color:pp?.color||"#FF6B35"}}>{cq.cat}</span>
+          {pp&&<span className="bdg text-xs" style={{background:"rgba(255,255,255,0.05)",color:"var(--sl)"}}>{pp.em} {pp.name}</span>}
+        </div>
+        <div className="card p-5 mb-4"><div className="text-white font-semibold text-base leading-relaxed">{cq.q}</div></div>
+        <div className="space-y-3">{(cq.options||[]).map((opt,i)=>{let cls="qopt";if(rev){if(i===cq.correct)cls+=" ok";else if(i===sel&&i!==cq.correct)cls+=" no";}return(<button key={i} className={cls} onClick={()=>pick(i)} disabled={!!rev}><span className="mr-2 font-bold text-xs" style={{color:"var(--sl)"}}>{String.fromCharCode(65+i)}.</span>{opt}</button>);})}</div>
+        {rev&&<div className={`mt-4 p-4 rounded-xl text-sm border fu ${sel===cq.correct?"text-green-200":"text-red-200"}`} style={{background:sel===cq.correct?"rgba(32,191,107,0.1)":"rgba(239,68,68,0.1)",borderColor:sel===cq.correct?"rgba(32,191,107,0.3)":"rgba(239,68,68,0.3)"}}><div className="font-bold mb-1">{sel===cq.correct?"✅ Sahi!":"❌ Galat"}</div>{cq.explanation}{cq.difficulty==="easy"&&sel!==cq.correct&&<div className="mt-1 text-xs opacity-70">Thoda mushkil karte hain agle mein 📈</div>}{cq.difficulty==="hard"&&sel===cq.correct&&<div className="mt-1 text-xs opacity-70">Excellent! Aap expert level pe hain 🌟</div>}</div>}
+      </div>
+    );
+  }
+
+  // Loading
+  if(loading)return(<div className="min-h-screen flex flex-col items-center justify-center gap-4"><div className="text-4xl" style={{animation:"pulse 1s infinite"}}>🧠</div><div className="serif text-xl text-white">AI questions bana raha hai…</div><div className="text-sm mb-2" style={{color:"var(--sl)"}}>Adaptive difficulty set ho rahi hai</div><div className="flex gap-2">{[0,1,2].map(i=><div key={i} className="pdot w-2 h-2 rounded-full" style={{background:"var(--o)"}}/>)}</div></div>);
+
+  // MODE SELECTION
+  if(!mode)return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <h2 className="serif text-xl text-white font-bold mb-1">🎯 Practice Mode</h2>
+      <div className="text-sm mb-5" style={{color:"var(--sl)"}}>AI-powered · Adaptive difficulty · No leaderboard impact</div>
+      <div className="space-y-3 mb-6">
+        <div onClick={()=>setMode("product")} className="card p-5 cursor-pointer" style={{border:"1px solid rgba(255,107,53,0.2)"}}>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{background:"rgba(255,107,53,0.15)"}}>💊</div>
+            <div><div className="font-bold text-white">Product Drill</div><div className="text-sm mt-0.5" style={{color:"var(--sl)"}}>Ek product chunno — 5 focused questions</div><div className="text-xs mt-1" style={{color:"var(--o)"}}>Adaptive difficulty · All 8 categories</div></div>
+          </div>
+        </div>
+        <div onClick={()=>setMode("category")} className="card p-5 cursor-pointer" style={{border:"1px solid rgba(139,92,246,0.2)"}}>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{background:"rgba(139,92,246,0.15)"}}>📚</div>
+            <div><div className="font-bold text-white">Category Drill</div><div className="text-sm mt-0.5" style={{color:"var(--sl)"}}>Ek category chunno — 5 questions across all products</div><div className="text-xs mt-1" style={{color:"#8B5CF6"}}>Skill-building mode</div></div>
+          </div>
+        </div>
+        <div onClick={()=>{setMode("mock");startDrill("mock",null);}} className="card p-5 cursor-pointer" style={{border:"1px solid rgba(247,183,49,0.2)"}}>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0" style={{background:"rgba(247,183,49,0.15)"}}>🏆</div>
+            <div><div className="font-bold text-white">Full Mock Quiz</div><div className="text-sm mt-0.5" style={{color:"var(--sl)"}}>10 questions · 3 minutes · Mixed products</div><div className="text-xs mt-1" style={{color:"#F7B731"}}>Complete assessment · Category report</div></div>
+          </div>
+        </div>
+      </div>
+      {weakProds.length>0&&<div className="card p-4 mb-4" style={{border:"1px solid rgba(255,107,53,0.2)"}}>
+        <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"var(--o)"}}>💡 Suggested Focus</div>
+        <div className="text-sm text-white">Territory mein weak products: {weakProds.map(w=>{const p=P.find(x=>PROD_RX_KEY[w]===x.id);return p?`${p.em} ${p.name}`:w;}).join(", ")}</div>
+        <div className="text-xs mt-1" style={{color:"var(--sl)"}}>Inpe drill karo — sabse zyada improvement milegi</div>
+      </div>}
+    </div>
+  );
+
+  // PRODUCT SELECT
+  if(mode==="product"&&!drillProd)return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <button onClick={()=>setMode(null)} className="text-sm mb-4 flex items-center gap-1 hover:text-white" style={{color:"var(--sl)"}}>← Back</button>
+      <h2 className="serif text-xl text-white font-bold mb-4">Kaun sa product?</h2>
+      <div className="space-y-2">{P.map(pp=>(
+        <div key={pp.id} onClick={()=>{setDrillProd(pp.id);startDrill("product",pp.id);}} className="card p-4 flex items-center gap-3 cursor-pointer" style={{border:"1px solid rgba(255,255,255,0.05)"}}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0" style={{background:`${pp.color}22`}}>{pp.em}</div>
+          <div className="flex-1"><div className="font-semibold text-white">{pp.name}</div><div className="text-xs" style={{color:"var(--sl)"}}>{pp.ind}</div></div>
+          {weakProds.map(w=>PROD_RX_KEY[w]).includes(pp.id)&&<span className="bdg text-xs" style={{background:"rgba(255,107,53,0.15)",color:"var(--o)"}}>Weak 🎯</span>}
+        </div>
+      ))}</div>
+    </div>
+  );
+
+  // CATEGORY SELECT
+  if(mode==="category"&&!drillCat)return(
+    <div className="px-4 pt-6 max-w-lg mx-auto">
+      <button onClick={()=>setMode(null)} className="text-sm mb-4 flex items-center gap-1 hover:text-white" style={{color:"var(--sl)"}}>← Back</button>
+      <h2 className="serif text-xl text-white font-bold mb-4">Kaun si category?</h2>
+      <div className="space-y-2">{PRACTICE_CATS.map((cat,i)=>{const ems=["🧪","💰","⚙️","📚","💬","👁️","💪","⚖️"];return(
+        <div key={cat} onClick={()=>{setDrillCat(cat);startDrill("category",cat);}} className="card p-4 flex items-center gap-3 cursor-pointer" style={{border:"1px solid rgba(255,255,255,0.05)"}}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0" style={{background:"rgba(255,107,53,0.12)"}}>{ems[i]||"📝"}</div>
+          <div><div className="font-semibold text-white">{cat}</div></div>
+        </div>
+      );})}
+    </div>
+  );
+
+  return <Loading msg="Loading…"/>;
+}
+
+/* ══ ACCURACY PANEL (for managers) ══ */
+function AccuracyPanel(){
+  const [data,setData]=useState({});const [loading,setLoading]=useState(true);
+  useEffect(()=>{
+    DB.ref(`${BASE}/practice_accuracy`).once("value").then(s=>{setData(toObj(s.val()));setLoading(false);});
+  },[]);
+  const mbes=TEAM.filter(t=>t.role==="mbe");
+  return(
+    <div>
+      <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{color:"#4a5568"}}>Practice Accuracy — All MBEs</div>
+      {loading?<div className="shim h-40 rounded-xl"/>:(
+        <div className="space-y-3">{mbes.map(mbe=>{
+          const acc=toObj(data[mbe.mobile]||{});
+          const prods=Object.entries(acc);
+          if(prods.length===0)return(<div key={mbe.mobile} className="card p-4"><div className="font-semibold text-white text-sm">{mbe.name}</div><div className="text-xs mt-1" style={{color:"#4a5568"}}>No practice data yet</div></div>);
+          return(
+            <div key={mbe.mobile} className="card p-4">
+              <div className="font-semibold text-white text-sm mb-2">{mbe.name} <span className="text-xs ml-1" style={{color:"var(--sl)"}}>{mbe.hq}</span></div>
+              <div className="space-y-1.5">{prods.sort((a,b)=>a[1].correct/a[1].total-b[1].correct/b[1].total).map(([prod,stat])=>{
+                const pct=Math.round(stat.correct/stat.total*100);const pp=P.find(x=>x.id===prod);const c=pct>=70?"#20BF6B":pct>=50?"#F7B731":"#EF4444";
+                return(<div key={prod}><div className="flex justify-between text-xs mb-0.5"><span style={{color:"var(--sl)"}}>{pp?.em} {pp?.name||prod}</span><span style={{color:c}} className="font-bold">{pct}% ({stat.total} Qs)</span></div><div className="w-full rounded-full h-1" style={{background:"rgba(255,255,255,0.05)"}}><div className="h-1 rounded-full" style={{width:`${pct}%`,background:c}}/></div></div>);
+              })}</div>
+            </div>
+          );
+        })}</div>
+      )}
+    </div>
+  );
+}
+
+/* ══ ALDAN DOST ══ */
+const DOST_SYSTEM=`You are Aldan Dost, the AI field companion for Aldan Healthcare WomEm Bihar field force. You are a mix of a warm senior colleague (15 years field experience) and a sharp clinical expert.
+
+CORE PERSONA — ADAPTIVE:
+- Start every conversation in FRIENDLY mode: casual Hinglish, call them by first name, use "yaar", "bhai", "arre" naturally
+- If they give short/wrong answers or seem confused → shift to COACH mode: encouraging, more explanatory, use analogies
+- If they engage well, ask follow-up questions, or request clinical depth → shift to EXPERT mode: precise, cite journals, structured responses
+- NEVER stay stuck in one mode — read the conversation and adapt every 2-3 messages
+- Always end responses with either a follow-up question OR a practical field tip
+
+KNOWLEDGE BASE:
+Products: Ovalux (egg quality, IVF — CoQ10+DHEA+Melatonin+L-Arg, MRP Rs.1219), Lacoria (BV/leucorrhoea — 5 strains, MRP Rs.432), Myolife Plus (obese PCOS — 40:1 MI:DCI, MRP Rs.329), Aldova (OI — CC+NAC+Astaxanthin, MRP Rs.637), Argilux (pregnancy/IUGR — L-Arg 3g+DHA, MRP Rs.979), Myolife (lean PCOS, MRP Rs.254), LOQ-10 Plus (male infertility, MRP Rs.516), Utilac (recurrent UTI, MRP Rs.320), Myo-GDM (GDM — MI 2000mg, MRP Rs.311), Osteofem (bone/non-hormonal, MRP Rs.463), Aldanvit (multivitamin/prevention, MRP Rs.160)
+
+Key journals: J Ovarian Research 2025 (Ovalux DHEA 16 RCTs), Int J Womens Health 2024 (Lacoria 62% BV reduction), Endocrine 2024 (Myolife Plus 40:1), Fertil Steril 2024 (Aldova NAC 35%), AJOG 2024 (Argilux IUGR 45%), Diabetes Care 2024 (Myo-GDM 60%), Cochrane 2023 (Utilac 38%)
+
+ROLE PLAY: When asked for role play — you play a realistic Indian gynecologist/doctor. Be skeptical, ask real objections, reference real competitor products (Inofolic, Metrogyl, Letrozole), push back on price. Don't make it too easy. After 3-4 exchanges, break character and give feedback on how the rep did.
+
+TERRITORY AWARENESS: You know each MBE's weak products and territory. Use this to make questions and tips territory-specific.
+
+FORMAT: Keep responses concise for mobile (max 4-5 lines). Use line breaks. Bold key terms with *asterisks* style in plain text. Hinglish default — switch to more Hindi when being casual, more English when being clinical.`;
+
+function AldanDost({user,weakProds}){
+  const [msgs,setMsgs]=useState([]);const [input,setInput]=useState("");const [typing,setTyping]=useState(false);const [toneLevel,setToneLevel]=useState(50); // 0=yaar, 50=balanced, 100=expert
+  const [showExamples,setShowExamples]=useState(true);
+  const inputRef=useRef();const bottomRef=useRef();
+
+  const firstMsg=useRef(false);
+  useEffect(()=>{
+    if(!firstMsg.current){
+      firstMsg.current=true;
+      const fn=user.name.split(" ")[0];
+      const weak=weakProds.map(w=>{const p=P.find(pp=>PROD_RX_KEY[w]===pp.id);return p?p.name:w;});
+      const greeting=`Arre ${fn}! Kya scene hai aaj? 👋
+
+Main Aldan Dost hoon — product doubt ho, doctor objection ho, ya sirf revision karna ho — sab ke liye ready hoon.
+
+${weak.length>0?`Dekha hai ${weak[0]} territory mein thoda weak hai — agar chaaho toh wahan se shuru karte hain? 🎯`:"Kya discuss karna hai aaj?"}`;
+      setMsgs([{role:"assistant",content:greeting,ts:new Date().toISOString()}]);
+    }
+  },[]);
+
+  useEffect(()=>{bottomRef.current?.scrollIntoView({behavior:"smooth"});}, [msgs]);
+
+  const send=async(text)=>{
+    const userText=text||input.trim();
+    if(!userText)return;
+    setInput("");setShowExamples(false);
+    const newMsgs=[...msgs,{role:"user",content:userText,ts:new Date().toISOString()}];
+    setMsgs(newMsgs);setTyping(true);
+    try{
+      const weak=weakProds.map(w=>{const p=P.find(pp=>PROD_RX_KEY[w]===pp.id);return p?p.name:w;}).join(", ")||"none";
+      const sysWithContext=DOST_SYSTEM+`
+
+Current user: ${user.name}, Role: ${user.role}, HQ: ${user.hq}
+Weak products in territory: ${weak}
+Current tone level: ${toneLevel<33?"FRIENDLY/YAAR":toneLevel<66?"BALANCED":"EXPERT"} — adjust based on conversation quality.`;
+      const apiMsgs=newMsgs.map(m=>({role:m.role==="assistant"?"assistant":"user",content:m.content}));
+      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:400,system:sysWithContext,messages:apiMsgs})});
+      const data=await res.json();
+      const reply=data.content?.[0]?.text||"Kuch error aa gaya. Dobara try karo!";
+      // Adaptive tone detection from reply
+      const isExpert=reply.includes("RCT")||reply.includes("Journal")||reply.includes("mechanism")||reply.includes("meta-analysis");
+      const isCasual=reply.includes("yaar")||reply.includes("bhai")||reply.includes("arre")||reply.includes("chal");
+      setToneLevel(prev=>{
+        if(isExpert)return Math.min(100,prev+15);
+        if(isCasual)return Math.max(0,prev-10);
+        return prev;
+      });
+      setMsgs([...newMsgs,{role:"assistant",content:reply,ts:new Date().toISOString()}]);
+    }catch(e){setMsgs([...newMsgs,{role:"assistant",content:"Connection error — internet check karo aur retry karo.",ts:new Date().toISOString()}]);}
+    setTyping(false);
+    inputRef.current?.focus();
+  };
+
+  const toneLabel=toneLevel<33?"🤝 Yaar Mode":toneLevel<66?"📚 Balanced":"🔬 Expert Mode";
+  const toneColor=toneLevel<33?"#3B82F6":toneLevel<66?"#FF6B35":"#F7B731";
+
+  return(
+    <div className="flex flex-col" style={{height:"calc(100vh - 100px)"}}>
+      {/* Header */}
+      <div className="px-4 pt-4 pb-3 flex items-center gap-3" style={{borderBottom:"1px solid var(--bd)"}}>
+        <div className="relative">
+          <DostAvatar size={44}/>
+          <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2" style={{background:"#20BF6B",borderColor:"var(--navy)"}}/>
+        </div>
+        <div className="flex-1">
+          <div className="font-bold text-white text-sm">Aldan Dost 🤝</div>
+          <div className="text-xs font-semibold" style={{color:"#20BF6B"}}>● Online — Aapke liye ready</div>
+        </div>
+        <div className="text-right">
+          <div className="text-xs font-bold" style={{color:toneColor}}>{toneLabel}</div>
+          <div className="w-20 h-1 rounded-full mt-1" style={{background:"rgba(255,255,255,0.08)"}}>
+            <div className="h-1 rounded-full transition-all" style={{width:`${toneLevel}%`,background:`linear-gradient(90deg,#3B82F6,${toneColor})`}}/>
+          </div>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+        {msgs.map((m,i)=>(
+          <div key={i} className={`flex ${m.role==="user"?"justify-end":"justify-start"} gap-2`}>
+            {m.role==="assistant"&&<div className="shrink-0 mt-1"><DostAvatar size={28}/></div>}
+            <div className="max-w-xs">
+              <div className="px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line" style={m.role==="assistant"?{background:"linear-gradient(135deg,rgba(255,107,53,0.12),rgba(247,183,49,0.08))",border:"1px solid rgba(255,107,53,0.2)",color:"var(--wh)",borderRadius:"4px 16px 16px 16px"}:{background:"rgba(255,255,255,0.07)",color:"var(--sll)",borderRadius:"16px 16px 4px 16px"}}>
+                {m.content}
+              </div>
+            </div>
+          </div>
+        ))}
+        {typing&&(
+          <div className="flex gap-2 items-end">
+            <div className="shrink-0"><DostAvatar size={28}/></div>
+            <div className="px-4 py-3 rounded-2xl flex gap-1.5" style={{background:"rgba(255,107,53,0.1)",border:"1px solid rgba(255,107,53,0.15)",borderRadius:"4px 16px 16px 16px"}}>
+              {[0,1,2].map(i=><div key={i} className="w-2 h-2 rounded-full" style={{background:"#FF6B35",animation:`pd 1.2s ease-in-out infinite ${i*0.2}s`}}/>)}
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef}/>
+      </div>
+
+      {/* Examples */}
+      {showExamples&&msgs.length<=1&&(
+        <div className="px-4 pb-2">
+          <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"#4a5568"}}>Kuch ideas — yeh try karo:</div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {DOST_EXAMPLES.slice(0,5).map((ex,i)=>(
+              <button key={i} onClick={()=>send(ex.q)} className="shrink-0 px-3 py-2 rounded-xl text-xs text-left" style={{background:"rgba(255,107,53,0.08)",border:"1px solid rgba(255,107,53,0.2)",color:"var(--sll)",maxWidth:"180px"}}>
+                <div className="text-base mb-1">{ex.em}</div>
+                <div className="leading-tight">{ex.q.slice(0,50)}…</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* All examples toggle */}
+      {showExamples&&msgs.length<=1&&(
+        <div className="px-4 pb-2">
+          <button onClick={()=>setShowExamples(false)} className="text-xs" style={{color:"#4a5568"}}>Hide suggestions</button>
+        </div>
+      )}
+      {!showExamples&&msgs.length>1&&(
+        <div className="px-4 pb-1">
+          <button onClick={()=>setShowExamples(true)} className="text-xs" style={{color:"#4a5568"}}>💡 Show example prompts</button>
+        </div>
+      )}
+
+      {/* Examples full list */}
+      {showExamples&&msgs.length>1&&(
+        <div className="px-4 pb-2 max-h-40 overflow-y-auto">
+          <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{color:"#4a5568"}}>15 Things You Can Ask:</div>
+          <div className="space-y-1.5">{DOST_EXAMPLES.map((ex,i)=>(
+            <button key={i} onClick={()=>send(ex.q)} className="w-full text-left px-3 py-2 rounded-lg text-xs flex gap-2" style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(143,163,191,0.1)",color:"var(--sll)"}}>
+              <span style={{color:"var(--o)",minWidth:"16px"}}>{i+1}.</span>
+              <span className="leading-tight">{ex.q}</span>
+            </button>
+          ))}</div>
+        </div>
+      )}
+
+      {/* Input */}
+      <div className="px-4 pb-4 pt-2" style={{borderTop:"1px solid var(--bd)"}}>
+        <div className="flex gap-2 items-end">
+          <textarea ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder="Kuch bhi pucho — product, objection, role play…" rows={2} className="flex-1 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none resize-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}}/>
+          <button onClick={()=>send()} disabled={!input.trim()||typing} className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-30 transition-all" style={{background:input.trim()?"var(--o)":"rgba(255,255,255,0.05)"}}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
