@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>🎓 Aldan Guru v2.5</title>
+<title>🎓 Aldan Guru v2.6</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -934,6 +934,22 @@ function App() {
     }
     setLoading(false);
   }, []);
+  // Poll push_queue for pending notifications
+  useEffect(() => {
+    if (!user) return;
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    DB.ref(BASE + "/push_queue").orderByChild("mobile").equalTo(user.mobile).once("value").then(snap => {
+      const items = snap.val();
+      if (!items) return;
+      Object.entries(items).forEach(([key, item]) => {
+        if (!item.read) {
+          new Notification(item.title || "Aldan Guru", {body: item.body, icon: "/icon.png"});
+          DB.ref(BASE + "/push_queue/" + key + "/read").set(true);
+        }
+      });
+    });
+  }, [user]);
+
   const login = u => {
     setUser(u);
     localStorage.setItem("guruSess_v2", JSON.stringify(u));
@@ -977,7 +993,7 @@ function Splash() {
     style: {
       color: "var(--sl)"
     }
-  }, "v2.5"), /*#__PURE__*/React.createElement("div", {
+  }, "v2.6"), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-2 mt-3"
   }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("div", {
     key: i,
@@ -1094,7 +1110,7 @@ function Login({
     style: {
       color: "#4a5568"
     }
-  }, "v2.5")), /*#__PURE__*/React.createElement("div", {
+  }, "v2.6")), /*#__PURE__*/React.createElement("div", {
     className: "glass p-6 fu",
     style: {
       animationDelay: "0.1s"
@@ -1564,7 +1580,7 @@ function Home({
     }
   }, "Aaj ka Beat"), /*#__PURE__*/React.createElement("div", {
     className: "font-semibold text-white text-sm"
-  }, todayTP.beat || todayTP.area || "Field"), /*#__PURE__*/React.createElement("div", {
+  }, todayTP.beat && todayTP.beat !== "nan" ? todayTP.beat : todayTP.area && todayTP.area !== "nan" ? todayTP.area : "Field" || "Field"), /*#__PURE__*/React.createElement("div", {
     className: "text-xs mt-0.5",
     style: {
       color: "var(--sl)"
@@ -1978,414 +1994,462 @@ function Today({
   tpData,
   docsLoad
 }) {
-  const [phase, setPhase] = useState("morning"); // morning | beat | prep | log | summary
+  const [phase, setPhase] = useState("morning"); // morning | select | beat | detail
   const [visitLog, setVisitLog] = useState({});
   const [selDoc, setSelDoc] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
-  const [beatDocs, setBeatDocs] = useState([]);
+  const [beatDocs, setBeatDocs] = useState([]); // selected doc codes for today
+  const [selectedCodes, setSelectedCodes] = useState([]); // temp selection in picker
   const [devNote, setDevNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [filterCat, setFilterCat] = useState("all");
+  const [filterArea, setFilterArea] = useState("all");
+  const [searchQ, setSearchQ] = useState("");
+  const [docHistory, setDocHistory] = useState(null); // last 4 visits for selDoc
+  const [histLoading, setHistLoading] = useState(false);
+  const [editingVisit, setEditingVisit] = useState(null); // {reaction,nextAction,nextVisitDate,remarks,products,status}
+  const [notifAsked, setNotifAsked] = useState(!!localStorage.getItem("guruNotifAsked"));
+  const [notifGranted, setNotifGranted] = useState(Notification && Notification.permission === "granted");
 
-  // Get today's TP
-  const todayKey = new Date().toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  }).split("/").join("-").replace(/(\d{2})-(\d{2})-(\d{4})/, "$1-$2-$3");
-  // Format as DD-MM-YYYY
+  // Today's TP
   const d = new Date();
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2,"0");
+  const mm = String(d.getMonth()+1).padStart(2,"0");
   const yyyy = d.getFullYear();
   const todayFmt = `${dd}-${mm}-${yyyy}`;
   const todayTP = tpData[todayFmt] || null;
+  const beatName = todayTP ? (todayTP.beat && todayTP.beat !== "nan" ? todayTP.beat : todayTP.area && todayTP.area !== "nan" ? todayTP.area : "Field") : "Field";
 
-  // Load today's beat log if exists
+  const myDocArr = Object.values(myDocs);
+
+  // Load today's beat log
   useEffect(() => {
     DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}`).once("value").then(s => {
       const raw = s.val();
       if (raw) {
         setVisitLog(toObj(raw.visits || {}));
         setConfirmed(true);
+        const sc = toArr(raw.selectedDocs || []);
+        setBeatDocs(sc);
         setPhase("beat");
       }
     });
   }, []);
 
-  // My doctors as array
-  const myDocArr = Object.values(myDocs);
+  // Push notification setup
+  const askNotif = async () => {
+    localStorage.setItem("guruNotifAsked", "1");
+    setNotifAsked(true);
+    if (!("Notification" in window)) return;
+    const perm = await Notification.requestPermission();
+    if (perm === "granted") {
+      setNotifGranted(true);
+      await DB.ref(`${BASE}/push_subs/${user.mobile}`).set({
+        mobile: user.mobile, name: user.name, hq: user.hq,
+        granted: true, ts: new Date().toISOString()
+      });
+    }
+  };
 
-  // Get weak products for a doctor
   const getDocWeakProds = doc => {
     const rx = toObj(doc.rx || {});
-    const products = P.map(p => ({
-      p,
-      qty: rx[Object.keys(PROD_RX_KEY).find(k => PROD_RX_KEY[k] === p.id)] || 0
-    }));
-    return products.filter(x => x.qty === 0).slice(0, 3).map(x => x.p);
+    const products = P.map(p => ({p, qty: rx[Object.keys(PROD_RX_KEY).find(k => PROD_RX_KEY[k] === p.id)] || 0}));
+    return products.filter(x => x.qty === 0).slice(0,3).map(x => x.p);
   };
-  const confirmBeat = async (modified = false) => {
+
+  const confirmBeat = async () => {
     setSaving(true);
-    const docs = beatDocs.length > 0 ? beatDocs : myDocArr.slice(0, todayTP?.docCount || 10);
     const logData = {
       confirmedAt: new Date().toISOString(),
       tp: todayTP,
-      modified,
       devNote,
+      selectedDocs: selectedCodes,
       visits: {}
     };
     await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}`).set(logData);
-    if (modified && devNote) await DB.ref(`${BASE}/deviations/${todayStr()}/${user.mobile}`).set({
-      note: devNote,
-      ts: new Date().toISOString()
-    });
+    if (devNote) await DB.ref(`${BASE}/deviations/${todayStr()}/${user.mobile}`).set({note:devNote, ts:new Date().toISOString()});
+    setBeatDocs(selectedCodes);
     setSaving(false);
     setConfirmed(true);
     setPhase("beat");
   };
-  const markVisit = async (docCode, status, products = []) => {
-    const updated = {
-      ...visitLog,
-      [docCode]: {
-        status,
-        products,
-        ts: new Date().toISOString()
-      }
-    };
+
+  const saveVisit = async (docCode, visitData) => {
+    const entry = {...visitData, ts: new Date().toISOString()};
+    const updated = {...visitLog, [docCode]: entry};
     setVisitLog(updated);
-    await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}/visits/${docCode}`).set({
-      status,
-      products,
-      ts: new Date().toISOString()
-    });
-    // Points for visit
-    if (status === "visited") await addPoints(user.mobile, PTS.beat_visit, "beat_visit");
-    if (products.length > 0) await addPoints(user.mobile, PTS.doc_discussion, "doc_discussion");
+    await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}/visits/${docCode}`).set(entry);
+    if (visitData.status === "visited") await addPoints(user.mobile, PTS.beat_visit, "beat_visit");
+    if ((visitData.products||[]).length > 0) await addPoints(user.mobile, PTS.doc_discussion, "doc_discussion");
+    setSelDoc(null);
+    setEditingVisit(null);
   };
-  const visitedCount = Object.values(visitLog).filter(v => v.status === "visited").length;
-  const totalPlanned = Object.keys(visitLog).length || todayTP?.docCount || myDocArr.length;
-  if (!todayTP || todayTP.activity !== "Field") {
-    return /*#__PURE__*/React.createElement("div", {
-      className: "px-4 pt-6 max-w-lg mx-auto text-center py-16"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-4xl mb-4"
-    }, "\uD83D\uDCC5"), /*#__PURE__*/React.createElement("div", {
-      className: "serif text-xl text-white font-bold mb-2"
-    }, "Aaj Field Nahi"), /*#__PURE__*/React.createElement("div", {
-      className: "text-sm",
-      style: {
-        color: "var(--sl)"
-      }
-    }, todayTP ? `Activity: ${todayTP.activity}` : "TP data available nahi hai aaj ke liye"));
-  }
 
-  // MORNING CONFIRM phase
-  if (phase === "morning" && !confirmed) {
-    return /*#__PURE__*/React.createElement("div", {
-      className: "px-4 pt-6 max-w-lg mx-auto"
-    }, /*#__PURE__*/React.createElement("h2", {
-      className: "serif text-xl text-white font-bold mb-1"
-    }, "\uD83D\uDCCB Aaj ka Beat"), /*#__PURE__*/React.createElement("div", {
-      className: "text-sm mb-5",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "Apna aaj ka plan confirm karo"), /*#__PURE__*/React.createElement("div", {
-      className: "card p-5 mb-4"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "space-y-3"
-    }, /*#__PURE__*/React.createElement(Row2, {
-      ic: "\uD83D\uDCCD",
-      lb: "Beat / Patch",
-      vl: todayTP.beat || "--"
-    }), /*#__PURE__*/React.createElement(Row2, {
-      ic: "\uD83C\uDFD9\uFE0F",
-      lb: "Work Area",
-      vl: todayTP.area || "--"
-    }), /*#__PURE__*/React.createElement(Row2, {
-      ic: "\uD83D\uDCCA",
-      lb: "Category",
-      vl: todayTP.workCat || "--"
-    }), /*#__PURE__*/React.createElement(Row2, {
-      ic: "\uD83D\uDC69\u200D\u2695\uFE0F",
-      lb: "Doctors Planned",
-      vl: `${todayTP.docCount || "?"} doctors`
-    }))), /*#__PURE__*/React.createElement("div", {
-      className: "card p-4 mb-4"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-xs font-bold uppercase tracking-widest mb-2",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "Koi badlaav hai plan mein?"), /*#__PURE__*/React.createElement("textarea", {
-      value: devNote,
-      onChange: e => setDevNote(e.target.value),
-      placeholder: "Optional -- agar koi change hai to yahan likho (deviation record hoga)",
-      rows: 2,
-      className: "w-full rounded-xl px-3 py-2 text-sm text-white focus:outline-none resize-none",
-      style: {
-        background: "rgba(255,255,255,0.05)",
-        border: "1px solid var(--bd)"
-      }
-    })), /*#__PURE__*/React.createElement("div", {
-      className: "flex gap-3"
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: () => confirmBeat(false),
-      disabled: saving,
-      className: "btn-o flex-1"
-    }, "\u2705 Haan, Yahi Plan Hai"), /*#__PURE__*/React.createElement("button", {
-      onClick: () => confirmBeat(true),
-      disabled: saving,
-      className: "btn-g flex-1"
-    }, saving ? "Saving..." : "Badlaav Ke Saath")));
-  }
-
-  // BEAT DASHBOARD
-  if (selDoc) {
-    const doc = selDoc;
-    const weakP = getDocWeakProds(doc);
-    const rx = toObj(doc.rx || {});
-    const rxProds = Object.entries(rx).filter(([k, v]) => v > 0).sort((a, b) => b[1] - a[1]);
-    const vl = visitLog[doc.code];
-    return /*#__PURE__*/React.createElement("div", {
-      className: "px-4 pt-6 max-w-lg mx-auto"
-    }, /*#__PURE__*/React.createElement("button", {
-      onClick: () => setSelDoc(null),
-      className: "text-sm mb-4 flex items-center gap-1 hover:text-white",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "<-", " Beat List"), /*#__PURE__*/React.createElement("div", {
-      className: "flex items-start gap-3 mb-5"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 font-black text-white",
-      style: {
-        background: "linear-gradient(135deg,var(--o),#F7B731)"
-      }
-    }, doc.name[0]), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      className: "font-black text-white"
-    }, doc.name), /*#__PURE__*/React.createElement("div", {
-      className: "text-xs mt-0.5",
-      style: {
-        color: "var(--sl)"
-      }
-    }, doc.spec, " . ", doc.cat, " . ", doc.qual || "--"), doc.hosp && /*#__PURE__*/React.createElement("div", {
-      className: "text-xs",
-      style: {
-        color: "#4a5568"
-      }
-    }, doc.hosp))), /*#__PURE__*/React.createElement("div", {
-      className: "card p-4 mb-4"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-xs font-bold uppercase tracking-widest mb-3",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "\uD83D\uDCC8 Rx History (Jan 2024 - Feb 2026)"), rxProds.length > 0 ? /*#__PURE__*/React.createElement("div", {
-      className: "space-y-2"
-    }, rxProds.map(([prod, qty]) => {
-      const pid = PROD_RX_KEY[prod];
-      const pp = P.find(x => x.id === pid);
-      return /*#__PURE__*/React.createElement("div", {
-        key: prod,
-        className: "flex items-center justify-between"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "flex items-center gap-2"
-      }, /*#__PURE__*/React.createElement("span", null, pp?.em || "💊"), /*#__PURE__*/React.createElement("span", {
-        className: "text-sm text-white"
-      }, pp?.name || prod)), /*#__PURE__*/React.createElement("div", {
-        className: "flex items-center gap-2"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "rounded-full px-2 py-0.5 text-xs font-bold",
-        style: {
-          background: `${pp?.color || "#FF6B35"}22`,
-          color: pp?.color || "#FF6B35"
+  const loadDocHistory = async (doc) => {
+    setHistLoading(true); setDocHistory(null);
+    try {
+      const snap = await DB.ref(`${BASE}/beat_log`).once("value");
+      const allDates = toObj(snap.val());
+      const visits = [];
+      Object.entries(allDates).forEach(([date, mbeData]) => {
+        const myData = toObj(mbeData)[user.mobile];
+        if (myData && toObj(myData.visits)[doc.code]) {
+          const v = toObj(myData.visits)[doc.code];
+          visits.push({date, ...v});
         }
-      }, qty, " units")));
-    })) : /*#__PURE__*/React.createElement("div", {
-      className: "text-sm",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "Koi Rx history nahi -- new doctor")), weakP.length > 0 && /*#__PURE__*/React.createElement("div", {
-      className: "card p-4 mb-4",
-      style: {
-        border: "1px solid rgba(255,107,53,0.3)"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-xs font-bold uppercase tracking-widest mb-2",
-      style: {
-        color: "var(--o)"
-      }
-    }, "\uD83C\uDFAF Opportunity -- Products Not Yet Prescribed"), weakP.slice(0, 3).map(pp => /*#__PURE__*/React.createElement("div", {
-      key: pp.id,
-      className: "flex items-start gap-3 mb-3 last:mb-0"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "text-xl"
-    }, pp.em), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      className: "font-semibold text-white text-sm"
-    }, pp.name), /*#__PURE__*/React.createElement("div", {
-      className: "text-xs mt-0.5",
-      style: {
-        color: "var(--sl)"
-      }
-    }, pp.catch))))), /*#__PURE__*/React.createElement("div", {
-      className: "card p-4"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "text-xs font-bold uppercase tracking-widest mb-3",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "Visit Log"), vl ? /*#__PURE__*/React.createElement("div", {
-      className: `text-sm font-bold ${vl.status === "visited" ? "text-green-400" : "text-red-400"}`
-    }, vl.status === "visited" ? `✅ Visited` : `❌ ${vl.status}`, vl.products?.length > 0 && /*#__PURE__*/React.createElement("span", {
-      className: "ml-2 text-xs text-white"
-    }, ". Discussed: ", vl.products.join(", "))) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-      className: "text-xs mb-2",
-      style: {
-        color: "var(--sl)"
-      }
-    }, "Kya products discuss kiye? (select all)"), /*#__PURE__*/React.createElement(DiscussSelect, {
-      doc: doc,
-      onLog: prods => markVisit(doc.code, "visited", prods)
-    }), /*#__PURE__*/React.createElement("button", {
-      onClick: () => markVisit(doc.code, "not_visited", []),
-      className: "btn-g w-full mt-2 text-sm"
-    }, "\u274C Visit Nahi Hua"))));
+      });
+      visits.sort((a,b) => b.date > a.date ? 1 : -1);
+      setDocHistory(visits.slice(0,4));
+    } catch(e) { setDocHistory([]); }
+    setHistLoading(false);
+  };
+
+  const visitedCount = Object.values(visitLog).filter(v => v.status === "visited").length;
+  const displayBeatDocs = myDocArr.filter(d => beatDocs.includes(String(d.code)));
+
+  if (!todayTP || todayTP.activity !== "Field") {
+    return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto text-center py-16"},
+      React.createElement("div", {className:"text-4xl mb-4"}, "\uD83D\uDCC5"),
+      React.createElement("div", {className:"serif text-xl text-white font-bold mb-2"}, "Aaj Field Nahi"),
+      React.createElement("div", {className:"text-sm", style:{color:"var(--sl)"}},
+        todayTP ? `Activity: ${todayTP.activity}` : "TP data available nahi hai aaj ke liye"
+      )
+    );
   }
 
-  // BEAT LIST
-  const displayDocs = myDocArr.slice(0, 30);
-  return /*#__PURE__*/React.createElement("div", {
-    className: "px-4 pt-6 max-w-lg mx-auto"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between mb-5"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
-    className: "serif text-xl text-white font-bold"
-  }, "\uD83D\uDCCB Today's Beat"), /*#__PURE__*/React.createElement("div", {
-    className: "text-sm mt-0.5",
-    style: {
-      color: "var(--sl)"
-    }
-  }, todayTP.beat || todayTP.area, " . ", visitedCount, "/", totalPlanned, " visited")), /*#__PURE__*/React.createElement("div", {
-    className: "text-right"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-2xl font-black",
-    style: {
-      color: visitedCount === totalPlanned ? "#20BF6B" : "var(--o)"
-    }
-  }, Math.round(visitedCount / Math.max(totalPlanned, 1) * 100), "%"), /*#__PURE__*/React.createElement("div", {
-    className: "text-xs",
-    style: {
-      color: "var(--sl)"
-    }
-  }, "Coverage"))), /*#__PURE__*/React.createElement("div", {
-    className: "w-full rounded-full h-2 mb-5",
-    style: {
-      background: "rgba(255,255,255,0.08)"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "h-2 rounded-full transition-all",
-    style: {
-      width: `${Math.round(visitedCount / Math.max(totalPlanned, 1) * 100)}%`,
-      background: "linear-gradient(90deg,var(--o),#20BF6B)"
-    }
-  })), docsLoad ? /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, [0, 1, 2, 3, 4].map(i => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "shim h-14 rounded-xl"
-  }))) : /*#__PURE__*/React.createElement("div", {
-    className: "space-y-2"
-  }, displayDocs.map(doc => {
-    const vl = visitLog[doc.code];
-    const weakP = getDocWeakProds(doc);
-    return /*#__PURE__*/React.createElement("div", {
-      key: doc.code,
-      onClick: () => setSelDoc(doc),
-      className: "card px-4 py-3 flex items-center gap-3 cursor-pointer",
-      style: {
-        borderLeft: `3px solid ${vl?.status === "visited" ? "#20BF6B" : vl ? "#EF4444" : doc.cat === "CORE" ? "var(--o)" : "var(--bd)"}`
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "flex-1 min-w-0"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "font-semibold text-white text-sm truncate"
-    }, doc.name), /*#__PURE__*/React.createElement("div", {
-      className: "text-xs",
-      style: {
-        color: "var(--sl)"
-      }
-    }, doc.spec, " . ", /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: doc.cat === "CORE" ? "var(--o)" : "var(--sl)"
-      }
-    }, doc.cat)), weakP.length > 0 && !vl && /*#__PURE__*/React.createElement("div", {
-      className: "text-xs mt-0.5",
-      style: {
-        color: "#F7B731"
-      }
-    }, "\uD83C\uDFAF ", weakP[0]?.name, " -- opportunity")), /*#__PURE__*/React.createElement("div", {
-      className: "shrink-0 text-right"
-    }, vl?.status === "visited" ? /*#__PURE__*/React.createElement("span", {
-      className: "text-green-400 text-lg"
-    }, "\u2705") : vl ? /*#__PURE__*/React.createElement("span", {
-      className: "text-red-400 text-lg"
-    }, "\u274C") : /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "#4a5568"
-      }
-    }, "\u203A")));
-  })), displayDocs.length === 0 && /*#__PURE__*/React.createElement("div", {
-    className: "text-center py-12",
-    style: {
-      color: "var(--sl)"
-    }
-  }, "Doctor list load ho rahi hai..."));
-}
-function DiscussSelect({
-  doc,
-  onLog
-}) {
-  const [sel, setSel] = useState([]);
-  const toggle = id => {
-    setSel(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
-  };
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-wrap gap-2 mb-3"
-  }, P.filter(p => p.pri >= 2).map(pp => /*#__PURE__*/React.createElement("button", {
-    key: pp.id,
-    onClick: () => toggle(pp.id),
-    className: "text-xs px-3 py-1.5 rounded-lg font-semibold transition-all",
-    style: {
-      background: sel.includes(pp.id) ? `${pp.color}33` : "rgba(255,255,255,0.05)",
-      border: `1px solid ${sel.includes(pp.id) ? pp.color : "var(--bd)"}`,
-      color: sel.includes(pp.id) ? pp.color : "var(--sl)"
-    }
-  }, pp.em, " ", pp.name))), /*#__PURE__*/React.createElement("button", {
-    onClick: () => onLog(sel),
-    disabled: sel.length === 0,
-    className: "btn-o w-full text-sm disabled:opacity-40"
-  }, "\u2705 Visit Log Karo (", sel.length, " products)"));
-}
-function Row2({
-  ic,
-  lb,
-  vl
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "flex items-start gap-3"
-  }, /*#__PURE__*/React.createElement("span", null, ic), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-xs font-bold uppercase",
-    style: {
-      color: "var(--sl)"
-    }
-  }, lb), /*#__PURE__*/React.createElement("div", {
-    className: "text-sm text-white mt-0.5"
-  }, vl)));
+  // ── NOTIF BANNER ──
+  const notifBanner = !notifAsked && React.createElement("div", {
+    className:"card p-4 mb-4 flex items-center gap-3",
+    style:{border:"1px solid rgba(255,183,49,0.3)",background:"rgba(255,183,49,0.05)"}
+  },
+    React.createElement("div", {className:"flex-1"},
+      React.createElement("div", {className:"text-sm font-bold text-white"}, "\uD83D\uDD14 Beat reminders enable karo"),
+      React.createElement("div", {className:"text-xs mt-0.5", style:{color:"var(--sl)"}}, "Morning doctor selection + evening visit reminders")
+    ),
+    React.createElement("div", {className:"flex gap-2"},
+      React.createElement("button", {onClick:askNotif, className:"text-xs px-3 py-1.5 rounded-xl font-bold", style:{background:"rgba(255,183,49,0.2)",color:"#F7B731"}}, "Enable"),
+      React.createElement("button", {onClick:()=>{localStorage.setItem("guruNotifAsked","1");setNotifAsked(true);}, className:"text-xs px-2 py-1.5 rounded-xl", style:{color:"#4a5568"}}, "Later")
+    )
+  );
+
+  // ── MORNING PHASE ──
+  if (phase === "morning" && !confirmed) {
+    return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto"},
+      notifBanner,
+      React.createElement("h2", {className:"serif text-xl text-white font-bold mb-1"}, "\uD83D\uDCCB Aaj ka Beat"),
+      React.createElement("div", {className:"text-sm mb-4", style:{color:"var(--sl)"}}, `${beatName} \u00b7 ${dd}.${mm}.${yyyy}`),
+      React.createElement("div", {className:"card p-5 mb-4"},
+        React.createElement("div", {className:"space-y-3"},
+          React.createElement(Row2, {ic:"\uD83D\uDCCD", lb:"Beat", vl:beatName}),
+          React.createElement(Row2, {ic:"\uD83C\uDFD9\uFE0F", lb:"Work Area", vl:todayTP.area && todayTP.area !== "nan" ? todayTP.area : "--"}),
+          React.createElement(Row2, {ic:"\uD83D\uDCCA", lb:"Category", vl:todayTP.workCat && todayTP.workCat !== "nan" ? todayTP.workCat : "--"}),
+          React.createElement(Row2, {ic:"\uD83D\uDC69\u200D\u2695\uFE0F", lb:"Doctors Planned", vl:`${todayTP.docCount || "?"} doctors`})
+        )
+      ),
+      React.createElement("div", {className:"card p-4 mb-4"},
+        React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--sl)"}}, "Koi badlaav hai plan mein?"),
+        React.createElement("textarea", {
+          value:devNote, onChange:e=>setDevNote(e.target.value),
+          placeholder:"Optional -- deviation note",
+          rows:2, className:"w-full rounded-xl px-3 py-2 text-sm text-white focus:outline-none resize-none",
+          style:{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}
+        })
+      ),
+      React.createElement("button", {
+        onClick:()=>{ setSelectedCodes([]); setPhase("select"); },
+        className:"btn-o w-full"
+      }, "\uD83D\uDC69\u200D\u2695\uFE0F Select Today's Doctors \u2192")
+    );
+  }
+
+  // ── DOCTOR SELECTION PHASE ──
+  if (phase === "select") {
+    const areas = [...new Set(myDocArr.map(d => d.hq).filter(Boolean))];
+    const todayArea = todayTP.area && todayTP.area !== "nan" ? todayTP.area : null;
+    const filtered = myDocArr.filter(doc => {
+      const catOk = filterCat === "all" || doc.cat === filterCat || doc.cat === (filterCat === "core" ? "CORE" : "Non Core");
+      const areaOk = filterArea === "all" || doc.hq === filterArea;
+      const searchOk = !searchQ || doc.name.toLowerCase().includes(searchQ.toLowerCase());
+      return catOk && areaOk && searchOk;
+    }).sort((a,b) => a.name > b.name ? 1 : -1);
+
+    return React.createElement("div", {className:"px-4 pt-4 max-w-lg mx-auto"},
+      React.createElement("div", {className:"flex items-center gap-3 mb-4"},
+        React.createElement("button", {onClick:()=>setPhase("morning"), className:"text-sm", style:{color:"var(--sl)"}}, "{\u2190} Morning"),
+        React.createElement("div", {className:"flex-1 serif text-lg text-white font-bold"}, "Select Doctors"),
+        React.createElement("div", {
+          className:"text-xs px-2 py-1 rounded-full font-bold",
+          style:{background:"rgba(255,107,53,0.2)",color:"var(--o)"}
+        }, `${selectedCodes.length} selected`)
+      ),
+      // Filters
+      React.createElement("div", {className:"flex gap-2 mb-3 flex-wrap"},
+        React.createElement("select", {
+          value:filterCat, onChange:e=>setFilterCat(e.target.value),
+          className:"text-xs px-2 py-1.5 rounded-xl flex-1",
+          style:{background:"rgba(255,255,255,0.07)",color:"white",border:"1px solid var(--bd)"}
+        },
+          React.createElement("option", {value:"all"}, "All Doctors"),
+          React.createElement("option", {value:"CORE"}, "Core Only"),
+          React.createElement("option", {value:"Non Core"}, "Non-Core Only")
+        ),
+        React.createElement("select", {
+          value:filterArea, onChange:e=>setFilterArea(e.target.value),
+          className:"text-xs px-2 py-1.5 rounded-xl flex-1",
+          style:{background:"rgba(255,255,255,0.07)",color:"white",border:"1px solid var(--bd)"}
+        },
+          React.createElement("option", {value:"all"}, "All Areas"),
+          todayArea && React.createElement("option", {value:todayArea, style:{fontWeight:"bold"}}, `Today: ${todayArea}`),
+          areas.filter(a=>a!==todayArea).map(a => React.createElement("option", {key:a, value:a}, a))
+        )
+      ),
+      React.createElement("input", {
+        type:"text", placeholder:"Search doctor name...",
+        value:searchQ, onChange:e=>setSearchQ(e.target.value),
+        className:"w-full px-3 py-2 rounded-xl text-sm text-white mb-3 focus:outline-none",
+        style:{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}
+      }),
+      // Doctor list
+      React.createElement("div", {className:"space-y-1.5 mb-20"},
+        filtered.map(doc => {
+          const isSel = selectedCodes.includes(String(doc.code));
+          return React.createElement("div", {
+            key:doc.code,
+            onClick:()=>setSelectedCodes(prev => isSel ? prev.filter(c=>c!==String(doc.code)) : [...prev, String(doc.code)]),
+            className:"card px-4 py-3 flex items-center gap-3 cursor-pointer transition-all",
+            style:{
+              borderLeft:`3px solid ${isSel ? "#20BF6B" : doc.cat==="CORE" ? "var(--o)" : "var(--bd)"}`,
+              background: isSel ? "rgba(32,191,107,0.08)" : "var(--card)"
+            }
+          },
+            React.createElement("div", {className:"flex-1"},
+              React.createElement("div", {className:"font-semibold text-white text-sm"}, doc.name),
+              React.createElement("div", {className:"text-xs mt-0.5", style:{color:"var(--sl)"}},
+                doc.spec, " \u00b7 ",
+                React.createElement("span", {style:{color:doc.cat==="CORE"?"var(--o)":"var(--sl)"}}, doc.cat)
+              )
+            ),
+            isSel && React.createElement("div", {className:"w-6 h-6 rounded-full flex items-center justify-center text-xs", style:{background:"#20BF6B"}}, "\u2713")
+          );
+        }),
+        filtered.length === 0 && React.createElement("div", {className:"text-center py-8 text-sm", style:{color:"var(--sl)"}}, "No doctors found")
+      ),
+      // Sticky confirm button
+      React.createElement("div", {
+        style:{position:"fixed",bottom:"72px",left:0,right:0,padding:"12px 16px",background:"linear-gradient(transparent,var(--navy) 40%)",zIndex:40}
+      },
+        React.createElement("button", {
+          onClick: selectedCodes.length > 0 ? confirmBeat : null,
+          disabled: selectedCodes.length === 0 || saving,
+          className:"btn-o w-full font-black text-base"
+        }, saving ? "Saving..." : `Confirm ${selectedCodes.length} Doctors \u2192 Start Beat`)
+      )
+    );
+  }
+
+  // ── DOCTOR DETAIL / VISIT LOG ──
+  if (selDoc) {
+    const vl = visitLog[selDoc.code];
+    const initVisit = editingVisit || (vl ? {...vl} : {status:"visited", products:[], reaction:"", nextAction:"", nextVisitDate:"", remarks:""});
+    const [vs, setVs] = useState(initVisit);
+
+    useEffect(() => {
+      if (!docHistory) loadDocHistory(selDoc);
+    }, [selDoc]);
+
+    const weakP = getDocWeakProds(selDoc);
+    return React.createElement("div", {className:"px-4 pt-4 max-w-lg mx-auto pb-8"},
+      React.createElement("button", {onClick:()=>{setSelDoc(null);setDocHistory(null);setEditingVisit(null);}, className:"text-sm mb-4 flex items-center gap-1", style:{color:"var(--sl)"}},
+        "{\u2190} Beat List"
+      ),
+      // Doctor header
+      React.createElement("div", {className:"flex items-center gap-3 mb-4"},
+        React.createElement("div", {className:"w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-black", style:{background:"rgba(255,107,53,0.2)",color:"var(--o)"}},
+          selDoc.name[0]
+        ),
+        React.createElement("div", null,
+          React.createElement("div", {className:"font-black text-white text-lg"}, selDoc.name),
+          React.createElement("div", {className:"text-xs", style:{color:"var(--sl)"}}, `${selDoc.spec} \u00b7 `, React.createElement("span",{style:{color:selDoc.cat==="CORE"?"var(--o)":"var(--sl)"}},selDoc.cat), ` \u00b7 ${selDoc.qual||""}`)
+        )
+      ),
+      // Rx opportunity
+      weakP.length > 0 && React.createElement("div", {className:"card p-4 mb-4", style:{border:"1px solid rgba(255,107,53,0.2)"}},
+        React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--o)"}}, "\uD83C\uDFAF Opportunity"),
+        weakP.map(p => React.createElement("div", {key:p.id, className:"text-xs mb-1", style:{color:"var(--sl)"}}, `${p.em} ${p.name} -- ${p.catch}`))
+      ),
+      // Visit log form
+      React.createElement("div", {className:"card p-4 mb-4"},
+        React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-3", style:{color:"var(--sl)"}}, "Visit Log"),
+        // Status toggle
+        React.createElement("div", {className:"flex gap-2 mb-4"},
+          ["visited","not_visited"].map(s => React.createElement("button", {
+            key:s,
+            onClick:()=>setVs(v=>({...v,status:s})),
+            className:"flex-1 py-2 rounded-xl text-sm font-bold transition-all",
+            style:{
+              background: vs.status===s ? (s==="visited"?"rgba(32,191,107,0.2)":"rgba(239,68,68,0.2)") : "rgba(255,255,255,0.05)",
+              color: vs.status===s ? (s==="visited"?"#20BF6B":"#EF4444") : "var(--sl)",
+              border: `1px solid ${vs.status===s ? (s==="visited"?"rgba(32,191,107,0.4)":"rgba(239,68,68,0.4)") : "transparent"}`
+            }
+          }, s==="visited" ? "\u2705 Visited" : "\u274C Not Visited"))
+        ),
+        // Products
+        vs.status === "visited" && React.createElement("div", {className:"mb-4"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--sl)"}}, "Products Discussed"),
+          React.createElement("div", {className:"flex flex-wrap gap-2"},
+            P.map(p => {
+              const sel = (vs.products||[]).includes(p.id);
+              return React.createElement("button", {
+                key:p.id,
+                onClick:()=>setVs(v=>({...v,products:sel?v.products.filter(x=>x!==p.id):[...(v.products||[]),p.id]})),
+                className:"px-2 py-1 rounded-lg text-xs font-semibold transition-all",
+                style:{background:sel?"rgba(255,107,53,0.25)":"rgba(255,255,255,0.05)",color:sel?"var(--o)":"var(--sl)",border:`1px solid ${sel?"rgba(255,107,53,0.4)":"transparent"}`}
+              }, `${p.em} ${p.name}`)
+            })
+          )
+        ),
+        // Reaction
+        React.createElement("div", {className:"mb-3"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--sl)"}}, "Doctor Reaction"),
+          React.createElement("div", {className:"flex gap-2 flex-wrap"},
+            [["positive","\uD83D\uDFE2 Positive"],["neutral","\uD83D\uDFE1 Neutral"],["negative","\uD83D\uDD34 Negative"],["samples","\uD83E\uDDEA Asked for Samples"]].map(([v,l]) =>
+              React.createElement("button", {
+                key:v, onClick:()=>setVs(vs=>({...vs,reaction:v})),
+                className:"px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
+                style:{background:vs.reaction===v?"rgba(255,107,53,0.2)":"rgba(255,255,255,0.05)",color:vs.reaction===v?"var(--o)":"var(--sl)",border:`1px solid ${vs.reaction===v?"rgba(255,107,53,0.3)":"transparent"}`}
+              }, l)
+            )
+          )
+        ),
+        // Next action
+        React.createElement("div", {className:"mb-3"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--sl)"}}, "Next Action"),
+          React.createElement("div", {className:"flex gap-2 flex-wrap"},
+            [["followup","\uD83D\uDD04 Follow up next visit"],["literature","\uD83D\uDCDA Send literature"],["none","\u2714\uFE0F No action needed"]].map(([v,l]) =>
+              React.createElement("button", {
+                key:v, onClick:()=>setVs(vs=>({...vs,nextAction:v})),
+                className:"px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
+                style:{background:vs.nextAction===v?"rgba(99,102,241,0.2)":"rgba(255,255,255,0.05)",color:vs.nextAction===v?"#818cf8":"var(--sl)",border:`1px solid ${vs.nextAction===v?"rgba(99,102,241,0.3)":"transparent"}`}
+              }, l)
+            )
+          )
+        ),
+        // Next visit date
+        React.createElement("div", {className:"mb-3"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--sl)"}}, "Next Visit Date (optional)"),
+          React.createElement("input", {
+            type:"date", value:vs.nextVisitDate||"",
+            onChange:e=>setVs(v=>({...v,nextVisitDate:e.target.value})),
+            className:"w-full px-3 py-2 rounded-xl text-sm text-white focus:outline-none",
+            style:{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}
+          })
+        ),
+        // Remarks
+        React.createElement("div", {className:"mb-4"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"var(--sl)"}}, "Remarks"),
+          React.createElement("textarea", {
+            value:vs.remarks||"", rows:2,
+            onChange:e=>setVs(v=>({...v,remarks:e.target.value})),
+            placeholder:"e.g. Doctor asked about Ovalux trial, wants samples next time...",
+            className:"w-full px-3 py-2 rounded-xl text-sm text-white focus:outline-none resize-none",
+            style:{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}
+          })
+        ),
+        React.createElement("button", {
+          onClick:()=>saveVisit(selDoc.code, vs),
+          className:"btn-o w-full"
+        }, vl ? "Update Visit Log" : "Save Visit Log")
+      ),
+      // Visit history
+      React.createElement("div", {className:"card p-4"},
+        React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-3", style:{color:"var(--sl)"}}, "\uD83D\uDCC5 Last 4 Visits"),
+        histLoading && React.createElement("div", {className:"shim h-20 rounded-xl"}),
+        !histLoading && docHistory && docHistory.length === 0 && React.createElement("div", {className:"text-xs", style:{color:"#4a5568"}}, "No previous visits found"),
+        !histLoading && docHistory && docHistory.map((v,i) => React.createElement("div", {
+          key:i, className:"mb-3 pb-3", style:{borderBottom:i<docHistory.length-1?"1px solid rgba(255,255,255,0.05)":"none"}
+        },
+          React.createElement("div", {className:"flex justify-between items-center mb-1"},
+            React.createElement("div", {className:"text-xs font-bold text-white"}, v.date),
+            React.createElement("div", {className:"text-xs", style:{color:v.status==="visited"?"#20BF6B":"#EF4444"}}, v.status==="visited"?"\u2705 Visited":"\u274C Not Visited")
+          ),
+          v.products && v.products.length > 0 && React.createElement("div", {className:"text-xs mb-1", style:{color:"var(--o)"}},
+            v.products.map(pid=>{const pp=P.find(x=>x.id===pid);return pp?`${pp.em} ${pp.name}`:pid;}).join(", ")
+          ),
+          v.reaction && React.createElement("div", {className:"text-xs mb-0.5", style:{color:"var(--sl)"}}, `Reaction: ${v.reaction}`),
+          v.nextAction && React.createElement("div", {className:"text-xs mb-0.5", style:{color:"var(--sl)"}}, `Next: ${v.nextAction}`),
+          v.remarks && React.createElement("div", {className:"text-xs italic", style:{color:"#4a5568"}}, `"${v.remarks}"`)
+        ))
+      )
+    );
+  }
+
+  // ── BEAT LIST ──
+  const editBeat = () => { setSelectedCodes([...beatDocs]); setPhase("select"); };
+
+  return React.createElement("div", {className:"px-4 pt-4 max-w-lg mx-auto"},
+    notifBanner,
+    React.createElement("div", {className:"flex items-center justify-between mb-4"},
+      React.createElement("div", null,
+        React.createElement("button", {onClick:()=>{setConfirmed(false);setPhase("morning");}, className:"text-sm mb-1 flex items-center gap-1", style:{color:"var(--sl)"}}, "{\u2190} Morning"),
+        React.createElement("div", {className:"serif text-xl text-white font-bold"}, "\uD83D\uDCCB Today's Beat"),
+        React.createElement("div", {className:"text-sm mt-0.5", style:{color:"var(--sl)"}}, `${beatName} \u00b7 ${visitedCount}/${displayBeatDocs.length} visited`)
+      ),
+      React.createElement("div", {className:"flex flex-col items-end gap-2"},
+        React.createElement("div", {className:"text-2xl font-black", style:{color:visitedCount===displayBeatDocs.length&&displayBeatDocs.length>0?"#20BF6B":"var(--o)"}},
+          `${Math.round(visitedCount/Math.max(displayBeatDocs.length,1)*100)}%`
+        ),
+        React.createElement("button", {onClick:editBeat, className:"text-xs px-2 py-1 rounded-lg font-bold", style:{background:"rgba(255,255,255,0.06)",color:"var(--sl)",border:"1px solid rgba(255,255,255,0.1)"}},
+          "\u270F\uFE0F Edit Beat"
+        )
+      )
+    ),
+    // Progress bar
+    React.createElement("div", {className:"w-full rounded-full h-2 mb-4", style:{background:"rgba(255,255,255,0.08)"}},
+      React.createElement("div", {className:"h-2 rounded-full transition-all", style:{width:`${Math.round(visitedCount/Math.max(displayBeatDocs.length,1)*100)}%`,background:"linear-gradient(90deg,var(--o),#20BF6B)"}})
+    ),
+    // Doctor list
+    docsLoad ? React.createElement("div", {className:"space-y-2"},
+      [0,1,2,3,4].map(i => React.createElement("div", {key:i, className:"shim h-14 rounded-xl"}))
+    ) : React.createElement("div", {className:"space-y-2"},
+      displayBeatDocs.length === 0 && React.createElement("div", {className:"text-center py-12", style:{color:"var(--sl)"}},
+        React.createElement("div", {className:"text-3xl mb-2"}, "\uD83D\uDC65"),
+        React.createElement("div", {className:"text-sm font-semibold"}, "Koi doctor select nahi hai"),
+        React.createElement("button", {onClick:()=>{setSelectedCodes([]);setPhase("select");}, className:"btn-o mt-3"}, "Select Doctors")
+      ),
+      displayBeatDocs.map(doc => {
+        const vl = visitLog[doc.code];
+        const weakP = getDocWeakProds(doc);
+        return React.createElement("div", {
+          key:doc.code,
+          onClick:()=>{setSelDoc(doc);setEditingVisit(vl?{...vl}:null);},
+          className:"card px-4 py-3 flex items-center gap-3 cursor-pointer",
+          style:{borderLeft:`3px solid ${vl?.status==="visited"?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}
+        },
+          React.createElement("div", {className:"flex-1 min-w-0"},
+            React.createElement("div", {className:"font-semibold text-white text-sm trunc"}, doc.name),
+            React.createElement("div", {className:"text-xs mt-0.5", style:{color:"var(--sl)"}},
+              doc.spec, " \u00b7 ",
+              React.createElement("span", {style:{color:doc.cat==="CORE"?"var(--o)":"var(--sl)"}}, doc.cat)
+            ),
+            !vl && weakP.length>0 && React.createElement("div", {className:"text-xs mt-1", style:{color:"var(--o)"}},
+              `\uD83C\uDFAF ${weakP[0].name} -- opportunity`
+            ),
+            vl?.status==="visited" && React.createElement("div", {className:"text-xs mt-1", style:{color:"#20BF6B"}},
+              `\u2705 ${(vl.products||[]).map(pid=>{const pp=P.find(x=>x.id===pid);return pp?pp.name:pid;}).join(", ")||"Visited"}`
+            ),
+            vl?.remarks && React.createElement("div", {className:"text-xs mt-0.5 italic", style:{color:"#4a5568"}}, `"${vl.remarks.slice(0,40)}${vl.remarks.length>40?"...":""}"`),
+            vl?.status==="not_visited" && React.createElement("div", {className:"text-xs mt-1", style:{color:"#EF4444"}}, "\u274C Not visited")
+          ),
+          React.createElement("div", {className:"text-lg shrink-0"},
+            vl?.status==="visited" ? "\u2705" : vl?.status==="not_visited" ? "\u274C" : "\u203A"
+          )
+        );
+      })
+    )
+  );
 }
 
-/* PRODUCTS  */
+
 function Products({
   user
 }) {
@@ -3151,7 +3215,7 @@ function AdminPanel({
     style: {
       color: "var(--sl)"
     }
-  }, "Messages queued -- will send once Meta API connected (v2.5)")), /*#__PURE__*/React.createElement("div", {
+  }, "Messages queued -- will send once Meta API connected (v2.6)")), /*#__PURE__*/React.createElement("div", {
     className: "space-y-2"
   }, waQueue.length === 0 ? /*#__PURE__*/React.createElement("div", {
     className: "text-center py-8 text-sm",
@@ -3228,14 +3292,14 @@ function AdminPanel({
       background: "rgba(143,163,191,0.1)",
       color: "var(--sl)"
     }
-  }, "v2.5 -- Manual via admin")))), /*#__PURE__*/React.createElement("div", {
+  }, "v2.6 -- Manual via admin")))), /*#__PURE__*/React.createElement("div", {
     className: "mt-4 p-3 rounded-xl text-xs",
     style: {
       background: "rgba(255,107,53,0.08)",
       border: "1px solid rgba(255,107,53,0.2)",
       color: "var(--o)"
     }
-  }, "\uD83D\uDCA1 For now send files to Nihit -- will be ingested in next data refresh cycle. Full in-app upload coming in v2.5."))));
+  }, "\uD83D\uDCA1 For now send files to Nihit -- will be ingested in next data refresh cycle. Full in-app upload coming in v2.6."))));
 }
 function Loading({
   msg
