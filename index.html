@@ -37,7 +37,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,27,42,0.96);backdrop-filter:blur(20px);border-top:1px solid var(--bd);padding:8px 0 env(safe-area-inset-bottom,8px);z-index:50;}
-.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;cursor:pointer;transition:all 0.2s;border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--sl);min-width:56px;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;min-width:52px;cursor:pointer;transition:all 0.2s;border-radius:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--sl);min-width:56px;}
 .ni.on{color:var(--o);}
 .ni .ic{font-size:19px;transition:transform 0.2s;}
 .ni.on .ic{transform:scale(1.15);}
@@ -1357,7 +1357,8 @@ function Main({
   }), /*#__PURE__*/React.createElement("nav", {
     className: "bnav"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex justify-around items-center"
+    className: "flex items-center overflow-x-auto",
+    style: {scrollbarWidth:"none",msOverflowStyle:"none",WebkitOverflowScrolling:"touch"}
   }, [{
     id: "home",
     ic: "🏠",
@@ -4622,11 +4623,6 @@ Current tone level: ${toneLevel < 33 ? "FRIENDLY/YAAR" : toneLevel < 66 ? "BALAN
     /*#__PURE__*/React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest", style:{color:"#4a5568"}}, "15 Things You Can Ask:"),
     /*#__PURE__*/React.createElement("button", {onClick: () => setShowExamples(false), className:"text-xs px-2 py-0.5 rounded-lg", style:{background:"rgba(255,255,255,0.05)",color:"#4a5568"}}, "Hide x")
   ), /*#__PURE__*/React.createElement("div", {
-    className: "text-xs font-bold uppercase tracking-widest mb-2",
-    style: {
-      color: "#4a5568"
-    }
-  }, "15 Things You Can Ask:"), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1.5"
   }, DOST_EXAMPLES.map((ex, i) => /*#__PURE__*/React.createElement("button", {
     key: i,
