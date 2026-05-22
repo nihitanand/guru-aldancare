@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>🎓 Aldan Guru v2.4</title>
+<title>🎓 Aldan Guru v2.5</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -977,7 +977,7 @@ function Splash() {
     style: {
       color: "var(--sl)"
     }
-  }, "v2.4"), /*#__PURE__*/React.createElement("div", {
+  }, "v2.5"), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-2 mt-3"
   }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("div", {
     key: i,
@@ -1094,7 +1094,7 @@ function Login({
     style: {
       color: "#4a5568"
     }
-  }, "v2.4")), /*#__PURE__*/React.createElement("div", {
+  }, "v2.5")), /*#__PURE__*/React.createElement("div", {
     className: "glass p-6 fu",
     style: {
       animationDelay: "0.1s"
@@ -1314,7 +1314,22 @@ function Main({
   }, lvlUp && /*#__PURE__*/React.createElement(LevelUpOverlay, {
     lvl: lvlUp,
     onClose: () => setLvlUp(null)
-  }), tab === "home" && /*#__PURE__*/React.createElement(Home, {
+  }), user._impersonating && /*#__PURE__*/React.createElement("div", {
+    style:{position:"fixed",top:"56px",left:0,right:0,zIndex:50,background:"rgba(255,107,53,0.95)",padding:"6px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}
+  },
+    React.createElement("div", {className:"text-xs font-bold text-white"}, "Viewing as: " + user.name + " (" + user.role.toUpperCase() + ")"),
+    React.createElement("button", {
+      onClick: function() {
+        DB.ref(BASE + "/users/7061014110").once("value").then(function(s) {
+          var au = s.val();
+          if(au) { var restored = Object.assign({}, au, {mobile:"7061014110"}); localStorage.setItem("guruSess_v2", JSON.stringify(restored)); updateUser(restored); }
+        });
+      },
+      className:"text-xs font-black text-white px-2 py-0.5 rounded-lg",
+      style:{background:"rgba(0,0,0,0.3)"}
+    }, "Back to Admin x")
+  ),
+  tab === "home" && /*#__PURE__*/React.createElement(Home, {
     user: user,
     streak: streak,
     onStartQuiz: loadQuiz,
@@ -1337,7 +1352,8 @@ function Main({
     lb: lb,
     onLogout: onLogout
   }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="practice"?"block":"none",minHeight:"100%"}}, /*#__PURE__*/React.createElement(PracticeMode, {user: user, weakProds: weakProds})), /*#__PURE__*/React.createElement("div", {style:{display:tab==="dost"?"block":"none",minHeight:"100%"}}, /*#__PURE__*/React.createElement(AldanDost, {user: user, weakProds: weakProds})), tab === "admin" && user.role === "admin" && /*#__PURE__*/React.createElement(AdminPanel, {
-    user: user
+    user: user,
+    onImpersonate: (u) => { updateUser(u); }
   }), /*#__PURE__*/React.createElement("nav", {
     className: "bnav"
   }, /*#__PURE__*/React.createElement("div", {
@@ -3017,7 +3033,8 @@ function Profile({
 
 /* ADMIN PANEL  */
 function AdminPanel({
-  user
+  user,
+  onImpersonate
 }) {
   const [tab, setTab] = useState("team");
   const [lb, setLb] = useState([]);
@@ -3047,11 +3064,12 @@ function AdminPanel({
     }
   }, "Full Bihar visibility . Nihit Anand")), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-2 mb-5 overflow-x-auto pb-1"
-  }, [["team", "Team"], ["accuracy", "Accuracy"], ["deviations", "Deviations"], ["wa", "WA Queue"], ["upload", "Data Upload"]].map(([v, l]) => /*#__PURE__*/React.createElement("button", {
+  }, [["team", "Team"], ["accuracy", "Accuracy"], ["impersonate", "Impersonate"], ["deviations", "Deviations"], ["wa", "WA Queue"], ["upload", "Data Upload"]].map(([v, l]) => /*#__PURE__*/React.createElement("button", {
     key: v,
     onClick: () => setTab(v),
     className: `tab-p shrink-0 ${tab === v ? "on" : ""}`
-  }, l))), tab === "accuracy" && /*#__PURE__*/React.createElement(AccuracyPanel, null), tab === "team" && /*#__PURE__*/React.createElement("div", {
+  }, l))), tab === "accuracy" && /*#__PURE__*/React.createElement(AccuracyPanel, null),
+  tab === "impersonate" && /*#__PURE__*/React.createElement(ImpersonatePanel, {onImpersonate: onImpersonate}), tab === "team" && /*#__PURE__*/React.createElement("div", {
     className: "space-y-2"
   }, lb.sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0)).map((u, i) => {
     const lvl = getLevel(u.totalScore || 0);
@@ -3132,7 +3150,7 @@ function AdminPanel({
     style: {
       color: "var(--sl)"
     }
-  }, "Messages queued -- will send once Meta API connected (v2.4)")), /*#__PURE__*/React.createElement("div", {
+  }, "Messages queued -- will send once Meta API connected (v2.5)")), /*#__PURE__*/React.createElement("div", {
     className: "space-y-2"
   }, waQueue.length === 0 ? /*#__PURE__*/React.createElement("div", {
     className: "text-center py-8 text-sm",
@@ -3209,14 +3227,14 @@ function AdminPanel({
       background: "rgba(143,163,191,0.1)",
       color: "var(--sl)"
     }
-  }, "v2.4 -- Manual via admin")))), /*#__PURE__*/React.createElement("div", {
+  }, "v2.5 -- Manual via admin")))), /*#__PURE__*/React.createElement("div", {
     className: "mt-4 p-3 rounded-xl text-xs",
     style: {
       background: "rgba(255,107,53,0.08)",
       border: "1px solid rgba(255,107,53,0.2)",
       color: "var(--o)"
     }
-  }, "\uD83D\uDCA1 For now send files to Nihit -- will be ingested in next data refresh cycle. Full in-app upload coming in v2.4."))));
+  }, "\uD83D\uDCA1 For now send files to Nihit -- will be ingested in next data refresh cycle. Full in-app upload coming in v2.5."))));
 }
 function Loading({
   msg
@@ -4719,6 +4737,60 @@ function PinChange({user, onDone}) {
       ),
       React.createElement("div", {className:"text-center mt-4 text-xs", style:{color:"#4a5568"}}, "Yeh PIN yaad rakhna — reset ke liye admin se contact karo")
     )
+  );
+}
+
+
+function ImpersonatePanel({onImpersonate}) {
+  const [loading, setLoading] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+
+  const switchTo = async (member) => {
+    setLoading(true); setMsg("");
+    try {
+      const snap = await DB.ref(BASE + "/users/" + member.mobile).once("value");
+      const u = snap.val();
+      if (!u) { setMsg("User not found in Firebase -- ask them to login once first"); setLoading(false); return; }
+      const impUser = {...u, mobile: member.mobile, _impersonating: true, _realAdmin: "7061014110"};
+      localStorage.setItem("guruSess_v2", JSON.stringify(impUser));
+      onImpersonate(impUser);
+      setMsg("Switched to " + member.name);
+    } catch(e) { setMsg("Error: " + e.message); }
+    setLoading(false);
+  };
+
+  const roles = ["zsm","rsm","asm","mbe"];
+  const roleLabels = {zsm:"ZSM",rsm:"RSM",asm:"ASMs",mbe:"MBEs"};
+
+  return React.createElement("div", null,
+    React.createElement("div", {className:"card p-4 mb-4", style:{border:"1px solid rgba(255,107,53,0.3)"}},
+      React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-1", style:{color:"var(--o)"}}, "Admin Impersonation"),
+      React.createElement("div", {className:"text-xs mt-1", style:{color:"var(--sl)"}}, "Switch to any team member. All data loads as that user -- TP, doctors, weak products, scores. Floating badge shows impersonation mode.")
+    ),
+    msg && React.createElement("div", {className:"text-xs px-3 py-2 rounded-xl mb-3 font-semibold", style:{background:"rgba(32,191,107,0.1)",color:"#20BF6B"}}, msg),
+    roles.map(function(role) {
+      var members = TEAM.filter(function(u) { return u.role === role; });
+      if (!members.length) return null;
+      return React.createElement("div", {key: role, className:"mb-5"},
+        React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"#4a5568"}}, roleLabels[role]),
+        React.createElement("div", {className:"space-y-2"},
+          members.map(function(m) {
+            return React.createElement("div", {key: m.mobile, className:"card p-3 flex items-center justify-between"},
+              React.createElement("div", null,
+                React.createElement("div", {className:"font-semibold text-white text-sm"}, m.name),
+                React.createElement("div", {className:"text-xs mt-0.5", style:{color:"var(--sl)"}}, m.hq + " \u00b7 " + m.mobile)
+              ),
+              React.createElement("button", {
+                onClick: function() { switchTo(m); },
+                disabled: loading,
+                className:"text-xs px-3 py-1.5 rounded-xl font-bold",
+                style:{background:"rgba(255,107,53,0.15)",color:"var(--o)",border:"1px solid rgba(255,107,53,0.3)"}
+              }, loading ? "..." : "Switch")
+            );
+          })
+        )
+      );
+    })
   );
 }
 
