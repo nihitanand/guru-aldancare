@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>🎓 Aldan Guru v2.0</title>
+<title>🎓 Aldan Guru v2.1</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -1092,7 +1092,7 @@ function App() {
   const login = u => {
     setUser(u);
     localStorage.setItem("guruSess_v2", JSON.stringify(u));
-    setScreen("home");
+    setScreen(u.mustChangePin ? "pinchange" : "home");
   };
   const logout = () => {
     setUser(null);
@@ -1106,6 +1106,10 @@ function App() {
   if (loading) return /*#__PURE__*/React.createElement(Splash, null);
   if (screen === "login") return /*#__PURE__*/React.createElement(Login, {
     onLogin: login
+  });
+  if (screen === "pinchange") return /*#__PURE__*/React.createElement(PinChange, {
+    user: user,
+    onDone: function(u){ setUser(u); localStorage.setItem("guruSess_v2", JSON.stringify(u)); setScreen("home"); }
   });
   return /*#__PURE__*/React.createElement(Main, {
     user: user,
@@ -1128,7 +1132,7 @@ function Splash() {
     style: {
       color: "var(--sl)"
     }
-  }, "v2.0"), /*#__PURE__*/React.createElement("div", {
+  }, "v2.1"), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-2 mt-3"
   }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("div", {
     key: i,
@@ -1183,10 +1187,9 @@ function Login({
         const u = snap.val();
         if (u.pin === hashPIN(ep)) {
           await DB.ref(`${BASE}/users/${mob}/lastActive`).set(todayStr());
-          onLogin({
-            ...u,
-            mobile: mob
-          });
+          const _ud = {...u, mobile: mob};
+          if(u.pin === hashPIN("1234")) _ud.mustChangePin = true;
+          onLogin(_ud);
           return;
         } else {
           setErr("PIN galat hai.");
@@ -1246,7 +1249,7 @@ function Login({
     style: {
       color: "#4a5568"
     }
-  }, "v2.0")), /*#__PURE__*/React.createElement("div", {
+  }, "v2.1")), /*#__PURE__*/React.createElement("div", {
     className: "glass p-6 fu",
     style: {
       animationDelay: "0.1s"
@@ -1863,7 +1866,7 @@ function Quiz({
         return p ? `${p.name} (weak in territory)` : w;
       }).join(", ");
       const prodContext = P.map(p => `${p.name}: ${p.ind}. Composition: ${p.comp.map(c => c.n).join(", ")}. Journal: ${p.journal}. MRP: ${p.mrp}. Dose: ${p.dose}`).join("\n");
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/ai.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -3769,7 +3772,7 @@ function PracticeMode({
         // mock -- 10 questions, mixed
         prompt = `You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nFull product portfolio:\n${prodContext}\nUser weak products in territory: ${weak}\n\nGenerate a 10-question FULL MOCK QUIZ. Mix all 8 categories evenly. Cover all products -- no product more than twice. Start MEDIUM difficulty. Weight weak products (${weak}) at 40%.\n\nReturn ONLY valid JSON array:\n[{"cat":"type","product":"id","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
       }
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/ai.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -3826,7 +3829,7 @@ function PracticeMode({
       try {
         const pp = P.find(x => x.id === questions[nextIdx]?.product);
         const prompt = `Generate 1 ${targetDiff} difficulty MCQ question about ${pp?.name || "any WomEm product"} in category "${questions[nextIdx]?.cat || "any"}". User is ${user.name}, ${user.role}. Previous score: ${Math.round(perfSoFar * 100)}%.\n\nReturn ONLY valid JSON object (not array):\n{"cat":"type","product":"id","q":"Hinglish question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines","difficulty":"${targetDiff}"}`;
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("/api/ai.php", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -4545,7 +4548,7 @@ Current tone level: ${toneLevel < 33 ? "FRIENDLY/YAAR" : toneLevel < 66 ? "BALAN
         role: m.role === "assistant" ? "assistant" : "user",
         content: m.content
       }));
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/ai.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
