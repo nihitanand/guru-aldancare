@@ -313,380 +313,209 @@ const BADGE_DEF = {
 
 /* PRODUCTS  */
 const P = [{
-  id: "ovalux",
-  name: "Ovalux",
-  pri: 3,
-  mrp: "Rs.1219",
-  ptv: "Rs.856",
-  pack: "1x10 Caps",
-  tag: "Superior egg quality for every IVF dream",
-  ind: "Female egg quality, DOR, IVF support",
-  comp: [{
-    n: "Ubiquinol (CoQ10)",
-    r: "Egg ki energy factory -- mitochondria supercharge. Poor responders ka game-changer."
-  }, {
-    n: "DHEA 25mg",
-    r: "Ovarian reserve badhata hai. FSH kam karta hai. 16 RCTs ka evidence."
-  }, {
-    n: "Melatonin",
-    r: "Follicular fluid antioxidant. Sleep quality bhi improve."
-  }, {
-    n: "L-Arginine",
-    r: "Ovarian blood flow improve. Endometrial thickness better."
-  }],
-  trig: "PCOS/DOR patient jab IVF plan bana rahi ho. 'Eggs ki quality acchi nahi' -- yahi ek line hai.",
-  proof: ["16 RCTs, 1973 women -- DHEA improved egg quality (J Ovarian Research 2025)", "CoQ10 improved fertilization rate 28% in poor responders (Fertil Steril 2024)", "Melatonin -- 2x higher pregnancy rate in IVF (Gynecol Endocrinol 2023)"],
-  obj: [{
-    q: "Inofolic already lete hain",
-    a: "Inofolic PCOS mein MI ke liye. Ovalux egg quality ke liye -- dono alag kaam karte hain."
-  }, {
-    q: "Bahut mehnga hai",
-    a: "IVF cycle 1.5-2 lakh ka. Ovalux 3 months = Rs.3,500. Ek extra egg = cycle succeed."
-  }, {
-    q: "Evidence nahi",
-    a: "16 RCTs, 1973 patients -- J Ovarian Research 2025. Leave card abhi de sakta hoon."
-  }],
-  dose: "1 cap OD at night, 3 months before IVF",
-  journal: "J Ovarian Research 2025 -- 16 RCTs DHEA",
-  catch: "'IVF se pehle egg quality improve karni ho -- Ovalux sirf 3 mahine mein results deta hai'",
-  color: "#FF6B35",
-  em: "🥚"
-}, {
-  id: "lacoria",
-  name: "Lacoria",
-  pri: 3,
-  mrp: "Rs.432",
-  ptv: "Rs.303",
-  pack: "1x14 Caps",
-  tag: "5-strain defense against BV & leucorrhoea",
-  ind: "Bacterial Vaginosis, Leucorrhoea, recurrent infections",
-  comp: [{
-    n: "L. acidophilus",
-    r: "Vaginal pH restore. BV bacteria displace."
-  }, {
-    n: "L. rhamnosus",
-    r: "Recurrence rokta hai. Immune memory banata hai."
-  }, {
-    n: "L. reuteri",
-    r: "Inflammation kam. Discharge aur odor reduce."
-  }, {
-    n: "Bifidobacterium longum",
-    r: "Gut-vaginal axis balance."
-  }, {
-    n: "L. plantarum",
-    r: "Biofilm break karta hai -- jahan antibiotics fail hoti hain."
-  }],
-  trig: "Discharge complaint -- odor, itching. Post-antibiotic relapse.",
-  proof: ["5-strain probiotic: BV recurrence 62% kam (Int J Womens Health 2024)", "L. rhamnosus: vaginal flora restore 85% women in 14 days (BJOG 2023)", "L. plantarum: biofilm disruption where metronidazole fails (Microbiome 2024)"],
-  obj: [{
-    q: "Metrogyl se theek ho jaata hai",
-    a: "Metrogyl infection treat karta hai, flora restore nahi. Lacoria = recurrence 62% kam."
-  }, {
-    q: "Generic probiotic se kya fark",
-    a: "5 specific vaginal strains -- gut probiotics vaginal environment mein survive nahi karte."
-  }, {
-    q: "Kitne din?",
-    a: "Acute 14 din. Recurrent cases 3 mahine."
-  }],
-  dose: "1 cap OD at bedtime",
-  journal: "Int J Womens Health 2024 -- 62% recurrence reduction",
-  catch: "'Sirf infection treat karna kaafi nahi -- flora restore karna zaroori hai. Lacoria yahi karta hai'",
-  color: "#8B5CF6",
-  em: "🔬"
-}, {
-  id: "myolifeplus",
-  name: "Myolife Plus",
-  pri: 3,
-  mrp: "Rs.329",
-  ptv: "Rs.231",
-  pack: "1x10 Tabs",
-  tag: "PCOS with obesity -- the complete solution",
-  ind: "PCOS with obesity/insulin resistance",
-  comp: [{
-    n: "Myo-Inositol 1000mg",
-    r: "Insulin signaling improve. Ovulation restore."
-  }, {
-    n: "D-Chiro-Inositol 25mg (40:1)",
-    r: "DCI deficiency correct. Hyperandrogenism kam."
-  }, {
-    n: "Melatonin 1mg",
-    r: "Circadian rhythm reset. Insulin resistance kam."
-  }, {
-    n: "L-Methylfolate 0.5mg",
-    r: "Active folate -- MTHFR safe."
-  }],
-  trig: "Obese PCOS -- BMI >25, irregular cycles, hirsutism. '40:1 ratio obese PCOS mein exact hai'.",
-  proof: ["MI:DCI 40:1 restored ovulation 68% vs 32% placebo (Endocrine 2024)", "Melatonin improved insulin sensitivity 23% vs MI alone (J Clin Med 2024)"],
-  obj: [{
-    q: "Plain Myo-Inositol se kya fark",
-    a: "Obese PCOS mein DCI deficiency hoti hai -- 40:1 ratio yahi correct karta hai."
-  }, {
-    q: "Metformin already de raha hoon",
-    a: "Complementary -- different mechanism. Saath dene se better outcomes."
-  }, {
-    q: "Cost zyada hai",
-    a: "Obese PCOS mein plain Myolife suboptimal hai. 3 months mein meaningful difference."
-  }],
-  dose: "1 tab BD after food, 3-6 months",
-  journal: "Endocrine 2024 -- 40:1 MI:DCI RCT",
-  catch: "'Obese PCOS mein DCI deficiency hoti hai -- Myolife Plus ka 40:1 ratio exactly yahi correct karta hai'",
-  color: "#10B981",
-  em: "⚖️"
-}, {
-  id: "aldova",
-  name: "Aldova",
-  pri: 3,
-  mrp: "Rs.637",
-  ptv: "Rs.447",
-  pack: "Kit",
-  tag: "Ovulation induction -- smarter CC combo",
-  ind: "Ovulation induction, poor follicular response",
-  comp: [{
-    n: "Clomiphene Citrate 50mg",
-    r: "FSH/LH release. Standard OI drug."
-  }, {
-    n: "N-Acetyl Cysteine 600mg",
-    r: "CC ki endometrial thinning solve karta hai."
-  }, {
-    n: "Astaxanthin 4mg",
-    r: "Follicular antioxidant. Egg quality better."
-  }],
-  trig: "Gynec jo CC likhta ho. 'Endometrial thickness CC se kam ho jaati hai' -- yahi kaho pehle.",
-  proof: ["NAC improved endometrial thickness 35% with CC (Fertil Steril 2024)", "CC+NAC ovulation rate 78% vs CC alone 61% (Gynecol Endocrinol 2024)"],
-  obj: [{
-    q: "Plain CC kaam kar raha hai",
-    a: "Endometrial thinning se cycles fail hoti hain -- NAC yahi fix karta hai. 78% vs 61%."
-  }, {
-    q: "Kit complicated hai",
-    a: "Patient ko ek hi pack -- sab andar. Compliance better."
-  }, {
-    q: "Letrozole prefer karta hoon",
-    a: "Aldova CC respond karne wale cases ke liye -- complementary."
-  }],
-  dose: "As per OI protocol -- CD2-6",
-  journal: "Fertil Steril 2024 -- NAC + CC endometrial thickness",
-  catch: "'CC likhte waqt endometrial thinning hoti hai -- Aldova mein NAC yahi solve karta hai'",
-  color: "#F59E0B",
-  em: "🌸"
-}, {
-  id: "argilux",
-  name: "Argilux",
-  pri: 2,
-  mrp: "Rs.979",
-  ptv: "Rs.688",
-  pack: "1x20 Sachets",
-  tag: "Fetal growth -- placenta to delivery",
-  ind: "Pregnancy maternal-fetal nutrition, IUGR prevention",
-  comp: [{
-    n: "L-Arginine 3000mg",
-    r: "Nitric oxide -> placental blood flow -> IUGR prevention."
-  }, {
-    n: "DHA 200mg",
-    r: "Fetal brain development. Third trimester critical."
-  }, {
-    n: "Proanthocyanidin",
-    r: "Placental oxidative stress kam. Pre-eclampsia risk reduce."
-  }, {
-    n: "Vitamins & Minerals",
-    r: "Complete maternal-fetal support."
-  }],
-  trig: "Second trimester high-risk -- previous IUGR, hypertension, diabetes, twins.",
-  proof: ["L-Arginine reduced IUGR risk 45% in high-risk pregnancies (AJOG 2024)", "DHA 200mg improved fetal neurodevelopment at 18 months (Cochrane 2024)"],
-  obj: [{
-    q: "Already multivitamin de raha hoon",
-    a: "L-Arginine 3g aur Proanthocyanidin kisi multivit mein nahi hota -- dedicated add-on."
-  }, {
-    q: "Evidence kam hai",
-    a: "AJOG 2024 -- large RCT, L-Arginine in high-risk pregnancy."
-  }, {
-    q: "Taste theek hai?",
-    a: "Sachet -- water mein mix. Pleasant flavour. Compliance acchi hai."
-  }],
-  dose: "1 sachet OD in 200ml water, 16 weeks to delivery",
-  journal: "AJOG 2024 -- L-Arginine RCT high-risk pregnancy",
-  catch: "'High-risk pregnancy mein placental blood flow -- L-Arginine 3g, AJOG 2024 mein 45% IUGR reduction'",
-  color: "#EC4899",
-  em: "🤱"
-}, {
-  id: "myolife",
-  name: "Myolife",
-  pri: 1,
-  mrp: "Rs.254",
-  ptv: "Rs.178",
-  pack: "1x10 Tabs",
-  tag: "PCOS lean -- gentle first line",
-  ind: "PCOS lean/normal BMI, cycle regularization",
-  comp: [{
-    n: "Myo-Inositol 1000mg",
-    r: "Insulin signaling improve. Ovulation restore."
-  }, {
-    n: "L-Methylfolate 0.5mg",
-    r: "Active folate -- conception planning."
-  }, {
-    n: "Vitamin D3 500IU",
-    r: "60-80% PCOS patients Vit D deficient."
-  }],
-  trig: "Lean PCOS -- BMI normal, irregular cycles, conception planning.",
-  proof: ["MI improved ovulation 62% lean PCOS vs 27% placebo (Eur J Obstet 2023)"],
-  obj: [{
-    q: "Myolife Plus se kya fark",
-    a: "Lean PCOS mein DCI deficiency nahi hoti -- plain MI sufficient. Plus obese ke liye."
-  }],
-  dose: "1 tab BD after food",
-  journal: "Eur J Obstet 2023 -- MI lean PCOS",
-  catch: "'Lean PCOS mein cycle regular karna ho -- Myolife 3 mahine mein ovulation restore karta hai'",
-  color: "#3B82F6",
-  em: "🌿"
-}, {
-  id: "loq10plus",
-  name: "LOQ-10 Plus",
-  pri: 1,
-  mrp: "Rs.516",
-  ptv: "Rs.362",
-  pack: "1x10 Caps",
-  tag: "Male infertility -- complete panel",
-  ind: "Male infertility, OAT, sperm quality",
-  comp: [{
-    n: "Ubiquinol CoQ10 100mg",
-    r: "Sperm mitochondria energy. Motility improve."
-  }, {
-    n: "Lycopene 5mg",
-    r: "Testicular ROS reduce. DNA fragmentation kam."
-  }, {
-    n: "Selenium 70mcg + Zinc 15mg",
-    r: "Spermatogenesis essential. Testosterone support."
-  }],
-  trig: "Male partner semen analysis abnormal -- low motility, morphology.",
-  proof: ["CoQ10 improved sperm motility 34% in OAT (Andrologia 2024)", "Antioxidants reduced DNA fragmentation 29% (Fertil Steril 2024)"],
-  obj: [{
-    q: "Male nahi dekhna",
-    a: "Couple treat karna hai -- male factor 40-50% contribute karta hai. Both = success double."
-  }],
-  dose: "1 cap OD after food, 3 months",
-  journal: "Andrologia 2024 -- CoQ10 sperm motility",
-  catch: "'Male factor 40-50% infertility mein -- LOQ-10 Plus 3 mahine mein motility 34% improve karta hai'",
-  color: "#6366F1",
-  em: "⚡"
-}, {
-  id: "utilac",
-  name: "Utilac",
-  pri: 1,
-  mrp: "Rs.320",
-  ptv: "Rs.225",
-  pack: "1x10 Caps",
-  tag: "UTI & candidiasis -- stop the cycle",
-  ind: "Recurrent UTI, candidiasis prevention",
-  comp: [{
-    n: "L. acidophilus + rhamnosus",
-    r: "Urogenital tract mein pathogen compete."
-  }, {
-    n: "Cranberry Extract 250mg",
-    r: "E. coli adhesion rok deta hai. UTI prevention proven."
-  }, {
-    n: "Vitamin C 250mg",
-    r: "Urine acidify -- bacteria inhibit."
-  }],
-  trig: "Recurrent UTI -- 2+ episodes in 6 months. Post-Cipro. Diabetic patients.",
-  proof: ["Cranberry extract reduced UTI recurrence 38% (Cochrane 2023)", "Probiotic+cranberry 65% lower recurrence (J Urol 2024)"],
-  obj: [{
-    q: "Antibiotics enough hain",
-    a: "Antibiotics infection treat karte -- Utilac recurrence rokta hai. Prevention aur treatment alag."
-  }],
-  dose: "1 cap OD at bedtime, 3 months",
-  journal: "Cochrane 2023 -- Cranberry UTI prevention",
-  catch: "'Antibiotics se infection theek hota hai -- recurrence rokne ke liye Utilac zaroori hai'",
-  color: "#F97316",
-  em: "🛡️"
-}, {
-  id: "myogdm",
-  name: "Myo-GDM",
-  pri: 1,
-  mrp: "Rs.311",
-  ptv: "Rs.218",
-  pack: "1x10 Tabs",
-  tag: "India's 1st dedicated GDM product",
-  ind: "Gestational Diabetes Mellitus",
-  comp: [{
-    n: "Myo-Inositol 2000mg",
-    r: "Insulin receptor sensitivity -- GDM root cause."
-  }, {
-    n: "D-Chiro-Inositol 50mg",
-    r: "Glucose metabolism normalize."
-  }, {
-    n: "Chromium Picolinate",
-    r: "Insulin potentiator."
-  }],
-  trig: "24-28 week OGTT borderline. Obese pregnant. Previous GDM. Family diabetes.",
-  proof: ["MI reduced GDM incidence 60% in high-risk women (Diabetes Care 2024)"],
-  obj: [{
-    q: "Insulin de dete hain direct",
-    a: "Preventive aur early management -- borderline cases mein insulin se pehle."
-  }],
-  dose: "1 tab BD after food",
-  journal: "Diabetes Care 2024 -- MI GDM prevention",
-  catch: "'India ka pehla dedicated GDM product -- OGTT borderline aane pe Myo-GDM shuru karo'",
-  color: "#84CC16",
-  em: "🤰"
-}, {
-  id: "osteofem",
-  name: "Osteofem",
-  pri: 1,
-  mrp: "Rs.463",
-  ptv: "Rs.325",
-  pack: "1x10 Tabs",
-  tag: "Non-hormonal bone protection for her",
-  ind: "Bone density, post-menopausal bone health",
-  comp: [{
-    n: "Dihydroquercetin (DHQ)",
-    r: "Plant-based -- bone resorption inhibit. Non-hormonal."
-  }, {
-    n: "Pine Bark Extract",
-    r: "Collagen synthesis. Bone matrix strengthen."
-  }, {
-    n: "Calcitriol + Calcium Citrate 500mg",
-    r: "Most bioavailable calcium. Bone mineralisation."
-  }],
-  trig: "Peri/post-menopausal, DEXA low T-score. 'Hormones nahi chahiye' -- non-hormonal angle.",
-  proof: ["DHQ reduced bone turnover markers 32% (Bone 2024)", "Calcium citrate 28% better absorbed than carbonate (NEJM Evid 2023)"],
-  obj: [{
-    q: "HRT deta hoon",
-    a: "Complementary -- alag mechanism. Non-hormonal option for patients who refuse HRT."
-  }],
-  dose: "1 tab BD after food, long-term",
-  journal: "Bone 2024 -- DHQ bone turnover",
-  catch: "'Non-hormonal bone protection -- Osteofem mein DHQ bone resorption rokta hai, 32% improvement'",
-  color: "#14B8A6",
-  em: "🦴"
-}, {
-  id: "aldanvit",
-  name: "Aldanvit",
-  pri: 1,
-  mrp: "Rs.160",
-  ptv: "Rs.112",
-  pack: "1x10 Tabs",
-  tag: "Preventive micronutrition -- every woman",
-  ind: "Micronutrient deficiency, fatigue, prevention",
-  comp: [{
-    n: "Methylcobalamin 500mcg",
-    r: "Active B12 -- energy, mood. Vegans essential."
-  }, {
-    n: "L-Methylfolate 1mg",
-    r: "Active folate -- pre-conception."
-  }, {
-    n: "Vitamin D3 1000IU + Iron + Zinc",
-    r: "74% Indian women Vit D deficient. Complete panel."
-  }],
-  trig: "General OPD -- fatigue, weakness, pre-conception. Every woman 20-45.",
-  proof: ["Methylcobalamin 35% higher neural absorption (J Nutr Sci 2023)", "Vit D deficient 74% Indian urban women (IJMR 2024)"],
-  obj: [{
-    q: "Generic multivitamin se kya extra",
-    a: "Active forms -- Methylcobalamin, Methylfolate. MTHFR patients mein generic convert nahi hoti."
-  }],
-  dose: "1 tab OD after food",
-  journal: "IJMR 2024 -- Vit D deficiency Indian women",
-  catch: "'Fatigue ke liye Aldanvit -- active forms absorb better, especially MTHFR patients mein'",
-  color: "#F59E0B",
-  em: "💊"
+  id:"ovalux", name:"Ovalux", pri:3, mrp:"Rs.1219", ptv:"Rs.856", pack:"5x2x14 Caps (1 OD after meal)",
+  color:"#FF6B35", em:"🥚",
+  tag:"Superior egg quality for every IVF dream",
+  ind:"Female egg quality, DOR, IVF support, IUGR prevention, preterm birth prevention",
+  comp:[
+    {n:"Ubiquinol Acetate 100mg", r:"Improves ovarian response & embryological parameters. 8x more bioavailable than CoQ10."},
+    {n:"DHEA (SR) 50mg + (IR) 25mg = 75mg", r:"Improves fertility & egg quality. Ovarian reserve badhata hai. FSH kam. 16 RCTs evidence."},
+    {n:"Piperine 5mg", r:"Enhances nutrient absorption & reduces insulin resistance."},
+    {n:"Melatonin 3mg", r:"Follicular maturation. Antioxidant in follicular fluid."},
+    {n:"L-Methylfolate 714mcg", r:"Active folate -- MTHFR safe. Neural tube protection."},
+    {n:"Vitamin D2 600 IU", r:"Improves female fertility & pregnancy outcomes."}
+  ],
+  dose:"1 cap OD after meal, at least 3 months or till conception",
+  trig:"IVF-going patient. Poor egg quality. DOR. Failed cycle. 'Eggs acchi nahi' -- yahi ek line.",
+  proof:["16 RCTs DHEA -- egg quality improved (J Ovarian Research 2025)","Ubiquinol improved ovarian response & embryological parameters","Melatonin -- follicular maturation support"],
+  obj:[{q:"Inofolic already lete hain",a:"Inofolic PCOS ke liye. Ovalux egg quality ke liye -- alag kaam."},{q:"Bahut mehnga",a:"IVF 1.5-2L ka. Ovalux 3 months = Rs.3,500. Ek extra egg = cycle succeed."},{q:"Evidence nahi",a:"16 RCTs, DHEA. Leave card de sakta hoon abhi."}],
+  journal:"J Ovarian Research 2025 -- 16 RCTs DHEA",
+  catch:"'IVF se pehle egg quality -- Ovalux mein DHEA 75mg (SR+IR) + Ubiquinol -- 3 mahine mein results'"
+},{
+  id:"lacoria", name:"Lacoria", pri:3, mrp:"Rs.432", ptv:"Rs.303", pack:"10x1x14 Caps (2 caps BID x 7 days)",
+  color:"#8B5CF6", em:"🔬",
+  tag:"5-strain defense -- India's 1st probiotic for BV",
+  ind:"Bacterial Vaginosis, Leucorrhoea, recurrent vaginal infections",
+  comp:[
+    {n:"L. Crispatus 1Bn", r:"Dominant vaginal strain. pH restore. Primary BV pathogen displace."},
+    {n:"L. Rhamnosus 1Bn", r:"Recurrence rokta hai. Immune memory banata hai."},
+    {n:"L. Gasseri 0.3Bn", r:"Vaginal flora stabilize. Candida inhibit."},
+    {n:"L. Jensenii 0.2Bn", r:"H2O2 produce -- pathogen kill."},
+    {n:"L. Iners 0.5Bn", r:"Transition flora -- microbiome stabilize."},
+    {n:"Fructo Oligo Saccharide 100mg", r:"Prebiotic -- probiotic ko survive aur grow karne mein help."}
+  ],
+  dose:"2 caps BID x 7 days (acute); 3 months (recurrent)",
+  trig:"Discharge complaint -- foul odour, itching. Post-antibiotic relapse. Recurrent BV.",
+  proof:["Probiotics > antibiotics in BV (10 RCT meta-analysis, Int J Environ Res 2019)","Indian vaginal microflora -- 4 Lactobacillus species (J Med Microbiol 2014)"],
+  obj:[{q:"Metrogyl se theek hota hai",a:"Metrogyl infection treat karta hai, flora restore nahi. Lacoria = recurrence rokta hai."},{q:"Generic probiotic?",a:"5 specific vaginal strains -- gut probiotics vaginal environment mein survive nahi karte."},{q:"Kitne din?",a:"Acute 7 din. Recurrent 3 mahine."}],
+  journal:"Int J Environ Res Public Health 2019 -- 10 RCT meta-analysis",
+  catch:"'Sirf infection treat karna kaafi nahi -- vaginal flora restore karna zaroori hai. Lacoria yahi karta hai'"
+},{
+  id:"loq10plus", name:"LOQ 10 Plus", pri:1, mrp:"Rs.516", ptv:"Rs.362", pack:"10x1x10 Tabs (1 OD)",
+  color:"#3B82F6", em:"⚡",
+  tag:"Male infertility -- Ubiquinol superior OAT solution",
+  ind:"Male factor infertility -- Oligospermia, Asthenospermia, Teratospermia (OAT)",
+  comp:[
+    {n:"Ubiquinol 30mg", r:"8x more bioavailable than CoQ10. Count, motility, concentration, morphology -- sab improve."},
+    {n:"Astaxanthin 8mg", r:"Motility improve. Strongest antioxidant for sperm."},
+    {n:"L-Carnitine 200mg", r:"Count, concentration, motility improve."},
+    {n:"L-Arginine 250mg", r:"Motility & concentration improve."},
+    {n:"Selenium 40mcg", r:"Antioxidant. Linear progression improve."},
+    {n:"Zinc 11mg", r:"Concentration & morphology improve."},
+    {n:"Omega-3 Fatty Acids", r:"Concentration, motility. DNA damage prevent."},
+    {n:"Methylcobalamin 2.5mcg", r:"Count improve."},
+    {n:"Lycopene 10% 4000mcg", r:"Concentration & motility improve."},
+    {n:"Benfotiamine 18mg", r:"Motility & morphology improve."}
+  ],
+  dose:"1 tab OD",
+  trig:"Male partner with OAT on semen analysis. Prescribed alongside female treatment.",
+  proof:["Ubiquinol 8x more bioavailable, 3.75x blood concentration at 8hrs vs CoQ10 (Mitochondria Vol.7)","29.3% infertility = male factor (Nutrients 2020)"],
+  obj:[{q:"Proxeed already de raha hoon",a:"Proxeed mein Ubiquinol nahi -- Ubiquinone hai. 8x bioavailability difference."},{q:"Evidence?",a:"Mitochondria journal -- Ubiquinol vs Ubiquinone head-to-head."},{q:"Kitne din?",a:"Semen analysis improvement 3 months mein. Full spermatogenesis cycle = 74 days."}],
+  journal:"Mitochondria Vol.7, Suppl.1 -- Ubiquinol bioavailability",
+  catch:"'Male infertility mein Ubiquinol -- 8 guna zyada bioavailable, 3.75 guna zyada blood concentration'"
+},{
+  id:"myolifeplus", name:"Myolife Plus", pri:3, mrp:"Rs.329", ptv:"Rs.231", pack:"10x1x10 Tabs (1 BD)",
+  color:"#10B981", em:"⚖️",
+  tag:"Obese PCOS -- 40:1 ratio + Melatonin",
+  ind:"Anovulatory PCOS in obese women (BMI >25), insulin resistance",
+  comp:[
+    {n:"Myo-Inositol 1000mg", r:"Insulin signaling improve. Ovulation restore."},
+    {n:"D-Chiro-Inositol 25mg (40:1 ratio)", r:"DCI deficiency correct in obese PCOS. Hyperandrogenism kam."},
+    {n:"Melatonin 1.5mg", r:"Oocyte quality improve. Insulin sensitivity better."},
+    {n:"L-Methylfolate 1mg", r:"Active folate -- MTHFR safe."}
+  ],
+  dose:"1 tab BD after food, 3-6 months",
+  trig:"Obese PCOS -- BMI >25, irregular cycles, insulin resistance, hirsutism.",
+  proof:["MI:DCI 40:1 restored ovulation 68% vs 32% placebo (Endocrine 2024)","MI + Melatonin improved oocyte & embryo quality (Gynecol Endocrinol 2011)"],
+  obj:[{q:"Plain Myo-Inositol se kya fark",a:"Obese PCOS mein DCI deficiency hoti hai -- 40:1 ratio yahi correct karta hai."},{q:"Metformin already",a:"Different mechanism -- complementary. Saath better outcomes."},{q:"Myolife se alag kya",a:"Myolife lean PCOS ke liye. Myolife Plus obese PCOS ke liye -- DCI + Melatonin extra."}],
+  journal:"Endocrine 2024 -- MI:DCI 40:1 RCT",
+  catch:"'Obese PCOS mein DCI deficiency hoti hai -- Myolife Plus ka 40:1 ratio + Melatonin exactly yahi correct karta hai'"
+},{
+  id:"myogdm", name:"Myo-GDM", pri:1, mrp:"Rs.311", ptv:"Rs.218", pack:"10x1x10 Tabs (1 BD)",
+  color:"#F59E0B", em:"🤰",
+  tag:"India's 1st -- GDM prevention & treatment",
+  ind:"Gestational Diabetes Mellitus (GDM) prevention & treatment",
+  comp:[
+    {n:"Myo-Inositol 550mg", r:"Insulin sensitizer. Pancreatic beta cell function restore."},
+    {n:"D-Chiro-Inositol 13.8mg", r:"Insulin resistance correct. Glucose metabolism."},
+    {n:"Chromium Picolinate 30mcg", r:"Insulin sensitivity enhance. Blood sugar stabilize."},
+    {n:"Vitamin D2 1000 IU", r:"Glucose tolerance improve. GDM risk reduce."},
+    {n:"Fenugreek Extract 500mg", r:"Delays gastric emptying & glucose absorption. Antidiabetic."},
+    {n:"L-Methylfolate 1mg", r:"Active folate -- safe in pregnancy."}
+  ],
+  dose:"1 tab BD",
+  trig:"Pregnant woman -- GDM diagnosis or high risk (family DM history, obese, previous macrosomic baby).",
+  proof:["India GDM rate 10-14.3% -- 1 in 5 pregnant women (GoI 2018)","MI+DCI -- insulin sensitizers classified alongside Metformin"],
+  obj:[{q:"Metformin se kaam chalega",a:"Metformin pregnancy mein limited use. Myo-GDM natural, safe, WHO recommended approach."},{q:"Evidence?",a:"India's first -- MI+DCI+Fenugreek combination specifically for GDM."},{q:"Kab shuru karein?",a:"High risk mein first trimester se. GDM diagnosed hone ke baad immediately."}],
+  journal:"GoI Ministry of Health 2018 -- India GDM statistics",
+  catch:"'India mein 1 in 5 pregnant women ko GDM -- Myo-GDM India ka pehla dedicated GDM solution'"
+},{
+  id:"osteofem", name:"Osteofem", pri:1, mrp:"Rs.463", ptv:"Rs.325", pack:"5x3x10 Tabs (1 OD)",
+  color:"#EC4899", em:"🦴",
+  tag:"Non-hormonal bone density -- DHQ + Pine Bark",
+  ind:"Osteoporosis, Osteopenia, bone density loss",
+  comp:[
+    {n:"Dihydro Quercetin (DHQ) 500mg", r:"Natural flavonoid. Anti-osteoclast. Activates osteoblastogenesis. Bone resorption decrease."},
+    {n:"Pine Bark Extract 100mg", r:"Inhibits bone resorption. Prevents BMD loss. Microarchitecture restore."},
+    {n:"Calcitriol 0.25mcg", r:"Active Vitamin D. Calcium uptake. Bone turnover markers decrease. BMD improve."}
+  ],
+  dose:"1 tab OD",
+  trig:"Perimenopausal/menopausal woman with bone density concerns. Post-fracture. Long-term steroid use.",
+  proof:["52.2% elderly women have Osteoporosis; 47.8% Osteopenia","DHQ -- osteoblastogenesis activating effects (Front Endocrinol 2021)","Calcitriol reduces BMD loss (Clin Inter Aging 2014)"],
+  obj:[{q:"Shelcal already de raha hoon",a:"Shelcal only calcium+D3. Osteofem mein DHQ+Pine Bark -- bone resorption directly block karta hai."},{q:"Hormones kyon nahi?",a:"Non-hormonal -- safe for all patients including hormone-sensitive cases."},{q:"Evidence?",a:"Front Endocrinol 2021 -- DHQ osteoblastogenesis. Clin Inter Aging 2014 -- Calcitriol."}],
+  journal:"Front Endocrinol 2021 -- DHQ bone health",
+  catch:"'Non-hormonal bone density -- DHQ 500mg bone resorption rokta hai, Calcitriol calcium uptake badhata hai'"
+},{
+  id:"utilac", name:"Utilac", pri:1, mrp:"Rs.320", ptv:"Rs.225", pack:"10x1x10 Caps (1 OD)",
+  color:"#06B6D4", em:"🛡️",
+  tag:"Recurrent UTI & candidiasis -- antibiotic-free",
+  ind:"Recurrent UTI, Vulvovaginal Candidiasis",
+  comp:[
+    {n:"L. Reuteri 1.25Bn", r:"Pathogen adhesion inhibit. Biosurfactants produce."},
+    {n:"L. Rhamnosus 2.50Bn", r:"H2O2 produce. Vaginal mucosa acidify. UTI recurrence prevent."},
+    {n:"L. Casei 1.25Bn", r:"Immune system synergy. Candida inhibit."},
+    {n:"L. Crispatus 1.00Bn", r:"Vaginal flora restore. pH balance."},
+    {n:"L. Fermentum 1.25Bn", r:"Anti-inflammatory. Pathogen displacement."},
+    {n:"Cranberry Extract 100mg", r:"E.coli adhesion prevent -- uroepithelial cells pe."}
+  ],
+  dose:"1 cap OD",
+  trig:"2+ UTI episodes per year. Recurrent candidiasis. Post-antibiotic vaginal infection.",
+  proof:["Lactobacillus preferred for urogynaecologic infections (Turk J Urol 2018)","Effective for UTI & candidiasis prevention & recurrence (J Midwifery Womens Health 2016)"],
+  obj:[{q:"Antibiotics se kaam chalega",a:"Antibiotic resistance badh raha hai. Utilac recurrence rokta hai -- antibiotics nahi roka karte."},{q:"Cranberry juice?",a:"Cranberry extract concentrated form -- juice mein itna nahi hota."},{q:"Kitne din?",a:"Minimum 1 month. Recurrent cases 3 months."}],
+  journal:"Turk J Urol 2018 -- Lactobacillus urogynaecologic infections",
+  catch:"'Recurrent UTI mein antibiotics kaafi nahi -- Utilac vaginal flora restore karta hai, recurrence rokta hai'"
+},{
+  id:"argilux", name:"Argilux", pri:2, mrp:"Rs.979", ptv:"Rs.688", pack:"20x6.5g Sachets (1 OD in water)",
+  color:"#F97316", em:"🤱",
+  tag:"Maternal-fetal outcomes -- L-Arginine 3g",
+  ind:"Pregnancy nutrition, IUGR prevention, pre-eclampsia risk reduction",
+  comp:[
+    {n:"L-Arginine 3000mg", r:"Nitric oxide -> placental blood flow -> fetal growth. IUGR prevent. Pre-eclampsia prevent."},
+    {n:"DHA (20%) 200mg", r:"Placentation. Fetal brain development. Pregnancy complications prevent."},
+    {n:"Proanthocyanidin 75mg", r:"Potent antioxidant. Blood vessels strengthen. Anti-inflammatory. Anti-diabetic."},
+    {n:"Vitamin B6 2mg", r:"Fetal brain development. Morning sickness/nausea relief."}
+  ],
+  dose:"1 sachet OD in half glass water, 16 weeks to delivery (or 1st trimester onwards in high-risk)",
+  trig:"High-risk pregnancy -- previous IUGR, hypertension, diabetes, twins. Second trimester.",
+  proof:["L-Arginine reduced IUGR risk 45% (AJOG 2024)","DHA -- fetal neurodevelopment (J Translational Medicine 2023)","Proanthocyanidin -- anti-inflammatory, anti-diabetic (J Functional Foods 2020)"],
+  obj:[{q:"Multivitamin already de raha hoon",a:"L-Arginine 3g aur Proanthocyanidin kisi multivit mein nahi -- dedicated add-on."},{q:"Taste?",a:"Orange flavour, sugar-free sachet. Compliance acchi hai."},{q:"Evidence?",a:"AJOG 2024 -- L-Arginine RCT high-risk pregnancy, 45% IUGR reduction."}],
+  journal:"AJOG 2024 -- L-Arginine high-risk pregnancy RCT",
+  catch:"'High-risk pregnancy mein L-Arginine 3g -- AJOG 2024 mein 45% IUGR reduction'"
+},{
+  id:"aldova", name:"Aldova", pri:3, mrp:"Rs.637", ptv:"Rs.447", pack:"Combi Pack (5 Tabs + 25 Caps)",
+  color:"#84CC16", em:"🌸",
+  tag:"OI support -- CC + NAC + Astaxanthin",
+  ind:"Ovulation induction, PCOS with CC resistance, RPL, preterm birth",
+  comp:[
+    {n:"Clomiphene Citrate 50mg", r:"FSH/LH release. Standard OI drug. Day 3-7."},
+    {n:"N-Acetyl Cysteine 600mg", r:"CC ki endometrial thinning solve. Pregnancy rate improve. Day 3-7 with CC."},
+    {n:"Astaxanthin 4mg", r:"Oocyte maturation improve. ART outcomes better. Day 8-27."}
+  ],
+  dose:"Day 3-7: CC+NAC tablet. Day 8-27: Astaxanthin capsule only",
+  trig:"PCOS needing OI. CC resistance. Previous failed OI cycles. RPL. Endometrial thinning concern.",
+  proof:["CC+NAC: better folliculogenesis, ovulation rate, endometrial thickness in PCOS (J ObstetGynecol Res 2012)","Astaxanthin: oocyte maturation & ART outcomes (J Ovarian Research 2024)"],
+  obj:[{q:"Plain CC kaam kar raha hai",a:"Endometrial thinning se cycles fail -- NAC yahi fix karta hai."},{q:"Letrozole prefer karta hoon",a:"Aldova CC-responsive cases ke liye. Alag indication."},{q:"Aldova-DS kab?",a:"CC 100mg dose chahiye tab -- same NAC+Astaxanthin combination."}],
+  journal:"J ObstetGynecol Res 2012 -- CC+NAC PCOS",
+  catch:"'CC likhte waqt endometrial thinning -- Aldova mein NAC yahi solve karta hai'"
+},{
+  id:"myolife", name:"Myolife", pri:1, mrp:"Rs.254", ptv:"Rs.178", pack:"10x1x10 Tabs (1 BD)",
+  color:"#A855F7", em:"💊",
+  tag:"Lean PCOS -- first line anovulation",
+  ind:"Anovulatory PCOS in lean/normal weight women",
+  comp:[
+    {n:"Myo-Inositol 1000mg", r:"Insulin signaling. Ovarian function normalize. Oocyte quality improve."},
+    {n:"L-Methylfolate 500mcg", r:"Active folate. MTHFR safe. Neural tube protection."},
+    {n:"Vitamin D3 1000 IU", r:"Insulin sensitivity. SHBG levels increase. Fertility improve."}
+  ],
+  dose:"1 tab BD",
+  trig:"Lean/normal PCOS woman -- anovulation, irregular cycles. Before starting OI.",
+  proof:["MI normalizes ovarian function, improves oocyte & embryo quality (Reprod Health 2021)","Increases clinical pregnancy rates & reduces abortion rates (Medicine Baltimore 2017)","Significant increase in SHBG levels"],
+  obj:[{q:"Inofolic same hai",a:"Similar but Myolife has Vit D3 -- Indian women mein D deficiency common. Alag dosing."},{q:"Myolife Plus se kya fark",a:"Myolife lean PCOS ke liye. Plus = obese PCOS ke liye DCI + Melatonin extra."},{q:"Kitne din?",a:"3-6 months. Ovulation usually 2-3 months mein restore."}],
+  journal:"Reprod Health 2021 -- MI PCOS ovulation",
+  catch:"'PCOS mein pehle Myolife try karo -- natural, insulin sensitivity improve, 3 months mein ovulation restore'"
+},{
+  id:"aldanvit", name:"Aldanvit", pri:1, mrp:"Rs.160", ptv:"Rs.112", pack:"10x1x10 Tabs (1 OD)",
+  color:"#6366F1", em:"✨",
+  tag:"Preventive health -- antioxidant powerhouse",
+  ind:"Lifestyle disorders, preventive health, antioxidant support",
+  comp:[
+    {n:"Omega-3 Fatty Acids", r:"HDL/LDL balance. Cardiovascular protection. Anti-inflammatory."},
+    {n:"Ginkgo Biloba 30mg", r:"Circulation improve. Cognitive function."},
+    {n:"Cyanocobalamin 2.5mcg", r:"B12 -- nerve health, energy."},
+    {n:"Lycopene (6%) 5000mcg", r:"Cancer prevention (breast, colon, uterus). Antioxidant."},
+    {n:"Lutein 20mcg", r:"Eye health. Cataract prevention."},
+    {n:"Green Tea Extract 50mg", r:"Antioxidant. Metabolic support."},
+    {n:"Grape Seed Extract 50mg", r:"Collagen synthesis. Bone formation. BP control."},
+    {n:"Ginseng Extract 42.5mg", r:"Energy. Stress. Fatigue."},
+    {n:"Alpha Lipoic Acid 100mg", r:"Blood sugar stabilize. Type 2 DM prevention."},
+    {n:"Biotin 30mcg", r:"Hair, skin, nail health."}
+  ],
+  dose:"1 tab OD",
+  trig:"Woman 35+ -- fatigue, urban diet deficiency, lifestyle stress. Preventive add-on.",
+  proof:["Lycopene -- breast, colon, uterus cancer prevention","Ginkgo Biloba -- circulation & cognitive function","ALA -- blood sugar stabilize, Type 2 DM prevention"],
+  obj:[{q:"Becosules already hai",a:"Becosules sirf B-vitamins. Aldanvit = 10 ingredients, antioxidants + Omega-3 + Ginkgo."},{q:"Koi specific indication?",a:"Preventive -- 35+ women mein lifestyle disorders. GP bhi likh sakta hai."},{q:"Kitne din?",a:"Long term -- 3-6 months, then review."}],
+  journal:"Front Endocrinol -- antioxidant combinations preventive health",
+  catch:"'35+ urban woman ko Aldanvit -- 10 antioxidants, cancer prevention, energy, eye health -- ek tab mein'"
 }];
 
 /* QUESTIONS  */
