@@ -1855,7 +1855,7 @@ function Quiz({
         onSubmit(na, sc);
       }
       setAns(na);
-    }, 1800);
+    }, 5000);
   };
   return /*#__PURE__*/React.createElement("div", {
     className: "px-4 pt-6 max-w-lg mx-auto"
@@ -3574,6 +3574,7 @@ function PracticeMode({
   const [sel, setSel] = useState(null);
   const [rev, setRev] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [replacing, setReplacing] = useState(false);
   const [tl, setTl] = useState(180); // 3 min for mock
   const tmr = useRef();
   const reset = () => {
@@ -3745,7 +3746,7 @@ function PracticeMode({
         ...s,
         answers: na
       }));
-    }, 1800);
+    }, 5000);
   };
 
   // Mock timer
@@ -3994,7 +3995,24 @@ function PracticeMode({
       className: "mt-1 text-xs opacity-70"
     }, "Thoda mushkil karte hain agle mein \uD83D\uDCC8"), cq.difficulty === "hard" && sel === cq.correct && /*#__PURE__*/React.createElement("div", {
       className: "mt-1 text-xs opacity-70"
-    }, "Excellent! Aap expert level pe hain \uD83C\uDF1F")));
+    }, "Excellent! Aap expert level pe hain \uD83C\uDF1F")),
+    /*#__PURE__*/React.createElement("button", {
+      onClick: async () => {
+        if(replacing) return; setReplacing(true);
+        try {
+          const pp2 = P.find(x => x.id === cq.product);
+          const rPrompt = "You are Aldan Healthcare WomEm Bihar trainer. Generate 1 NEW replacement MCQ. STRICT: ONLY about Aldan WomEm products (Ovalux/Lacoria/Myolife Plus/Aldova/Aldova-DS/Argilux/Myolife/LOQ-10 Plus/Utilac/Myo-GDM/Osteofem/Aldanvit). Product: " + (pp2 ? pp2.name + " Composition: " + pp2.comp.map(c=>c.n).join(", ") + " MRP: " + pp2.mrp : "any WomEm product") + ". Category: " + cq.cat + ". Difficulty: " + cq.difficulty + ". Return ONLY JSON: {\"cat\":\"" + cq.cat + "\",\"product\":\"" + (cq.product||"ovalux") + "\",\"q\":\"Hinglish question about this WomEm product\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanation\":\"1-2 lines\",\"difficulty\":\"" + cq.difficulty + "\"}";
+          const res2 = await fetch("/api/ai.php", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,messages:[{role:"user",content:rPrompt}]})});
+          const d2 = await res2.json();
+          const newQ = JSON.parse((d2.content?.[0]?.text||"").replace(/```json|```/g,"").trim());
+          if(newQ && newQ.q){const upd=[...session.questions];upd[qi]=newQ;setSession(s=>({...s,questions:upd}));setSel(null);setRev(false);}
+        } catch(e){console.error(e);}
+        setReplacing(false);
+      },
+      disabled: replacing,
+      className: "mt-2 w-full py-2 rounded-xl text-xs font-bold",
+      style: {background:"rgba(255,255,255,0.06)",color:"var(--sl)",border:"1px solid rgba(255,255,255,0.1)"}
+    }, replacing ? "Loading..." : "\uD83D\uDD04 Replace Question")));
   }
 
   // Loading
