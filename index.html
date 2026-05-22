@@ -1201,6 +1201,7 @@ function Main({
   const [myDocs, setMyDocs] = useState({});
   const [docsLoad, setDocsLoad] = useState(true);
   const [tpData, setTpData] = useState({});
+  const [tpLoading, setTpLoading] = useState(true);
   const [weakProds, setWeakProds] = useState([]);
   useEffect(() => {
     DB.ref(`${BASE}/users`).on("value", snap => {
@@ -1227,9 +1228,10 @@ function Main({
       setDocsLoad(false);
     }
     // Load TP
-    DB.ref(`${BASE}/tp/2026-05/${user.mobile}`).once("value").then(s => {
-      setTpData(toObj(s.val()));
-    });
+    const tpMonth = new Date().getFullYear() + "-" + String(new Date().getMonth()+1).padStart(2,"0");
+    DB.ref(`${BASE}/tp/${tpMonth}/${user.mobile}`).once("value").then(s => {
+      setTpData(toObj(s.val())); setTpLoading(false);
+    }).catch(() => setTpLoading(false));
     // Weak products
     const wp = WEAK_PRODUCTS[user.mobile] || [];
     setWeakProds(wp);
@@ -1355,7 +1357,8 @@ function Main({
     user: user,
     myDocs: myDocs,
     tpData: tpData,
-    docsLoad: docsLoad
+    docsLoad: docsLoad,
+    tpLoading: tpLoading
   }), tab === "products" && /*#__PURE__*/React.createElement(Products, {
     user: user
   }), tab === "leaderboard" && /*#__PURE__*/React.createElement(LB, {
@@ -1992,7 +1995,8 @@ function Today({
   user,
   myDocs,
   tpData,
-  docsLoad
+  docsLoad,
+  tpLoading
 }) {
   // ── date helpers ──
   const d = new Date();
@@ -2581,6 +2585,14 @@ function Today({
   // ═══════════════════════════════
   // MBE FLOWS (unchanged from v2.7)
   // ═══════════════════════════════
+
+  if (tpLoading) {
+    return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto"},
+      React.createElement("div", {className:"shim h-20 rounded-xl mb-3"}),
+      React.createElement("div", {className:"shim h-40 rounded-xl mb-3"}),
+      React.createElement("div", {className:"shim h-12 rounded-xl"})
+    );
+  }
 
   if (!todayTP || todayTP.activity !== "Field") {
     return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto text-center py-16"},
