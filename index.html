@@ -4787,6 +4787,63 @@ Current tone level: ${toneLevel < 33 ? "FRIENDLY/YAAR" : toneLevel < 66 ? "BALAN
     strokeLinejoin: "round"
   }))))));
 }
+
+function PinChange({user, onDone}) {
+  const [p1, setP1] = React.useState(["","","",""]);
+  const [p2, setP2] = React.useState(["","","",""]);
+  const [err, setErr] = React.useState("");
+  const [busy, setBusy] = React.useState(false);
+  const refs1 = [React.useRef(),React.useRef(),React.useRef(),React.useRef()];
+  const refs2 = [React.useRef(),React.useRef(),React.useRef(),React.useRef()];
+
+  const chg = (pin, setPin, refs, i, v) => {
+    if (!/^[0-9]?$/.test(v)) return;
+    const n = [...pin]; n[i] = v; setPin(n);
+    if (v && i < 3) refs[i+1].current && refs[i+1].current.focus();
+  };
+  const kd = (pin, refs, i, e) => {
+    if (e.key === "Backspace" && !pin[i] && i > 0) refs[i-1].current && refs[i-1].current.focus();
+  };
+  const save = async () => {
+    const np = p1.join(""), cp = p2.join("");
+    if (np.length !== 4) { setErr("4-digit PIN daalo"); return; }
+    if (np === "1234") { setErr("1234 use nahi kar sakte — naya PIN choose karo"); return; }
+    if (np !== cp) { setErr("Dono PINs match nahi kar rahe"); return; }
+    setBusy(true);
+    await DB.ref(BASE + "/users/" + user.mobile + "/pin").set(hashPIN(np));
+    await DB.ref(BASE + "/users/" + user.mobile + "/mustChangePin").remove();
+    onDone({...user, pin: hashPIN(np), mustChangePin: false});
+  };
+
+  return React.createElement("div", {className:"min-h-screen flex flex-col items-center justify-center px-6"},
+    React.createElement("div", {className:"w-full max-w-sm"},
+      React.createElement("div", {className:"text-center mb-8"},
+        React.createElement("div", {className:"text-5xl mb-3"}, "\uD83D\uDD10"),
+        React.createElement("div", {className:"serif text-2xl text-white font-bold mb-2"}, "PIN Change Karo"),
+        React.createElement("div", {className:"text-sm", style:{color:"var(--sl)"}}, "Pehli login pe apna personal PIN set karna zaroori hai"),
+        React.createElement("div", {className:"text-xs mt-2 px-4 py-2 rounded-xl inline-block", style:{background:"rgba(255,107,53,0.12)",color:"var(--o)"}}, "Default PIN (1234) band ho jayega")
+      ),
+      React.createElement("div", {className:"glass p-6"},
+        React.createElement("div", {className:"mb-6"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-3", style:{color:"var(--sl)"}}, "Naya 4-Digit PIN"),
+          React.createElement("div", {className:"flex gap-3 justify-center"},
+            p1.map((d,i) => React.createElement("input", {key:i, ref:refs1[i], type:"password", inputMode:"numeric", maxLength:1, value:d, onChange:e=>chg(p1,setP1,refs1,i,e.target.value), onKeyDown:e=>kd(p1,refs1,i,e), className:"pin-inp"}))
+          )
+        ),
+        React.createElement("div", {className:"mb-5"},
+          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-3", style:{color:"var(--sl)"}}, "Confirm PIN"),
+          React.createElement("div", {className:"flex gap-3 justify-center"},
+            p2.map((d,i) => React.createElement("input", {key:i, ref:refs2[i], type:"password", inputMode:"numeric", maxLength:1, value:d, onChange:e=>chg(p2,setP2,refs2,i,e.target.value), onKeyDown:e=>kd(p2,refs2,i,e), className:"pin-inp"}))
+          )
+        ),
+        err && React.createElement("div", {className:"text-red-400 text-sm mb-3 text-center"}, err),
+        React.createElement("button", {onClick:save, disabled:p1.some(d=>!d)||p2.some(d=>!d)||busy, className:"btn-o w-full"}, busy?"Saving...":"PIN Save Karo \uD83D\uDD10")
+      ),
+      React.createElement("div", {className:"text-center mt-4 text-xs", style:{color:"#4a5568"}}, "Yeh PIN yaad rakhna — reset ke liye admin se contact karo")
+    )
+  );
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
 
 </script>
