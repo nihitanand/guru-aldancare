@@ -2022,6 +2022,8 @@ function Today({
   const [docHistory, setDocHistory] = useState(null);
   const [histLoading, setHistLoading] = useState(false);
   const [replacing, setReplacing] = useState(false);
+  const [visitForm, setVisitForm] = useState({status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:""});
+  const [mgrVisitForm, setMgrVisitForm] = useState({status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:"",asmObservation:""});
   const [notifAsked, setNotifAsked] = useState(!!localStorage.getItem("guruNotifAsked"));
   const [notifGranted, setNotifGranted] = useState(typeof Notification !== "undefined" && Notification.permission === "granted");
 
@@ -2059,18 +2061,17 @@ function Today({
   // Load MBE list with today status for manager monitor
   useEffect(() => {
     if (!isMgr) return;
-    const mbes = TEAM.filter(t => t.role === "mbe");
-    DB.ref(`${BASE}/beat_log/${todayStr()}`).once("value").then(s => {
+    const mbes = TEAM.filter(function(t) { return t.role === "mbe"; });
+    DB.ref(BASE + "/beat_log/" + todayStr()).once("value").then(function(s) {
       const allLogs = toObj(s.val());
-      const list = mbes.map(mbe => ({
-        ...mbe,
+      const list = mbes.map(function(mbe) { return {
+        mobile: mbe.mobile, name: mbe.name, hq: mbe.hq, role: mbe.role,
         hasLog: !!allLogs[mbe.mobile],
         docCount: allLogs[mbe.mobile] ? toArr(allLogs[mbe.mobile].selectedDocs || []).length : 0,
-        visitCount: allLogs[mbe.mobile] ? Object.values(toObj(allLogs[mbe.mobile].visits || {})).filter(v => v.status === "visited").length : 0,
-        area: tpData[todayFmt] ? beatName : "—"
-      }));
+        visitCount: allLogs[mbe.mobile] ? Object.values(toObj(allLogs[mbe.mobile].visits || {})).filter(function(v){ return v.status === "visited"; }).length : 0
+      };});
       setMgrMbeList(list);
-    });
+    }).catch(function(e){ console.error("monitor load error",e); });
   }, []);
 
   // Push notif
@@ -2369,11 +2370,20 @@ function Today({
       toArr(mgrMbeBeat?.selectedDocs || []).map(code => Object.values(mgrMbeDocs).find(d => String(d.code) === String(code))).filter(Boolean);
 
     // Doc detail for logging
+  // Reset mgr form when mgrSelDocForLog changes
+  useEffect(() => {
+    if (mgrSelDocForLog) {
+      const vl = mgrMbeVisits[mgrSelDocForLog.code];
+      const init = vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:"",asmObservation:""};
+      setMgrVisitForm(init);
+    }
+  }, [mgrSelDocForLog]);
+
     if (mgrSelDocForLog) {
       const doc = mgrSelDocForLog;
       const vl = mgrMbeVisits[doc.code];
-      const initV = vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:"",asmObservation:""};
-      const [vs, setVs] = useState(initV);
+      const vs = mgrVisitForm;
+      const setVs = setMgrVisitForm;
       const weakP = getDocWeakProds(doc);
       return React.createElement("div", {className:"px-4 pt-4 max-w-lg mx-auto pb-8"},
         React.createElement("button", {onClick:()=>setMgrSelDocForLog(null), className:"text-sm mb-4",style:{color:"var(--sl)"}}, "{\u2190} Beat List"),
@@ -2649,12 +2659,21 @@ function Today({
     );
   }
 
+  // Reset form when selDoc changes
+  useEffect(() => {
+    if (selDoc) {
+      const vl = visitLog[selDoc.code];
+      const init = editingVisit || (vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:""});
+      setVisitForm(init);
+      if (!docHistory) loadDocHistory(selDoc);
+    }
+  }, [selDoc]);
+
   if (selDoc) {
     const vl = visitLog[selDoc.code];
-    const initVisit = editingVisit||(vl?{...vl}:{status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:""});
-    const [vs,setVs] = useState(initVisit);
+    const vs = visitForm;
+    const setVs = setVisitForm;
     const weakP = getDocWeakProds(selDoc);
-    useEffect(()=>{if(!docHistory)loadDocHistory(selDoc);},[selDoc]);
     return React.createElement("div",{className:"px-4 pt-4 max-w-lg mx-auto pb-8"},
       React.createElement("button",{onClick:()=>{setSelDoc(null);setDocHistory(null);setEditingVisit(null);},className:"text-sm mb-4 flex items-center gap-1",style:{color:"var(--sl)"}}, "{\u2190} Beat List"),
       React.createElement("div",{className:"flex items-center gap-3 mb-4"},
