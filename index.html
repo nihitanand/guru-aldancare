@@ -2654,14 +2654,14 @@ function Today({
           React.createElement(Row2, {ic:"\uD83D\uDCCD",lb:"Beat",vl:beatName}),
           React.createElement(Row2, {ic:"\uD83C\uDFD9\uFE0F",lb:"Work Area",vl:todayTP.area&&todayTP.area!=="nan"?todayTP.area:"--"}),
           React.createElement(Row2, {ic:"\uD83D\uDCCA",lb:"Category",vl:todayTP.workCat&&todayTP.workCat!=="nan"?todayTP.workCat:"--"}),
-          React.createElement(Row2, {ic:"\uD83D\uDC69\u200D\u2695\uFE0F",lb:"Doctors Planned",vl:`${todayTP.docCount||"?"} doctors`})
+          React.createElement(Row2, {ic:"\uD83D\uDC69\u200D\u2695\uFE0F",lb:"Doctors Planned",vl:(beatDocs.length > 0 ? beatDocs.length : todayTP.docCount || "?") + " doctors"})
         )
       ),
       React.createElement("div", {className:"card p-4 mb-4"},
         React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2",style:{color:"var(--sl)"}}, "Koi badlaav hai plan mein?"),
         React.createElement("textarea", {value:devNote,onChange:e=>setDevNote(e.target.value),placeholder:"Optional -- deviation note",rows:2,className:"w-full rounded-xl px-3 py-2 text-sm text-white focus:outline-none resize-none",style:{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}})
       ),
-      React.createElement("button", {onClick:()=>{setSelectedCodes([]);setPhase("select");}, className:"btn-o w-full"}, "\uD83D\uDC69\u200D\u2695\uFE0F Select Today's Doctors \u2192")
+      React.createElement("button", {onClick:()=>{setSelectedCodes([...beatDocs]);setPhase("select");}, className:"btn-o w-full"}, "\uD83D\uDC69\u200D\u2695\uFE0F Select Today's Doctors \u2192")
     );
   }
 
@@ -2820,7 +2820,7 @@ function Today({
       displayBeatDocs.length===0&&React.createElement("div",{className:"text-center py-12",style:{color:"var(--sl)"}},
         React.createElement("div",{className:"text-3xl mb-2"},"\uD83D\uDC65"),
         React.createElement("div",{className:"text-sm font-semibold"},"Koi doctor select nahi hai"),
-        React.createElement("button",{onClick:()=>{setSelectedCodes([]);setPhase("select");},className:"btn-o mt-3"},"Select Doctors")
+        React.createElement("button",{onClick:()=>{setSelectedCodes([...beatDocs]);setPhase("select");},className:"btn-o mt-3"},"Select Doctors")
       ),
       displayBeatDocs.map(doc=>{
         const vl=visitLog[doc.code];const weakP=getDocWeakProds(doc);
