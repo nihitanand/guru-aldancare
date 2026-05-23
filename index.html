@@ -1355,15 +1355,13 @@ function Main({
     onStartQuiz: loadQuiz,
     lb: lb,
     tpData: tpData
-  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd, onDone: function(){setQd(prev=>({...prev,showResult:false,alreadyDone:true}));setTab("home");}}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(TodayErrorBoundary, null,
-    /*#__PURE__*/React.createElement(Today, {
-      user: user,
-      myDocs: myDocs,
-      tpData: tpData,
-      docsLoad: docsLoad,
-      tpLoading: tpLoading
-    })
-  ), tab === "products" && /*#__PURE__*/React.createElement(Products, {
+  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd, onDone: function(){setQd(prev=>({...prev,showResult:false,alreadyDone:true}));setTab("home");}}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(Today, {
+    user: user,
+    myDocs: myDocs,
+    tpData: tpData,
+    docsLoad: docsLoad,
+    tpLoading: tpLoading
+  }), tab === "products" && /*#__PURE__*/React.createElement(Products, {
     user: user
   }), tab === "leaderboard" && /*#__PURE__*/React.createElement(LB, {
     user: user,
@@ -1957,6 +1955,16 @@ function QuizResult({qd, onDone}) {
   );
 }
 
+
+function Row2({ic, lb, vl}) {
+  return React.createElement("div", {className:"flex items-center justify-between py-1.5"},
+    React.createElement("div", {className:"flex items-center gap-2 text-sm", style:{color:"var(--sl)"}},
+      React.createElement("span", null, ic),
+      React.createElement("span", null, lb)
+    ),
+    React.createElement("div", {className:"text-sm font-semibold text-white"}, vl)
+  );
+}
 
 function Today({
   user,
