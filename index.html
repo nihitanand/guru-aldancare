@@ -1611,7 +1611,7 @@ function Home({
     style: {
       color: "var(--sl)"
     }
-  }, todayTP.workCat, " . ", todayTP.docCount || "?", " doctors planned")), /*#__PURE__*/React.createElement("div", {
+  }, todayTP.workCat, " . ", (beatDocs && beatDocs.length > 0 ? beatDocs.length : todayTP.docCount || "?"), " doctors planned")), /*#__PURE__*/React.createElement("div", {
     className: "text-2xl"
   }, "\uD83D\uDCCB"))), /*#__PURE__*/React.createElement("div", {
     className: "glass p-5 mb-4 fu",
