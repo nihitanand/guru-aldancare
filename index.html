@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>🎓 Aldan Guru v2.7</title>
+<title>🎓 Aldan Guru v2.8</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -988,12 +988,12 @@ function Splash() {
     }
   }, "\uD83C\uDF93"), /*#__PURE__*/React.createElement("div", {
     className: "serif text-3xl text-white font-bold"
-  }, "Aldan Guru"), /*#__PURE__*/React.createElement("div", {
+  }, "Aldan Guru"), /*#__PURE__*/React.createElement(AddToHomeScreen, null), /*#__PURE__*/React.createElement("div", {
     className: "text-xs mt-1",
     style: {
       color: "var(--sl)"
     }
-  }, "v2.7"), /*#__PURE__*/React.createElement("div", {
+  }, "v2.8"), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-2 mt-3"
   }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("div", {
     key: i,
@@ -1110,7 +1110,7 @@ function Login({
     style: {
       color: "#4a5568"
     }
-  }, "v2.7")), /*#__PURE__*/React.createElement("div", {
+  }, "v2.8")), /*#__PURE__*/React.createElement("div", {
     className: "glass p-6 fu",
     style: {
       animationDelay: "0.1s"
@@ -1285,6 +1285,8 @@ function Main({
       score,
       completedAt: new Date().toISOString()
     };
+    // Show result screen immediately
+    setQd(prev => ({...prev, answers, score, showResult: true}));
     await DB.ref(`${BASE}/quiz/${user.mobile}/${todayStr()}`).set(r);
     // Streak
     const last = user.lastActive;
@@ -1353,7 +1355,7 @@ function Main({
     onStartQuiz: loadQuiz,
     lb: lb,
     tpData: tpData
-  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(TodayErrorBoundary, null,
+  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd, onDone: function(){setQd(prev=>({...prev,showResult:false,alreadyDone:true}));setTab("home");}}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(TodayErrorBoundary, null,
     /*#__PURE__*/React.createElement(Today, {
       user: user,
       myDocs: myDocs,
@@ -1710,316 +1712,251 @@ function Home({
 }
 
 /* QUIZ  */
-function Quiz({
-  qd,
-  user,
-  onSubmit,
-  weakProds
-}) {
-  const [qi, setQi] = useState(0);
-  const [ans, setAns] = useState([]);
-  const [sel, setSel] = useState(null);
-  const [rev, setRev] = useState(false);
-  const [tl, setTl] = useState(90);
-  const [fs, setFs] = useState(null);
-  const [aiQ, setAiQ] = useState(null);
-  const [genLoad, setGenLoad] = useState(false);
-  const tmr = useRef();
-  useEffect(() => {
-    if (!(qd && qd.alreadyDone)) genAI();
-  }, []);
-  const genAI = async () => {
-    setGenLoad(true);
-    try {
-      const weak = weakProds.map(w => {
-        const p = P.find(pp => PROD_RX_KEY[w] === pp.id);
-        return p ? `${p.name} (weak in territory)` : w;
-      }).join(", ");
-      const prodContext = `VERIFIED WOMEM PORTFOLIO (VAB + LBL + Clinical Literature):\n\n1. OVALUX (Rs.1219 | 5x2x14 Caps | 1 OD after meal x 3+ months)\nComposition: Ubiquinol Acetate 100mg + DHEA (SR) 50mg + DHEA (IR) 25mg + Piperine 5mg + Melatonin 3mg + L-Methylfolate 714mcg + Vit D2 600 IU\nEvidence: DHEA 16 RCTs (J Ovarian Research 2025, 1973 women) OR=1.34. Steroids Vol.211 Nov 2024. Ubiquinol Acetate 8x vs CoQ10.\nObjections: DHEA safe in DOR. Price -- IVF costs Rs.1.5-2L, Ovalux 3 months = Rs.3500.\n\n2. LACORIA (Rs.432 | 2 caps BID x 7 days)\nComposition: L.Crispatus 1Bn + L.Rhamnosus 1Bn + L.Gasseri 0.3Bn + L.Jensenii 0.2Bn + L.Iners 0.5Bn + FOS 100mg\nEvidence: Probiotics > antibiotics BV (Int J Environ Res 2019). Indian strains (J Med Microbiol 2014). Untreated BV causes infertility, preterm delivery.\n\n3. MYOLIFE PLUS (Rs.329 | 1 BD) -- OBESE PCOS (BMI>25)\nComposition: MI 1000mg + DCI 25mg (40:1) + Melatonin 1.5mg + L-Methylfolate 1mg\nEvidence: RCT 46 obese PCOS ovulation restored (Int J Endocrinology 2016, Art.3204083). MI+Melatonin oocyte quality (Gynecol Endocrinol 2011).\n\n4. ALDOVA (Rs.637) / ALDOVA-DS (Rs.778) | Combi Pack\nAldova: CC 50mg + NAC 600mg + Astaxanthin 4mg. Aldova-DS: CC 100mg + NAC 600mg + Astaxanthin 4mg.\nDosage: Day 3-7 CC+NAC; Day 8-27 Astaxanthin. 4 RCTs: Austin J ObstetGynecol 2019 p=0.008. Front Endocrinol 2023. J Ovarian Research 2024 Vol.17 Art.205. J Ovarian Research 2024 Vol.17 Art.163 MD:8.40.\n\n5. ARGILUX (Rs.979 | 20x6.5g Sachets Orange Sugar-free | 1 OD)\nComposition: L-Arginine 3000mg + DHA 200mg + Proanthocyanidin 75mg + Vit B6 2mg\nEvidence: J Matern Fetal Neonatal Med 2023 (51 studies) L-Arg pre-eclampsia/IUGR safe in pregnancy. Pharmacogenomics 2025.\n\n6. MYOLIFE (Rs.254 | 1 BD) -- LEAN/normal PCOS. MI 1000mg + L-Methylfolate 500mcg + Vit D3 1000 IU (Reprod Health 2021).\n\n7. LOQ-10 PLUS (Rs.516 | 1 OD) -- Male OAT. Ubiquinol 30mg + Astaxanthin 8mg + L-Carnitine 200mg + L-Arginine 250mg + Selenium 40mcg + Zinc 11mg + Omega-3 + Methylcobalamin 2.5mcg + Lycopene 4000mcg + Benfotiamine 18mg. Ubiquinol 8x bioavailable (Mitochondria Vol.7).\n\n8. UTILAC (Rs.320 | 1 OD) -- UTI/Candidiasis. L.Reuteri 1.25Bn + L.Rhamnosus 2.5Bn + L.Casei 1.25Bn + L.Crispatus 1Bn + L.Fermentum 1.25Bn + Cranberry 100mg. (Turk J Urol 2018)\n\n9. MYO-GDM (Rs.311 | 1 BD) -- India 1st GDM. MI 550mg + DCI 13.8mg + Chromium 30mcg + Vit D2 1000IU + Fenugreek 500mg + L-Methylfolate 1mg. India GDM 10-14.3% (GoI 2018).\n\n10. OSTEOFEM (Rs.463 | 1 OD) -- DHQ 500mg + Pine Bark 100mg + Calcitriol 0.25mcg. (Front Endocrinol 2021; Clin Inter Aging 2014). 52.2% elderly women Osteoporosis.\n\n11. ALDANVIT (Rs.160 | 1 OD) -- Omega-3 + Ginkgo 30mg + Cyanocobalamin 2.5mcg + Lycopene 5000mcg + Lutein 20mcg + Green Tea 50mg + Grape Seed 50mg + Ginseng 42.5mg + ALA 100mg + Biotin 30mcg.\n\n12. ALDOVA-DS (Rs.778) -- CC 100mg + NAC 600mg + Astaxanthin 4mg. CC-resistant/higher dose. Day 3-7/Day 8-27 protocol.\n\nSTRICT RULE: ONLY ask questions about these 12 Aldan WomEm products. ZERO tolerance for generic pharma, sanitary products, writing techniques, procurement, or any non-WomEm topic. 100% syllabus bound.`;
-      const res = await fetch("/api/ai.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1200,
-          messages: [{
-            role: "user",
-            content: `You are Aldan Guru, pharma training AI for Aldan Healthcare WomEm Bihar field force.\n\nUser: ${user.name}, Role: ${user.role.toUpperCase()}, HQ: ${user.hq}\nWeak products in territory: ${weak || "none identified"}\n\nFull Product Portfolio:\n${prodContext}\n\nGenerate exactly 3 MCQ questions in Hinglish. Mix all 8 categories: Composition, MRP & Packing, Mechanism, Journal Reference, Catch Line, Doctor Insight, Objection Handle, Product Choice. Weight weak products 60%. Make doctor-level insights where possible -- e.g. reference that a specific product is weak in their territory.\n\nReturn ONLY valid JSON array, no markdown:\n[{"cat":"Category","product":"id","q":"question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish"}]`
-          }]
-        })
-      });
-      const data = await res.json();
-      const t = data.content?.[0]?.text || "";
-      const parsed = JSON.parse(t.replace(/```json|```/g, "").trim());
-      if (Array.isArray(parsed) && parsed.length === 3) setAiQ(parsed.map((q, i) => ({
-        ...q,
-        id: i
-      })));
-    } catch (e) {
-      console.log("AI fallback to static");
-    }
-    setGenLoad(false);
-  };
-  const qs = aiQ || (qd && qd.questions) || [];
-  useEffect(() => {
-    if ((qd && qd.alreadyDone) || fs !== null || qs.length === 0) return;
-    tmr.current = setInterval(() => setTl(t => {
-      if (t <= 1) {
-        clearInterval(tmr.current);
-        const ra = [...ans];
-        for (let i = ans.length; i < 3; i++) ra.push(-1);
-        const sc = ra.filter((a, ii) => a === qs[ii]?.correct).length;
-        setFs(sc);
-        onSubmit(ra, sc);
-        return 0;
-      }
-      return t - 1;
-    }), 1000);
-    return () => clearInterval(tmr.current);
-  }, [ans.length, (qd && qd.alreadyDone), fs, qs]);
-  if (genLoad && !aiQ) return /*#__PURE__*/React.createElement("div", {
-    className: "min-h-screen flex flex-col items-center justify-center gap-4 px-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-4xl",
-    style: {
-      animation: "pulse 1s infinite"
-    }
-  }, "\uD83E\uDDE0"), /*#__PURE__*/React.createElement("div", {
-    className: "serif text-xl text-white"
-  }, "AI quiz bana raha hai..."), /*#__PURE__*/React.createElement("div", {
-    className: "text-sm mb-2",
-    style: {
-      color: "var(--sl)"
-    }
-  }, "Aapke territory data ke hisaab se"), /*#__PURE__*/React.createElement("div", {
-    className: "flex gap-2"
-  }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "pdot w-2 h-2 rounded-full",
-    style: {
-      background: "var(--o)"
-    }
-  }))));
-  const ReviewList = ({
-    questions,
-    answers,
-    score
-  }) => /*#__PURE__*/React.createElement("div", {
-    className: "px-4 pt-6 max-w-lg mx-auto"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-center mb-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-5xl mb-3 sr"
-  }, score === 3 ? "🎉" : score >= 2 ? "😊" : "💪"), /*#__PURE__*/React.createElement("div", {
-    className: "serif text-2xl text-white font-bold"
-  }, score === 3 ? "Quiz Complete!" : "Quiz Done"), /*#__PURE__*/React.createElement("div", {
-    className: "text-5xl font-black mt-2 sr",
-    style: {
-      color: score === 3 ? "#20BF6B" : score >= 2 ? "#F7B731" : "#FF6B35"
-    }
-  }, score, "/3"), /*#__PURE__*/React.createElement("div", {
-    className: "text-sm mt-2",
-    style: {
-      color: "var(--sl)"
-    }
-  }, score === 3 ? "Perfect! Aap expert hain 🌟" : score === 2 ? "Accha -- kal 3/3 ka try!" : "Kal phir pakke se aana!"), /*#__PURE__*/React.createElement("div", {
-    className: "mt-2 text-xs font-bold",
-    style: {
-      color: "var(--o)"
-    }
-  }, "+", score * PTS.quiz_correct + (score === 3 ? PTS.quiz_perfect : 0), " pts earned")), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-3"
-  }, questions.filter((_, i) => i < answers.length).map((q, i) => {
-    const ir = answers[i] === q.correct;
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      className: "card p-4",
-      style: {
-        border: `1px solid ${ir ? "rgba(32,191,107,0.3)" : "rgba(239,68,68,0.3)"}`
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "flex items-center gap-2 mb-2"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "bdg text-xs",
-      style: {
-        background: "rgba(255,255,255,0.05)",
-        color: "var(--sl)"
-      }
-    }, q.cat)), /*#__PURE__*/React.createElement("div", {
-      className: "text-sm text-white mb-2"
-    }, q.q), /*#__PURE__*/React.createElement("div", {
-      className: `text-xs font-semibold ${ir ? "text-green-400" : "text-red-400"}`
-    }, ir ? "✅ Sahi!" : ` ❌ Sahi: "${q.options[q.correct]}"`), /*#__PURE__*/React.createElement("div", {
-      className: "text-xs mt-1.5",
-      style: {
-        color: "var(--sl)"
-      }
-    }, q.explanation));
-  })));
-  if ((qd && qd.alreadyDone)) return /*#__PURE__*/React.createElement(ReviewList, {
-    questions: qd.questions || [],
-    answers: qd.answers || [],
-    score: qd.score ?? 0
-  });
-  if (fs !== null) return /*#__PURE__*/React.createElement(ReviewList, {
-    questions: qs,
-    answers: ans,
-    score: fs
-  });
+function Quiz({qd, user, onSubmit, weakProds}) {
+  const qs = toArr(qd && qd.questions);
+  const [qi, setQi] = React.useState(0);
+  const [ans, setAns] = React.useState([]);
+  const [sel, setSel] = React.useState(null);
+  const [rev, setRev] = React.useState(false);
+  const [replacing, setReplacing] = React.useState(false);
+  const [autoAdv, setAutoAdv] = React.useState(null); // setTimeout id
+  const [countdown, setCountdown] = React.useState(0);
+  const cdRef = React.useRef(null);
+
   const cq = qs[qi];
-  if (!cq) return /*#__PURE__*/React.createElement(Loading, {
-    msg: "Quiz load ho raha hai..."
-  });
-  const tc = tl / 90;
-  const circ = 2 * Math.PI * 22;
-  const tcol = tl > 30 ? "#20BF6B" : tl > 10 ? "#F7B731" : "#EF4444";
-  const pp = P.find(p => p.id === cq.product);
-  const pick = i => {
-    if (sel !== null) return;
-    setSel(i);
-    setRev(true);
-    const na = [...ans, i];
-    setTimeout(() => {
-      if (qi < 2) {
+
+  const clearTimers = () => {
+    if (autoAdv) { clearTimeout(autoAdv); setAutoAdv(null); }
+    if (cdRef.current) { clearInterval(cdRef.current); cdRef.current = null; }
+  };
+
+  React.useEffect(() => {
+    return () => clearTimers();
+  }, []);
+
+  // Already done
+  if (qd && qd.alreadyDone) {
+    return React.createElement("div", {className:"px-4 pt-10 max-w-lg mx-auto text-center"},
+      React.createElement("div", {className:"text-5xl mb-4"}, "\u2705"),
+      React.createElement("div", {className:"serif text-2xl text-white font-black mb-2"}, "Quiz Ho Gaya!"),
+      React.createElement("div", {className:"text-sm mb-2", style:{color:"var(--sl)"}}, "Aaj ka quiz complete. Kal milte hain \uD83C\uDFAF"),
+      qd.score !== undefined && React.createElement("div", {className:"text-lg font-bold mt-3", style:{color:"var(--o)"}}, "Score: " + qd.score + "/" + (qs.length || 5))
+    );
+  }
+
+  if (!cq) return React.createElement("div", {className:"px-4 pt-10 text-center", style:{color:"var(--sl)"}}, "Loading quiz...");
+
+  const pick = (optIdx) => {
+    if (rev || sel !== null) return; // already answered
+    setSel(optIdx);
+    setCountdown(5);
+
+    // Start 5s countdown display
+    let c = 5;
+    cdRef.current = setInterval(() => {
+      c--;
+      setCountdown(c);
+      if (c <= 0) {
+        clearInterval(cdRef.current);
+        cdRef.current = null;
+      }
+    }, 1000);
+
+    // Auto-advance after 5s
+    const tid = setTimeout(() => {
+      const newAns = [...ans, optIdx];
+      setAns(newAns);
+      if (qi + 1 >= qs.length) {
+        // All done - submit
+        const sc = newAns.filter((a, i) => a === qs[i].correct).length;
+        onSubmit(newAns, sc);
+      } else {
         setQi(qi + 1);
         setSel(null);
         setRev(false);
-      } else {
-        clearInterval(tmr.current);
-        const sc = na.filter((a, ii) => a === qs[ii]?.correct).length;
-        setFs(sc);
-        onSubmit(na, sc);
+        setCountdown(0);
       }
-      setAns(na);
+      setAutoAdv(null);
     }, 5000);
+    setAutoAdv(tid);
+    setRev(true);
   };
-  return /*#__PURE__*/React.createElement("div", {
-    className: "px-4 pt-6 max-w-lg mx-auto"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between mb-5"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "text-xs uppercase tracking-widest font-bold",
-    style: {
-      color: "var(--sl)"
-    }
-  }, "Sawaal ", qi + 1, " / 3"), /*#__PURE__*/React.createElement("div", {
-    className: "flex gap-1.5 mt-2"
-  }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "h-1.5 rounded-full w-8 transition-all",
-    style: {
-      background: i < qi ? "#20BF6B" : i === qi ? "#FF6B35" : "rgba(255,255,255,0.1)"
-    }
-  })))), /*#__PURE__*/React.createElement("div", {
-    className: "relative w-14 h-14"
-  }, /*#__PURE__*/React.createElement("svg", {
-    className: "w-14 h-14",
-    style: {
-      transform: "rotate(-90deg)"
-    },
-    viewBox: "0 0 52 52"
-  }, /*#__PURE__*/React.createElement("circle", {
-    cx: "26",
-    cy: "26",
-    r: "22",
-    fill: "none",
-    stroke: "rgba(255,255,255,0.08)",
-    strokeWidth: "3"
-  }), /*#__PURE__*/React.createElement("circle", {
-    cx: "26",
-    cy: "26",
-    r: "22",
-    fill: "none",
-    stroke: tcol,
-    strokeWidth: "3",
-    strokeDasharray: circ,
-    strokeDashoffset: circ * (1 - tc),
-    className: "timer-ring",
-    strokeLinecap: "round"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "absolute inset-0 flex items-center justify-center"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "text-sm font-black",
-    style: {
-      color: tcol
-    }
-  }, tl)))), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-2 mb-3"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "bdg text-xs",
-    style: {
-      background: `${(pp && pp.color) || "#FF6B35"}22`,
-      color: (pp && pp.color) || "#FF6B35"
-    }
-  }, cq.cat), /*#__PURE__*/React.createElement("span", {
-    className: "bdg text-xs",
-    style: {
-      background: "rgba(255,255,255,0.05)",
-      color: "var(--sl)"
-    }
-  }, (pp && pp.name) || cq.product)), /*#__PURE__*/React.createElement("div", {
-    className: "card p-5 mb-5"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-white font-semibold text-base leading-relaxed"
-  }, cq.q)), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-3"
-  }, cq.options.map((opt, i) => {
-    let cls = "qopt";
-    if (rev) {
-      if (i === cq.correct) cls += " ok";else if (i === sel && i !== cq.correct) cls += " no";
-    }
-    return /*#__PURE__*/React.createElement("button", {
-      key: i,
-      className: cls,
-      onClick: () => pick(i),
-      disabled: !!rev
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "mr-2 font-bold text-xs",
-      style: {
-        color: "var(--sl)"
+
+  const replaceQ = async () => {
+    if (replacing || sel !== null) return;
+    setReplacing(true);
+    try {
+      const pp = P.find(function(x) { return x.id === cq.product; });
+      const rPrompt = "You are Aldan Healthcare WomEm Bihar trainer. Generate 1 NEW replacement MCQ. STRICT: ONLY about Aldan WomEm products (Ovalux/Lacoria/Myolife Plus/Aldova/Aldova-DS/Argilux/Myolife/LOQ-10 Plus/Utilac/Myo-GDM/Osteofem/Aldanvit). Product: " + (pp ? pp.name + " Composition: " + pp.comp.map(function(c){return c.n;}).join(", ") + " MRP: " + pp.mrp : "any WomEm product") + ". Category: " + cq.cat + ". Difficulty: " + cq.difficulty + ". Return ONLY JSON: {\"cat\":\"" + cq.cat + "\",\"product\":\"" + (cq.product || "ovalux") + "\",\"q\":\"Hinglish question about this WomEm product\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanation\":\"1-2 lines\",\"difficulty\":\"" + cq.difficulty + "\"}";
+      const res = await fetch("/api/ai.php", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({model:"claude-sonnet-4-20250514", max_tokens:500, messages:[{role:"user", content:rPrompt}]})});
+      const d = await res.json();
+      const newQ = JSON.parse(((d.content && d.content[0] && d.content[0].text) || "").replace(/```json|```/g,"").trim());
+      if (newQ && newQ.q) {
+        const upd = qs.slice();
+        upd[qi] = newQ;
+        // Update qd questions
+        qd.questions = upd;
       }
-    }, String.fromCharCode(65 + i), "."), opt);
-  })), rev && /*#__PURE__*/React.createElement("div", {
-    className: `mt-4 p-4 rounded-xl text-sm border fu ${sel === cq.correct ? "text-green-200" : "text-red-200"}`,
-    style: {
-      background: sel === cq.correct ? "rgba(32,191,107,0.1)" : "rgba(239,68,68,0.1)",
-      borderColor: sel === cq.correct ? "rgba(32,191,107,0.3)" : "rgba(239,68,68,0.3)"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "font-bold mb-1"
-  }, sel === cq.correct ? "✅ Bilkul sahi!" : "❌ Galat jawab"), cq.explanation));
-}
+    } catch(e) { console.error(e); }
+    setReplacing(false);
+  };
 
-/* TODAY'S BEAT  */
+  const isCorrect = sel === cq.correct;
+  const prog = Math.round((qi / qs.length) * 100);
 
-class TodayErrorBoundary extends React.Component {
-  constructor(props) { super(props); this.state = {error:null}; }
-  componentDidCatch(error, info) { this.setState({error: error.toString() + " | " + (info && info.componentStack ? info.componentStack.slice(0,200) : "")}); }
-  static getDerivedStateFromError(error) { return {error: error.toString()}; }
-  render() {
-    if (this.state.error) {
-      return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto"},
-        React.createElement("div", {className:"card p-4", style:{border:"1px solid rgba(239,68,68,0.3)"}},
-          React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest mb-2", style:{color:"#EF4444"}}, "Debug Error"),
-          React.createElement("div", {className:"text-xs break-all", style:{color:"var(--sl)"}}, this.state.error)
+  return React.createElement("div", {className:"px-4 pt-4 max-w-lg mx-auto pb-8"},
+    // Header
+    React.createElement("div", {className:"flex items-center justify-between mb-4"},
+      React.createElement("div", {className:"text-xs font-bold uppercase tracking-widest", style:{color:"var(--sl)"}},
+        "Q " + (qi+1) + "/" + qs.length
+      ),
+      React.createElement("div", {className:"flex items-center gap-2"},
+        React.createElement("span", {
+          className:"text-xs px-2 py-1 rounded-full font-bold",
+          style:{
+            background: cq.difficulty==="hard" ? "rgba(239,68,68,0.15)" : cq.difficulty==="easy" ? "rgba(32,191,107,0.15)" : "rgba(255,183,49,0.15)",
+            color: cq.difficulty==="hard" ? "#EF4444" : cq.difficulty==="easy" ? "#20BF6B" : "#F7B731"
+          }
+        }, cq.difficulty),
+        sel !== null && React.createElement("span", {className:"text-xs font-bold", style:{color:"var(--o)"}},
+          countdown + "s"
         )
-      );
-    }
-    return this.props.children;
-  }
-}
-
-function Row2({ic, lb, vl}) {
-  return React.createElement("div", {className:"flex items-center justify-between py-1.5"},
-    React.createElement("div", {className:"flex items-center gap-2 text-sm", style:{color:"var(--sl)"}},
-      React.createElement("span", null, ic),
-      React.createElement("span", null, lb)
+      )
     ),
-    React.createElement("div", {className:"text-sm font-semibold text-white"}, vl)
+    // Progress bar
+    React.createElement("div", {className:"w-full rounded-full h-1.5 mb-5", style:{background:"rgba(255,255,255,0.08)"}},
+      React.createElement("div", {
+        className:"h-1.5 rounded-full transition-all",
+        style:{width: prog + "%", background:"linear-gradient(90deg,var(--o),#20BF6B)"}
+      })
+    ),
+    // Category tag
+    React.createElement("div", {className:"inline-block px-3 py-1 rounded-full text-xs font-bold mb-4", style:{background:"rgba(255,107,53,0.15)",color:"var(--o)"}},
+      cq.cat
+    ),
+    // Question
+    React.createElement("div", {
+      className:"card p-5 mb-5 text-white font-semibold leading-relaxed",
+      style:{fontSize:"15px", lineHeight:"1.6"}
+    }, cq.q),
+    // Options
+    React.createElement("div", {className:"space-y-2.5 mb-4"},
+      (cq.options || []).map(function(opt, i) {
+        var base = "w-full text-left px-4 py-3.5 rounded-xl text-sm font-semibold transition-all border ";
+        var style = {};
+        if (sel === null) {
+          style = {background:"rgba(255,255,255,0.05)", color:"white", border:"1px solid rgba(255,255,255,0.08)"};
+        } else if (i === cq.correct) {
+          style = {background:"rgba(32,191,107,0.2)", color:"#20BF6B", border:"1px solid rgba(32,191,107,0.4)"};
+        } else if (i === sel && sel !== cq.correct) {
+          style = {background:"rgba(239,68,68,0.2)", color:"#EF4444", border:"1px solid rgba(239,68,68,0.4)"};
+        } else {
+          style = {background:"rgba(255,255,255,0.03)", color:"rgba(255,255,255,0.3)", border:"1px solid rgba(255,255,255,0.05)"};
+        }
+        return React.createElement("button", {
+          key: i,
+          onClick: function() { pick(i); },
+          disabled: sel !== null,
+          className: base,
+          style: style
+        },
+          React.createElement("span", {className:"font-black mr-2", style:{color:"var(--o)"}},
+            String.fromCharCode(65+i) + "."
+          ),
+          opt
+        );
+      })
+    ),
+    // Explanation (after answer)
+    rev && React.createElement("div", {
+      className:"card p-4 mb-3",
+      style:{
+        borderLeft: "3px solid " + (isCorrect ? "#20BF6B" : "#EF4444"),
+        background: isCorrect ? "rgba(32,191,107,0.08)" : "rgba(239,68,68,0.08)"
+      }
+    },
+      React.createElement("div", {className:"font-bold mb-1 text-sm", style:{color: isCorrect ? "#20BF6B" : "#EF4444"}},
+        isCorrect ? "\u2705 Sahi!" : "\u274C Galat"
+      ),
+      React.createElement("div", {className:"text-xs leading-relaxed", style:{color:"var(--sl)"}}, cq.explanation),
+      React.createElement("div", {className:"text-xs mt-2 font-semibold", style:{color:"#4a5568"}},
+        "Auto-advancing in " + countdown + "s..."
+      )
+    ),
+    // Replace Question (only before answering)
+    sel === null && React.createElement("button", {
+      onClick: replaceQ,
+      disabled: replacing,
+      className:"w-full py-2 rounded-xl text-xs font-bold",
+      style:{background:"rgba(255,255,255,0.05)", color:"#4a5568", border:"1px solid rgba(255,255,255,0.08)"}
+    }, replacing ? "Loading..." : "\uD83D\uDD04 Replace Question")
   );
 }
+
+// Quiz Result Screen
+function QuizResult({qd, onDone}) {
+  const qs = toArr(qd && qd.questions);
+  const ans = toArr(qd && qd.answers);
+  const score = qd && qd.score !== undefined ? qd.score : ans.filter(function(a,i){ return a === (qs[i] && qs[i].correct); }).length;
+  const total = qs.length;
+  const pct = total > 0 ? Math.round(score/total*100) : 0;
+
+  return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto pb-10"},
+    // Score header
+    React.createElement("div", {className:"text-center mb-6"},
+      React.createElement("div", {className:"text-5xl mb-3"},
+        score === total ? "\uD83C\uDFC6" : score >= total*0.6 ? "\uD83D\uDCAA" : "\uD83D\uDCDA"
+      ),
+      React.createElement("div", {className:"serif text-2xl text-white font-black mb-1"}, "Quiz Done"),
+      React.createElement("div", {className:"text-4xl font-black mb-1", style:{color: score===total?"#20BF6B":score>=total*0.6?"var(--o)":"#EF4444"}},
+        score + "/" + total
+      ),
+      React.createElement("div", {className:"text-sm", style:{color:"var(--sl)"}},
+        score===total ? "Perfect! Ekdum expert!" : score>=total*0.6 ? "Accha hai! Thoda aur practice karo" : "Kal phir pakke se aana!"
+      ),
+      React.createElement("div", {className:"text-sm font-bold mt-1", style:{color:"var(--o)"}},
+        "+" + (score * PTS.quiz_correct) + (score===total?" + "+PTS.quiz_perfect+" bonus":"") + " pts earned"
+      )
+    ),
+    // Question review
+    React.createElement("div", {className:"space-y-3"},
+      qs.map(function(q, i) {
+        var a = ans[i];
+        var correct = a === q.correct;
+        return React.createElement("div", {
+          key: i,
+          className:"card p-4",
+          style:{borderLeft: "3px solid " + (correct?"#20BF6B":"#EF4444")}
+        },
+          React.createElement("div", {className:"flex items-center gap-2 mb-2"},
+            React.createElement("span", {className:"text-xs px-2 py-0.5 rounded-full", style:{background:"rgba(255,255,255,0.07)",color:"var(--sl)"}}, q.cat),
+            React.createElement("span", {className:"text-xs font-bold", style:{color:correct?"#20BF6B":"#EF4444"}},
+              correct ? "\u2705 Sahi" : "\u274C Galat"
+            )
+          ),
+          React.createElement("div", {className:"text-sm text-white font-semibold mb-2"}, q.q),
+          // Show selected answer
+          a !== undefined && a !== -1 && !correct && React.createElement("div", {className:"text-xs mb-1", style:{color:"#EF4444"}},
+            "Aapka jawab: " + (q.options && q.options[a] ? q.options[a] : "—")
+          ),
+          // Show correct answer
+          React.createElement("div", {className:"text-xs mb-2", style:{color:"#20BF6B"}},
+            "Sahi: \"" + (q.options && q.options[q.correct] ? q.options[q.correct] : "—") + "\""
+          ),
+          // Explanation
+          React.createElement("div", {className:"text-xs leading-relaxed", style:{color:"var(--sl)"}},
+            q.explanation
+          )
+        );
+      })
+    ),
+    React.createElement("button", {
+      onClick: onDone,
+      className:"btn-o w-full mt-5 font-black"
+    }, "Done \u2713")
+  );
+}
+
 
 function Today({
   user,
@@ -2624,7 +2561,7 @@ function Today({
   }
 
   // ═══════════════════════════════
-  // MBE FLOWS (unchanged from v2.7)
+  // MBE FLOWS (unchanged from v2.8)
   // ═══════════════════════════════
 
   if (tpLoading) {
@@ -3605,7 +3542,7 @@ function AdminPanel({
     style: {
       color: "var(--sl)"
     }
-  }, "Messages queued -- will send once Meta API connected (v2.7)")), /*#__PURE__*/React.createElement("div", {
+  }, "Messages queued -- will send once Meta API connected (v2.8)")), /*#__PURE__*/React.createElement("div", {
     className: "space-y-2"
   }, waQueue.length === 0 ? /*#__PURE__*/React.createElement("div", {
     className: "text-center py-8 text-sm",
@@ -3682,14 +3619,14 @@ function AdminPanel({
       background: "rgba(143,163,191,0.1)",
       color: "var(--sl)"
     }
-  }, "v2.7 -- Manual via admin")))), /*#__PURE__*/React.createElement("div", {
+  }, "v2.8 -- Manual via admin")))), /*#__PURE__*/React.createElement("div", {
     className: "mt-4 p-3 rounded-xl text-xs",
     style: {
       background: "rgba(255,107,53,0.08)",
       border: "1px solid rgba(255,107,53,0.2)",
       color: "var(--o)"
     }
-  }, "\uD83D\uDCA1 For now send files to Nihit -- will be ingested in next data refresh cycle. Full in-app upload coming in v2.7."))));
+  }, "\uD83D\uDCA1 For now send files to Nihit -- will be ingested in next data refresh cycle. Full in-app upload coming in v2.8."))));
 }
 function Loading({
   msg
