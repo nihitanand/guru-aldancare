@@ -1315,7 +1315,7 @@ function Main({
     await DB.ref(`${BASE}/users/${user.mobile}/streak`).set(ns);
     await DB.ref(`${BASE}/users/${user.mobile}/lastActive`).set(todayStr());
     // Points
-    const pts_earned = score * PTS.quiz_correct + (score === 3 ? PTS.quiz_perfect : 0) + (ns === 7 ? PTS.streak7bonus : 0);
+    const pts_earned = score * PTS.quiz_correct + (score === 5 ? PTS.quiz_perfect : 0) + (ns === 7 ? PTS.streak7bonus : 0);
     await addPoints(user.mobile, pts_earned, "quiz");
     // Level check
     const newTotal = (user.totalScore || 0) + pts_earned;
@@ -1326,14 +1326,14 @@ function Main({
     const quizSnap = await DB.ref(`${BASE}/quiz/${user.mobile}`).once("value");
     const quizCount = Object.keys(toObj(quizSnap.val())).length;
     const perfSnap = await DB.ref(`${BASE}/users/${user.mobile}/perfectCount`).get();
-    const perfCount = (perfSnap.val() || 0) + (score === 3 ? 1 : 0);
+    const perfCount = (perfSnap.val() || 0) + (score === 5 ? 1 : 0);
     if (score === 3) await DB.ref(`${BASE}/users/${user.mobile}/perfectCount`).set(perfCount);
     await checkBadges({
       ...user,
       totalScore: newTotal
     }, ns, quizCount, perfCount, null);
     // WA queue
-    queueWA(user.mobile, "guru_quiz_result", [`${score}/3`, `${ns}`, `?`, getLevel(newTotal).name]);
+    queueWA(user.mobile, "guru_quiz_result", [`${score}/5`, `${ns}`, `?`, getLevel(newTotal).name]);
     setStreak(ns);
     const updUser = {
       ...user,
@@ -1344,7 +1344,8 @@ function Main({
     updateUser(updUser);
     setQd({
       ...r,
-      alreadyDone: true
+      alreadyDone: true,
+      showResult: true
     });
   };
   return /*#__PURE__*/React.createElement("div", {
