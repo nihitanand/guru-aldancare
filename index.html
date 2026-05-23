@@ -2104,8 +2104,13 @@ function Today({
   // ── MBE: confirm beat ──
   const confirmBeat = async () => {
     setSaving(true);
-    const logData = {confirmedAt:new Date().toISOString(), tp:todayTP, devNote, selectedDocs:selectedCodes, visits:{}};
-    await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}`).set(logData);
+    // Use update() to preserve existing visits when editing beat
+    await DB.ref(BASE + "/beat_log/" + todayStr() + "/" + user.mobile).update({
+      confirmedAt: new Date().toISOString(),
+      tp: todayTP,
+      devNote: devNote,
+      selectedDocs: selectedCodes
+    });
     if (devNote) await DB.ref(`${BASE}/deviations/${todayStr()}/${user.mobile}`).set({note:devNote,ts:new Date().toISOString()});
     setBeatDocs(selectedCodes); setSaving(false); setConfirmed(true); setPhase("beat");
   };
@@ -2773,7 +2778,7 @@ function Today({
     React.createElement("div",{className:"w-full rounded-full h-2 mb-4",style:{background:"rgba(255,255,255,0.08)"}},
       React.createElement("div",{className:"h-2 rounded-full transition-all",style:{width:`${Math.round(visitedCount/Math.max(displayBeatDocs.length,1)*100)}%`,background:"linear-gradient(90deg,var(--o),#20BF6B)"}})
     ),
-    docsLoad?React.createElement("div",{className:"space-y-2"},[0,1,2,3,4].map(i=>React.createElement("div",{key:i,className:"shim h-14 rounded-xl"}))):
+    (docsLoad || (beatDocs.length > 0 && myDocArr.length === 0))?React.createElement("div",{className:"space-y-2"},[0,1,2,3,4].map(i=>React.createElement("div",{key:i,className:"shim h-14 rounded-xl"}))):
     React.createElement("div",{className:"space-y-2"},
       displayBeatDocs.length===0&&React.createElement("div",{className:"text-center py-12",style:{color:"var(--sl)"}},
         React.createElement("div",{className:"text-3xl mb-2"},"\uD83D\uDC65"),
