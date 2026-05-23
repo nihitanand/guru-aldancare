@@ -3233,18 +3233,18 @@ function Profile({
     });
     DB.ref(`${BASE}/beat_log`).limitToLast(7).once("value").then(s => {
       const r = toObj(s.val());
-      let total = 0,
-        visited = 0;
+      let selected = 0, visited = 0;
       Object.values(r).forEach(dayData => {
         const mine = toObj(dayData[user.mobile] || {});
+        const selDocs = toArr(mine.selectedDocs || []);
+        selected += selDocs.length;
         const visits = toObj(mine.visits || {});
         Object.values(visits).forEach(v => {
-          total++;
           if (v.status === "visited") visited++;
         });
       });
       setBeatStats({
-        total,
+        total: selected,
         visited
       });
     });
@@ -3344,7 +3344,7 @@ function Profile({
     style: {
       color: "var(--sl)"
     }
-  }, "Last 7 days total")), /*#__PURE__*/React.createElement("div", {
+  }, "Last 7 days · doctors visited")), /*#__PURE__*/React.createElement("div", {
     className: "text-right"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-xl font-black text-white"
