@@ -1021,17 +1021,17 @@ function Login({
     }
     setErr("");
     setStep("pin");
-    setTimeout(() => refs[0].current && current.focus(), 200);
+    setTimeout(() => refs[0].current && refs[0].current.focus(), 200);
   };
   const chg = (i, v) => {
     if (!/^[0-9]?$/.test(v)) return;
     const n = [...pin];
     n[i] = v;
     setPin(n);
-    if (v && i < 3) refs[i + 1].current && current.focus();
+    if (v && i < 3) refs[i + 1].current && refs[i + 1].current.focus();
   };
   const kd = (i, e) => {
-    if (e.key === "Backspace" && !pin[i] && i > 0) refs[i - 1].current && current.focus();
+    if (e.key === "Backspace" && !pin[i] && i > 0) refs[i - 1].current && refs[i - 1].current.focus();
     if (e.key === "Enter" && pin.every(d => d)) doLogin();
   };
   const doLogin = async () => {
@@ -4829,7 +4829,7 @@ ${weak.length > 0 ? `Dekha hai ${weak[0]} territory mein thoda weak hai -- agar 
     }
   }, []);
   useEffect(() => {
-    bottomRef.current && current.scrollIntoView({
+    bottomRef.current && bottomRef.current.scrollIntoView({
       behavior: "smooth"
     });
   }, [msgs]);
@@ -4897,7 +4897,7 @@ Current tone level: ${toneLevel < 33 ? "FRIENDLY/YAAR" : toneLevel < 66 ? "BALAN
       }]);
     }
     setTyping(false);
-    inputRef.current && current.focus();
+    inputRef.current && inputRef.current.focus();
   };
   const toneLabel = toneLevel < 33 ? "🤝 Yaar Mode" : toneLevel < 66 ? "📚 Balanced" : "🔬 Expert Mode";
   const toneColor = toneLevel < 33 ? "#3B82F6" : toneLevel < 66 ? "#FF6B35" : "#F7B731";
