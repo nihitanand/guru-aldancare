@@ -1991,6 +1991,16 @@ function Quiz({
 }
 
 /* TODAY'S BEAT  */
+function Row2({ic, lb, vl}) {
+  return React.createElement("div", {className:"flex items-center justify-between py-1.5"},
+    React.createElement("div", {className:"flex items-center gap-2 text-sm", style:{color:"var(--sl)"}},
+      React.createElement("span", null, ic),
+      React.createElement("span", null, lb)
+    ),
+    React.createElement("div", {className:"text-sm font-semibold text-white"}, vl)
+  );
+}
+
 function Today({
   user,
   myDocs,
