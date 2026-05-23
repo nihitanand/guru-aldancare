@@ -1371,13 +1371,15 @@ function Main({
     onStartQuiz: loadQuiz,
     lb: lb,
     tpData: tpData
-  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(Today, {
-    user: user,
-    myDocs: myDocs,
-    tpData: tpData,
-    docsLoad: docsLoad,
-    tpLoading: tpLoading
-  }), tab === "products" && /*#__PURE__*/React.createElement(Products, {
+  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), /*#__PURE__*/React.createElement("div", {style:{display:tab==="today"?"block":"none",minHeight:"100%"}},
+    /*#__PURE__*/React.createElement(Today, {
+      user: user,
+      myDocs: myDocs,
+      tpData: tpData,
+      docsLoad: docsLoad,
+      tpLoading: tpLoading
+    })
+  ), tab === "products" && /*#__PURE__*/React.createElement(Products, {
     user: user
   }), tab === "leaderboard" && /*#__PURE__*/React.createElement(LB, {
     user: user,
