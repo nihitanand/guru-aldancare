@@ -2075,7 +2075,7 @@ function Today({
   // Reset form when selDoc changes
   useEffect(() => {
     if (selDoc) {
-      const vl = visitLog[selDoc.code];
+      const vl = visitLog[String(selDoc.code)];
       const init = editingVisit || (vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:""});
       setVisitForm(init);
       if (!docHistory) loadDocHistory(selDoc);
@@ -2111,8 +2111,9 @@ function Today({
   // ── MBE: save visit ──
   const saveVisit = async (docCode, visitData) => {
     const entry = {...visitData, ts:new Date().toISOString()};
-    setVisitLog(prev => ({...prev,[docCode]:entry}));
-    await DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}/visits/${docCode}`).set(entry);
+    const codeStr = String(docCode);
+    setVisitLog(prev => ({...prev,[codeStr]:entry}));
+    await DB.ref(BASE + "/beat_log/" + todayStr() + "/" + user.mobile + "/visits/" + codeStr).set(entry);
     if (visitData.status === "visited") await addPoints(user.mobile, PTS.beat_visit, "beat_visit");
     if ((visitData.products||[]).length > 0) await addPoints(user.mobile, PTS.doc_discussion, "doc_discussion");
     setSelDoc(null); setEditingVisit(null);
@@ -2669,7 +2670,7 @@ function Today({
 
 
   if (selDoc) {
-    const vl = visitLog[selDoc.code];
+    const vl = visitLog[String(selDoc.code)];
     const vs = visitForm;
     const setVs = setVisitForm;
     const weakP = getDocWeakProds(selDoc);
@@ -2778,7 +2779,7 @@ function Today({
         React.createElement("button",{onClick:()=>{setSelectedCodes([...beatDocs]);setPhase("select");},className:"btn-o mt-3"},"Select Doctors")
       ),
       displayBeatDocs.map(doc=>{
-        const vl=visitLog[doc.code];const weakP=getDocWeakProds(doc);
+        const vl=visitLog[String(doc.code)];const weakP=getDocWeakProds(doc);
         return React.createElement("div",{key:doc.code,onClick:()=>{setSelDoc(doc);setEditingVisit(vl?{...vl}:null);},className:"card px-4 py-3 flex items-center gap-3 cursor-pointer",style:{borderLeft:`3px solid ${(vl && vl.status==="visited")?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}},
           React.createElement("div",{className:"flex-1 min-w-0"},
             React.createElement("div",{className:"font-semibold text-white text-sm trunc"},doc.name),
