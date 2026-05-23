@@ -1021,17 +1021,17 @@ function Login({
     }
     setErr("");
     setStep("pin");
-    setTimeout(() => refs[0].current?.focus(), 200);
+    setTimeout(() => refs[0].current && current.focus(), 200);
   };
   const chg = (i, v) => {
     if (!/^[0-9]?$/.test(v)) return;
     const n = [...pin];
     n[i] = v;
     setPin(n);
-    if (v && i < 3) refs[i + 1].current?.focus();
+    if (v && i < 3) refs[i + 1].current && current.focus();
   };
   const kd = (i, e) => {
-    if (e.key === "Backspace" && !pin[i] && i > 0) refs[i - 1].current?.focus();
+    if (e.key === "Backspace" && !pin[i] && i > 0) refs[i - 1].current && current.focus();
     if (e.key === "Enter" && pin.every(d => d)) doLogin();
   };
   const doLogin = async () => {
@@ -1724,7 +1724,7 @@ function Quiz({
   const [genLoad, setGenLoad] = useState(false);
   const tmr = useRef();
   useEffect(() => {
-    if (!qd?.alreadyDone) genAI();
+    if (!(qd && qd.alreadyDone)) genAI();
   }, []);
   const genAI = async () => {
     setGenLoad(true);
@@ -1760,9 +1760,9 @@ function Quiz({
     }
     setGenLoad(false);
   };
-  const qs = aiQ || qd?.questions || [];
+  const qs = aiQ || (qd && qd.questions) || [];
   useEffect(() => {
-    if (qd?.alreadyDone || fs !== null || qs.length === 0) return;
+    if ((qd && qd.alreadyDone) || fs !== null || qs.length === 0) return;
     tmr.current = setInterval(() => setTl(t => {
       if (t <= 1) {
         clearInterval(tmr.current);
@@ -1776,7 +1776,7 @@ function Quiz({
       return t - 1;
     }), 1000);
     return () => clearInterval(tmr.current);
-  }, [ans.length, qd?.alreadyDone, fs, qs]);
+  }, [ans.length, (qd && qd.alreadyDone), fs, qs]);
   if (genLoad && !aiQ) return /*#__PURE__*/React.createElement("div", {
     className: "min-h-screen flex flex-col items-center justify-center gap-4 px-4"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1856,7 +1856,7 @@ function Quiz({
       }
     }, q.explanation));
   })));
-  if (qd?.alreadyDone) return /*#__PURE__*/React.createElement(ReviewList, {
+  if ((qd && qd.alreadyDone)) return /*#__PURE__*/React.createElement(ReviewList, {
     questions: qd.questions || [],
     answers: qd.answers || [],
     score: qd.score ?? 0
@@ -1948,8 +1948,8 @@ function Quiz({
   }, /*#__PURE__*/React.createElement("span", {
     className: "bdg text-xs",
     style: {
-      background: `${pp?.color || "#FF6B35"}22`,
-      color: pp?.color || "#FF6B35"
+      background: `${(pp && pp.color) || "#FF6B35"}22`,
+      color: (pp && pp.color) || "#FF6B35"
     }
   }, cq.cat), /*#__PURE__*/React.createElement("span", {
     className: "bdg text-xs",
@@ -1957,7 +1957,7 @@ function Quiz({
       background: "rgba(255,255,255,0.05)",
       color: "var(--sl)"
     }
-  }, pp?.name || cq.product)), /*#__PURE__*/React.createElement("div", {
+  }, (pp && pp.name) || cq.product)), /*#__PURE__*/React.createElement("div", {
     className: "card p-5 mb-5"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-white font-semibold text-base leading-relaxed"
@@ -2314,7 +2314,7 @@ function Today({
             React.createElement("div", {className:"font-semibold text-white text-sm"}, mbe.name),
             React.createElement("div", {className:"text-xs",style:{color:"var(--sl)"}}, mbe.hq)
           ),
-          mgrMbeLoading && mgrSelMbe?.mobile === mbe.mobile
+          mgrMbeLoading && (mgrSelMbe && mgrSelMbe.mobile) === mbe.mobile
             ? React.createElement("div", {className:"text-xs",style:{color:"var(--sl)"}}, "Loading...")
             : React.createElement("div", {style:{color:"#4a5568"}}, "\u203A")
         ))
@@ -2381,7 +2381,7 @@ function Today({
   // ── Manager: Accompany beat list ──
   if (isMgr && (mgrMode === "accompany" || mgrMode === "accompany_beat") && mgrSelMbe && (mgrMbeBeat || mgrMode === "accompany_beat")) {
     const beatDocList = mgrIndepDocs.length > 0 ? mgrIndepDocs :
-      toArr(mgrMbeBeat?.selectedDocs || []).map(code => Object.values(mgrMbeDocs).find(d => String(d.code) === String(code))).filter(Boolean);
+      toArr((mgrMbeBeat && mgrMbeBeat.selectedDocs) || []).map(code => Object.values(mgrMbeDocs).find(d => String(d.code) === String(code))).filter(Boolean);
 
     // Doc detail for logging
   // Reset mgr form when mgrSelDocForLog changes
@@ -2482,16 +2482,16 @@ function Today({
             key:doc.code,
             onClick:()=>setMgrSelDocForLog(doc),
             className:"card px-4 py-3 flex items-center gap-3 cursor-pointer",
-            style:{borderLeft:`3px solid ${vl?.status==="visited"?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}
+            style:{borderLeft:`3px solid ${(vl && vl.status==="visited")?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}
           },
             React.createElement("div", {className:"flex-1 min-w-0"},
               React.createElement("div", {className:"font-semibold text-white text-sm trunc"}, doc.name),
               React.createElement("div", {className:"text-xs mt-0.5",style:{color:"var(--sl)"}}, doc.spec," \u00B7 ",React.createElement("span",{style:{color:doc.cat==="CORE"?"var(--o)":"var(--sl)"}},doc.cat)),
-              vl?.asmObservation && React.createElement("div", {className:"text-xs mt-0.5 italic",style:{color:"#818cf8"}}, `\uD83D\uDCCB "${vl.asmObservation.slice(0,40)}..."`),
+              (vl && vl.asmObservation) && React.createElement("div", {className:"text-xs mt-0.5 italic",style:{color:"#818cf8"}}, `\uD83D\uDCCB "${vl.asmObservation.slice(0,40)}..."`),
               !vl && weakP.length>0 && React.createElement("div", {className:"text-xs mt-1",style:{color:"var(--o)"}}, `\uD83C\uDFAF ${weakP[0].name} -- opportunity`)
             ),
             React.createElement("div", {className:"text-lg shrink-0"},
-              vl?.status==="visited"?"\u2705":vl?.status==="not_visited"?"\u274C":"\u203A")
+              (vl && vl.status==="visited")?"\u2705":(vl && vl.status==="not_visited")?"\u274C":"\u203A")
           );
         })
       )
@@ -2802,16 +2802,16 @@ function Today({
       ),
       displayBeatDocs.map(doc=>{
         const vl=visitLog[doc.code];const weakP=getDocWeakProds(doc);
-        return React.createElement("div",{key:doc.code,onClick:()=>{setSelDoc(doc);setEditingVisit(vl?{...vl}:null);},className:"card px-4 py-3 flex items-center gap-3 cursor-pointer",style:{borderLeft:`3px solid ${vl?.status==="visited"?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}},
+        return React.createElement("div",{key:doc.code,onClick:()=>{setSelDoc(doc);setEditingVisit(vl?{...vl}:null);},className:"card px-4 py-3 flex items-center gap-3 cursor-pointer",style:{borderLeft:`3px solid ${(vl && vl.status==="visited")?"#20BF6B":vl?"#EF4444":doc.cat==="CORE"?"var(--o)":"var(--bd)"}`}},
           React.createElement("div",{className:"flex-1 min-w-0"},
             React.createElement("div",{className:"font-semibold text-white text-sm trunc"},doc.name),
             React.createElement("div",{className:"text-xs mt-0.5",style:{color:"var(--sl)"}},doc.spec," \u00B7 ",React.createElement("span",{style:{color:doc.cat==="CORE"?"var(--o)":"var(--sl)"}},doc.cat)),
             !vl&&weakP.length>0&&React.createElement("div",{className:"text-xs mt-1",style:{color:"var(--o)"}},`\uD83C\uDFAF ${weakP[0].name} -- opportunity`),
-            vl?.status==="visited"&&React.createElement("div",{className:"text-xs mt-1",style:{color:"#20BF6B"}},`\u2705 ${(vl.products||[]).map(pid=>{const pp=P.find(x=>x.id===pid);return pp?pp.name:pid;}).join(", ")||"Visited"}`),
-            vl?.remarks&&React.createElement("div",{className:"text-xs mt-0.5 italic",style:{color:"#4a5568"}},`"${vl.remarks.slice(0,40)}${vl.remarks.length>40?"...":""}"`),
-            vl?.status==="not_visited"&&React.createElement("div",{className:"text-xs mt-1",style:{color:"#EF4444"}},"\u274C Not visited")
+            (vl && vl.status==="visited")&&React.createElement("div",{className:"text-xs mt-1",style:{color:"#20BF6B"}},`\u2705 ${(vl.products||[]).map(pid=>{const pp=P.find(x=>x.id===pid);return pp?pp.name:pid;}).join(", ")||"Visited"}`),
+            (vl && vl.remarks)&&React.createElement("div",{className:"text-xs mt-0.5 italic",style:{color:"#4a5568"}},`"${vl.remarks.slice(0,40)}${vl.remarks.length>40?"...":""}"`),
+            (vl && vl.status==="not_visited")&&React.createElement("div",{className:"text-xs mt-1",style:{color:"#EF4444"}},"\u274C Not visited")
           ),
-          React.createElement("div",{className:"text-lg shrink-0"},vl?.status==="visited"?"\u2705":vl?.status==="not_visited"?"\u274C":"\u203A")
+          React.createElement("div",{className:"text-lg shrink-0"},(vl && vl.status==="visited")?"\u2705":(vl && vl.status==="not_visited")?"\u274C":"\u203A")
         );
       })
     )
@@ -3565,7 +3565,7 @@ function AdminPanel({
       className: "mb-2"
     }, /*#__PURE__*/React.createElement("div", {
       className: "text-sm font-semibold text-white"
-    }, tm?.name || mob), /*#__PURE__*/React.createElement("div", {
+    }, (tm && tm.name) || mob), /*#__PURE__*/React.createElement("div", {
       className: "text-xs",
       style: {
         color: "var(--sl)"
@@ -3604,7 +3604,7 @@ function AdminPanel({
       style: {
         color: "var(--sl)"
       }
-    }, tm?.name || msg.mobile)), /*#__PURE__*/React.createElement("div", {
+    }, (tm && tm.name) || msg.mobile)), /*#__PURE__*/React.createElement("div", {
       className: `bdg text-xs ${msg.status === "pending" ? "bg-amber-500/20 text-amber-300" : "bg-green-500/20 text-green-300"}`
     }, msg.status)));
   }))), tab === "upload" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
@@ -4049,7 +4049,7 @@ function PracticeMode({
       const prodContext = `VERIFIED WOMEM PORTFOLIO (VAB + LBL + Clinical Literature):\n\n1. OVALUX (Rs.1219 | 5x2x14 Caps | 1 OD after meal x 3+ months)\nComposition: Ubiquinol Acetate 100mg + DHEA (SR) 50mg + DHEA (IR) 25mg + Piperine 5mg + Melatonin 3mg + L-Methylfolate 714mcg + Vit D2 600 IU\nEvidence: DHEA 16 RCTs (J Ovarian Research 2025, 1973 women) OR=1.34. Steroids Vol.211 Nov 2024. Ubiquinol Acetate 8x vs CoQ10.\nObjections: DHEA safe in DOR. Price -- IVF costs Rs.1.5-2L, Ovalux 3 months = Rs.3500.\n\n2. LACORIA (Rs.432 | 2 caps BID x 7 days)\nComposition: L.Crispatus 1Bn + L.Rhamnosus 1Bn + L.Gasseri 0.3Bn + L.Jensenii 0.2Bn + L.Iners 0.5Bn + FOS 100mg\nEvidence: Probiotics > antibiotics BV (Int J Environ Res 2019). Indian strains (J Med Microbiol 2014). Untreated BV causes infertility, preterm delivery.\n\n3. MYOLIFE PLUS (Rs.329 | 1 BD) -- OBESE PCOS (BMI>25)\nComposition: MI 1000mg + DCI 25mg (40:1) + Melatonin 1.5mg + L-Methylfolate 1mg\nEvidence: RCT 46 obese PCOS ovulation restored (Int J Endocrinology 2016, Art.3204083). MI+Melatonin oocyte quality (Gynecol Endocrinol 2011).\n\n4. ALDOVA (Rs.637) / ALDOVA-DS (Rs.778) | Combi Pack\nAldova: CC 50mg + NAC 600mg + Astaxanthin 4mg. Aldova-DS: CC 100mg + NAC 600mg + Astaxanthin 4mg.\nDosage: Day 3-7 CC+NAC; Day 8-27 Astaxanthin. 4 RCTs: Austin J ObstetGynecol 2019 p=0.008. Front Endocrinol 2023. J Ovarian Research 2024 Vol.17 Art.205. J Ovarian Research 2024 Vol.17 Art.163 MD:8.40.\n\n5. ARGILUX (Rs.979 | 20x6.5g Sachets Orange Sugar-free | 1 OD)\nComposition: L-Arginine 3000mg + DHA 200mg + Proanthocyanidin 75mg + Vit B6 2mg\nEvidence: J Matern Fetal Neonatal Med 2023 (51 studies) L-Arg pre-eclampsia/IUGR safe in pregnancy. Pharmacogenomics 2025.\n\n6. MYOLIFE (Rs.254 | 1 BD) -- LEAN/normal PCOS. MI 1000mg + L-Methylfolate 500mcg + Vit D3 1000 IU (Reprod Health 2021).\n\n7. LOQ-10 PLUS (Rs.516 | 1 OD) -- Male OAT. Ubiquinol 30mg + Astaxanthin 8mg + L-Carnitine 200mg + L-Arginine 250mg + Selenium 40mcg + Zinc 11mg + Omega-3 + Methylcobalamin 2.5mcg + Lycopene 4000mcg + Benfotiamine 18mg. Ubiquinol 8x bioavailable (Mitochondria Vol.7).\n\n8. UTILAC (Rs.320 | 1 OD) -- UTI/Candidiasis. L.Reuteri 1.25Bn + L.Rhamnosus 2.5Bn + L.Casei 1.25Bn + L.Crispatus 1Bn + L.Fermentum 1.25Bn + Cranberry 100mg. (Turk J Urol 2018)\n\n9. MYO-GDM (Rs.311 | 1 BD) -- India 1st GDM. MI 550mg + DCI 13.8mg + Chromium 30mcg + Vit D2 1000IU + Fenugreek 500mg + L-Methylfolate 1mg. India GDM 10-14.3% (GoI 2018).\n\n10. OSTEOFEM (Rs.463 | 1 OD) -- DHQ 500mg + Pine Bark 100mg + Calcitriol 0.25mcg. (Front Endocrinol 2021; Clin Inter Aging 2014). 52.2% elderly women Osteoporosis.\n\n11. ALDANVIT (Rs.160 | 1 OD) -- Omega-3 + Ginkgo 30mg + Cyanocobalamin 2.5mcg + Lycopene 5000mcg + Lutein 20mcg + Green Tea 50mg + Grape Seed 50mg + Ginseng 42.5mg + ALA 100mg + Biotin 30mcg.\n\n12. ALDOVA-DS (Rs.778) -- CC 100mg + NAC 600mg + Astaxanthin 4mg. CC-resistant/higher dose. Day 3-7/Day 8-27 protocol.\n\nSTRICT RULE: ONLY ask questions about these 12 Aldan WomEm products. ZERO tolerance for generic pharma, sanitary products, writing techniques, procurement, or any non-WomEm topic. 100% syllabus bound.`;
       if (type === "product") {
         const pp = P.find(x => x.id === target);
-        prompt = `You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nProduct focus: ${pp?.name}\nFull details: ${JSON.stringify(pp)}\nUser weak products in territory: ${weak}\n\nGenerate 5 MCQ questions ONLY about ${pp?.name}. Cover: composition, mechanism, MRP/dose, journal evidence, objection handling, catch line, clinical scenarios. Start MEDIUM difficulty. Vary question types.\n\nReturn ONLY valid JSON array:\n[{"cat":"type","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
+        prompt = `You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nProduct focus: ${(pp && pp.name)}\nFull details: ${JSON.stringify(pp)}\nUser weak products in territory: ${weak}\n\nGenerate 5 MCQ questions ONLY about ${(pp && pp.name)}. Cover: composition, mechanism, MRP/dose, journal evidence, objection handling, catch line, clinical scenarios. Start MEDIUM difficulty. Vary question types.\n\nReturn ONLY valid JSON array:\n[{"cat":"type","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
       } else if (type === "category") {
         prompt = `You are Aldan Guru adaptive quiz AI for ${user.name} (${user.role}, ${user.hq}).\n\nCategory focus: ${target}\nFull product portfolio:\n${prodContext}\nUser weak products: ${weak}\n\nGenerate 5 MCQ questions ALL in the "${target}" category across different products. Distribute products -- don't repeat same product twice. Start MEDIUM difficulty.\n\nReturn ONLY valid JSON array:\n[{"cat":"${target}","product":"product_id","q":"question in Hinglish","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines Hinglish","difficulty":"easy|medium|hard"}]`;
       } else {
@@ -4112,7 +4112,7 @@ function PracticeMode({
     if (targetDiff !== currentDiff && questions.length > nextIdx) {
       try {
         const pp = P.find(x => x.id === questions[nextIdx]?.product);
-        const prompt = `Generate 1 ${targetDiff} difficulty MCQ question about ${pp?.name || "any WomEm product"} in category "${questions[nextIdx]?.cat || "any"}". User is ${user.name}, ${user.role}. Previous score: ${Math.round(perfSoFar * 100)}%.\n\nReturn ONLY valid JSON object (not array):\n{"cat":"type","product":"id","q":"Hinglish question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines","difficulty":"${targetDiff}"}`;
+        const prompt = `Generate 1 ${targetDiff} difficulty MCQ question about ${(pp && pp.name) || "any WomEm product"} in category "${questions[nextIdx]?.cat || "any"}". User is ${user.name}, ${user.role}. Previous score: ${Math.round(perfSoFar * 100)}%.\n\nReturn ONLY valid JSON object (not array):\n{"cat":"type","product":"id","q":"Hinglish question","options":["A","B","C","D"],"correct":0,"explanation":"1-2 lines","difficulty":"${targetDiff}"}`;
         const res = await fetch("/api/ai.php", {
           method: "POST",
           headers: {
@@ -4202,7 +4202,7 @@ function PracticeMode({
 
   // Mock timer
   useEffect(() => {
-    if (session?.type === "mock" && !session?.done && mode === "mock") {
+    if ((session && session.type) === "mock" && !(session && session.done) && mode === "mock") {
       tmr.current = setInterval(() => setTl(t => {
         if (t <= 1) {
           clearInterval(tmr.current);
@@ -4221,10 +4221,10 @@ function PracticeMode({
       }), 1000);
       return () => clearInterval(tmr.current);
     }
-  }, [session?.type, session?.done, mode]);
+  }, [(session && session.type), (session && session.done), mode]);
 
   // RESULTS screen
-  if (session?.done) {
+  if ((session && session.done)) {
     const {
       questions,
       answers,
@@ -4403,8 +4403,8 @@ function PracticeMode({
     }, /*#__PURE__*/React.createElement("span", {
       className: "bdg text-xs",
       style: {
-        background: `${pp?.color || "#FF6B35"}22`,
-        color: pp?.color || "#FF6B35"
+        background: `${(pp && pp.color) || "#FF6B35"}22`,
+        color: (pp && pp.color) || "#FF6B35"
       }
     }, cq.cat), pp && /*#__PURE__*/React.createElement("span", {
       className: "bdg text-xs",
@@ -4745,7 +4745,7 @@ function AccuracyPanel() {
         style: {
           color: "var(--sl)"
         }
-      }, pp?.em, " ", pp?.name || prod), /*#__PURE__*/React.createElement("span", {
+      }, (pp && pp.em), " ", (pp && pp.name) || prod), /*#__PURE__*/React.createElement("span", {
         style: {
           color: c
         },
@@ -4829,7 +4829,7 @@ ${weak.length > 0 ? `Dekha hai ${weak[0]} territory mein thoda weak hai -- agar 
     }
   }, []);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({
+    bottomRef.current && current.scrollIntoView({
       behavior: "smooth"
     });
   }, [msgs]);
@@ -4897,7 +4897,7 @@ Current tone level: ${toneLevel < 33 ? "FRIENDLY/YAAR" : toneLevel < 66 ? "BALAN
       }]);
     }
     setTyping(false);
-    inputRef.current?.focus();
+    inputRef.current && current.focus();
   };
   const toneLabel = toneLevel < 33 ? "🤝 Yaar Mode" : toneLevel < 66 ? "📚 Balanced" : "🔬 Expert Mode";
   const toneColor = toneLevel < 33 ? "#3B82F6" : toneLevel < 66 ? "#FF6B35" : "#F7B731";
