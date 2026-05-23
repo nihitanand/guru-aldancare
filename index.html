@@ -2108,6 +2108,25 @@ function Today({
     }).catch(function(e){ console.error("monitor load error",e); });
   }, []);
 
+  // Reset mgr form when mgrSelDocForLog changes
+  useEffect(() => {
+    if (mgrSelDocForLog) {
+      const vl = mgrMbeVisits[mgrSelDocForLog.code];
+      const init = vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:"",asmObservation:""};
+      setMgrVisitForm(init);
+    }
+  }, [mgrSelDocForLog]);
+
+  // Reset form when selDoc changes
+  useEffect(() => {
+    if (selDoc) {
+      const vl = visitLog[selDoc.code];
+      const init = editingVisit || (vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:""});
+      setVisitForm(init);
+      if (!docHistory) loadDocHistory(selDoc);
+    }
+  }, [selDoc]);
+
   // Push notif
   const askNotif = async () => {
     localStorage.setItem("guruNotifAsked","1"); setNotifAsked(true);
@@ -2404,14 +2423,6 @@ function Today({
       toArr((mgrMbeBeat && mgrMbeBeat.selectedDocs) || []).map(code => Object.values(mgrMbeDocs).find(d => String(d.code) === String(code))).filter(Boolean);
 
     // Doc detail for logging
-  // Reset mgr form when mgrSelDocForLog changes
-  useEffect(() => {
-    if (mgrSelDocForLog) {
-      const vl = mgrMbeVisits[mgrSelDocForLog.code];
-      const init = vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:"",asmObservation:""};
-      setMgrVisitForm(init);
-    }
-  }, [mgrSelDocForLog]);
 
     if (mgrSelDocForLog) {
       const doc = mgrSelDocForLog;
@@ -2701,15 +2712,6 @@ function Today({
     );
   }
 
-  // Reset form when selDoc changes
-  useEffect(() => {
-    if (selDoc) {
-      const vl = visitLog[selDoc.code];
-      const init = editingVisit || (vl ? {...vl} : {status:"visited",products:[],reaction:"",nextAction:"",nextVisitDate:"",remarks:""});
-      setVisitForm(init);
-      if (!docHistory) loadDocHistory(selDoc);
-    }
-  }, [selDoc]);
 
   if (selDoc) {
     const vl = visitLog[selDoc.code];
