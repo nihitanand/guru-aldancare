@@ -1244,7 +1244,8 @@ function Main({
     if (snap.exists()) {
       setQd({
         ...snap.val(),
-        alreadyDone: true
+        alreadyDone: true,
+        showResult: true
       });
       setQload(false);
       return;
@@ -1258,16 +1259,20 @@ function Main({
       pool = [...pool, ...boost]; // soft nudge
     });
     const shuffled = pool.sort(() => Math.random() - 0.5);
-    // Deduplicate by question text, take 3
+    // Take 5 questions, allow duplicates if pool small
     const seen = new Set();
     const q3 = [];
     for (const q of shuffled) {
-      if (!seen.has(q.q) && q3.length < 3) {
+      if (!seen.has(q.q) && q3.length < 5) {
         seen.add(q.q);
-        q3.push({
-          ...q,
-          id: q3.length
-        });
+        q3.push({...q, id: q3.length});
+      }
+    }
+    // Fill to 5 if needed
+    if (q3.length < 5) {
+      for (const q of shuffled) {
+        if (q3.length >= 5) break;
+        q3.push({...q, id: q3.length});
       }
     }
     setQd({
@@ -1355,7 +1360,7 @@ function Main({
     onStartQuiz: loadQuiz,
     lb: lb,
     tpData: tpData
-  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd, onDone: function(){setQd(prev=>({...prev,showResult:false,alreadyDone:true}));setTab("home");}}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(Today, {
+  }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), tab === "today" && /*#__PURE__*/React.createElement(Today, {
     user: user,
     myDocs: myDocs,
     tpData: tpData,
@@ -1623,7 +1628,7 @@ function Home({
     style: {
       color: "var(--sl)"
     }
-  }, "3 sawaal . 90 seconds")), /*#__PURE__*/React.createElement("div", {
+  }, "5 sawaal . No time limit")), /*#__PURE__*/React.createElement("div", {
     className: "text-3xl"
   }, "\uD83E\uDDE0")), /*#__PURE__*/React.createElement("button", {
     onClick: onStartQuiz,
@@ -1733,14 +1738,7 @@ function Quiz({qd, user, onSubmit, weakProds}) {
   }, []);
 
   // Already done
-  if (qd && qd.alreadyDone) {
-    return React.createElement("div", {className:"px-4 pt-10 max-w-lg mx-auto text-center"},
-      React.createElement("div", {className:"text-5xl mb-4"}, "\u2705"),
-      React.createElement("div", {className:"serif text-2xl text-white font-black mb-2"}, "Quiz Ho Gaya!"),
-      React.createElement("div", {className:"text-sm mb-2", style:{color:"var(--sl)"}}, "Aaj ka quiz complete. Kal milte hain \uD83C\uDFAF"),
-      qd.score !== undefined && React.createElement("div", {className:"text-lg font-bold mt-3", style:{color:"var(--o)"}}, "Score: " + qd.score + "/" + (qs.length || 5))
-    );
-  }
+  // alreadyDone handled by showResult below
 
   if (!cq) return React.createElement("div", {className:"px-4 pt-10 text-center", style:{color:"var(--sl)"}}, "Loading quiz...");
 
@@ -1892,7 +1890,7 @@ function Quiz({qd, user, onSubmit, weakProds}) {
 }
 
 // Quiz Result Screen
-function QuizResult({qd, onDone}) {
+function QuizResult({qd}) {
   const qs = toArr(qd && qd.questions);
   const ans = toArr(qd && qd.answers);
   const score = qd && qd.score !== undefined ? qd.score : ans.filter(function(a,i){ return a === (qs[i] && qs[i].correct); }).length;
@@ -1948,10 +1946,7 @@ function QuizResult({qd, onDone}) {
         );
       })
     ),
-    React.createElement("button", {
-      onClick: onDone,
-      className:"btn-o w-full mt-5 font-black"
-    }, "Done \u2713")
+
   );
 }
 
