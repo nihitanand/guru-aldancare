@@ -1202,6 +1202,7 @@ function Main({
   const [docsLoad, setDocsLoad] = useState(true);
   const [tpData, setTpData] = useState({});
   const [tpLoading, setTpLoading] = useState(true);
+  const [beatDocCount, setBeatDocCount] = useState(0);
   const [weakProds, setWeakProds] = useState([]);
   useEffect(() => {
     DB.ref(`${BASE}/users`).on("value", snap => {
@@ -1232,6 +1233,11 @@ function Main({
     DB.ref(`${BASE}/tp/${tpMonth}/${user.mobile}`).once("value").then(s => {
       setTpData(toObj(s.val())); setTpLoading(false);
     }).catch(() => setTpLoading(false));
+    // Load today's beat doc count
+    DB.ref(BASE + "/beat_log/" + todayStr() + "/" + user.mobile + "/selectedDocs").once("value").then(s => {
+      const docs = toArr(s.val());
+      if (docs.length > 0) setBeatDocCount(docs.length);
+    });
     // Weak products
     const wp = WEAK_PRODUCTS[user.mobile] || [];
     setWeakProds(wp);
@@ -1373,7 +1379,8 @@ function Main({
     streak: streak,
     onStartQuiz: loadQuiz,
     lb: lb,
-    tpData: tpData
+    tpData: tpData,
+    beatDocCount: beatDocCount
   }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), /*#__PURE__*/React.createElement("div", {style:{display:tab==="today"?"block":"none",minHeight:"100%"}},
     /*#__PURE__*/React.createElement(Today, {
       user: user,
@@ -1485,7 +1492,8 @@ function Home({
   streak,
   onStartQuiz,
   lb,
-  tpData
+  tpData,
+  beatDocCount
 }) {
   const [tq, setTq] = useState(null);
   const [ck, setCk] = useState(true);
@@ -1611,7 +1619,7 @@ function Home({
     style: {
       color: "var(--sl)"
     }
-  }, todayTP.workCat, " . ", (todayTP.docCount || "?"), " doctors planned")), /*#__PURE__*/React.createElement("div", {
+  }, todayTP.workCat, " . ", (beatDocCount > 0 ? beatDocCount : todayTP.docCount || "?"), " doctors planned")), /*#__PURE__*/React.createElement("div", {
     className: "text-2xl"
   }, "\uD83D\uDCCB"))), /*#__PURE__*/React.createElement("div", {
     className: "glass p-5 mb-4 fu",
@@ -1635,7 +1643,7 @@ function Home({
     style: {
       color: "var(--sl)"
     }
-  }, tq.score, "/3 sahi . Kal milte hain \uD83C\uDFAF"))) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }, tq.score, "/5 sahi . Kal milte hain \uD83C\uDFAF"))) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-between mb-3"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "font-bold text-white text-base"
