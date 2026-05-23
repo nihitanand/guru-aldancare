@@ -1583,7 +1583,7 @@ function Home({
     className: "text-2xl mb-1"
   }, "\uD83D\uDCCA"), /*#__PURE__*/React.createElement("div", {
     className: "text-2xl font-black text-white"
-  }, tq ? `${tq.score}/3` : "--"), /*#__PURE__*/React.createElement("div", {
+  }, tq ? `${tq.score}/5` : "--"), /*#__PURE__*/React.createElement("div", {
     className: "text-xs mt-0.5",
     style: {
       color: "var(--sl)"
@@ -3337,8 +3337,8 @@ function Profile({
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-end gap-2 h-16"
   }, hist.map((e, i) => {
-    const h = e.score === 3 ? "100%" : e.score === 2 ? "66%" : e.score === 1 ? "33%" : "8%";
-    const c = e.score === 3 ? "#20BF6B" : e.score === 2 ? "#F7B731" : e.score >= 1 ? "#FF6B35" : "#EF4444";
+    const h = e.score === 5 ? "100%" : e.score === 4 ? "80%" : e.score === 3 ? "60%" : e.score === 2 ? "40%" : e.score === 1 ? "20%" : "8%";
+    const c = e.score === 5 ? "#20BF6B" : e.score >= 3 ? "#F7B731" : e.score >= 1 ? "#FF6B35" : "#EF4444";
     return /*#__PURE__*/React.createElement("div", {
       key: i,
       className: "flex-1 flex flex-col items-center gap-1"
