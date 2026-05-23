@@ -1250,37 +1250,48 @@ function Main({
       setQload(false);
       return;
     }
-    // Pick questions weighted by weak products
-    const weak = weakProds.map(w => PROD_RX_KEY[w]).filter(Boolean);
-    let pool = [...SQ];
-    // Boost weak product questions
-    weak.forEach(pid => {
-      const boost = SQ.filter(q => q.product === pid);
-      pool = [...pool, ...boost]; // soft nudge
-    });
-    const shuffled = pool.sort(() => Math.random() - 0.5);
-    // Take 5 questions, allow duplicates if pool small
-    const seen = new Set();
-    const q3 = [];
-    for (const q of shuffled) {
-      if (!seen.has(q.q) && q3.length < 5) {
-        seen.add(q.q);
-        q3.push({...q, id: q3.length});
-      }
+    // AI-generated daily quiz
+    const weak = weakProds.map(w => {
+      const p = P.find(pp => PROD_RX_KEY[w] === pp.id);
+      return p ? p.name : w;
+    }).filter(Boolean).slice(0,3);
+    const weakStr = weak.length > 0 ? weak.join(", ") : "any";
+    const prodContext = `VERIFIED WOMEM PORTFOLIO:\n1.OVALUX: Ubiquinol Acetate 100mg+DHEA(SR)50mg+(IR)25mg+Piperine 5mg+Melatonin 3mg+L-Methylfolate 714mcg+Vit D2 600IU. Indication: DOR, poor egg quality, IVF. Evidence: DHEA 16 RCTs (J Ovarian Research 2025). MRP Rs.1219\n2.LACORIA: L.Crispatus 1Bn+L.Rhamnosus 1Bn+L.Gasseri 0.3Bn+L.Jensenii 0.2Bn+L.Iners 0.5Bn+FOS 100mg. BV/Leucorrhoea. Evidence: Int J Environ Res 2019. MRP Rs.432\n3.MYOLIFE PLUS: MI 1000mg+DCI 25mg(40:1)+Melatonin 1.5mg+L-Methylfolate 1mg. Obese PCOS. Evidence: Int J Endocrinology 2016. MRP Rs.329\n4.ALDOVA: CC 50mg+NAC 600mg+Astaxanthin 4mg. OI Day3-7 CC+NAC, Day8-27 Astaxanthin. 4 RCTs. MRP Rs.637\n5.ALDOVA-DS: CC 100mg+NAC 600mg+Astaxanthin 4mg. CC-resistant PCOS. MRP Rs.778\n6.ARGILUX: L-Arginine 3000mg+DHA 200mg+Proanthocyanidin 75mg+Vit B6 2mg. High-risk pregnancy IUGR. AJOG 2024 45% reduction. MRP Rs.979\n7.MYOLIFE: MI 1000mg+L-Methylfolate 500mcg+Vit D3 1000IU. Lean PCOS. MRP Rs.254\n8.LOQ-10 PLUS: Ubiquinol 30mg+Astaxanthin 8mg+L-Carnitine 200mg+L-Arginine 250mg+Selenium 40mcg+Zinc 11mg+Omega-3+Methylcobalamin 2.5mcg+Lycopene 4000mcg+Benfotiamine 18mg. Male OAT. MRP Rs.516\n9.UTILAC: L.Reuteri 1.25Bn+L.Rhamnosus 2.5Bn+L.Casei 1.25Bn+L.Crispatus 1Bn+L.Fermentum 1.25Bn+Cranberry 100mg. UTI/Candidiasis. MRP Rs.320\n10.MYO-GDM: MI 550mg+DCI 13.8mg+Chromium 30mcg+Vit D2 1000IU+Fenugreek 500mg+L-Methylfolate 1mg. GDM. India 10-14.3% (GoI 2018). MRP Rs.311\n11.OSTEOFEM: DHQ 500mg+Pine Bark 100mg+Calcitriol 0.25mcg. Bone density. Front Endocrinol 2021. MRP Rs.463\n12.ALDANVIT: Omega-3+Ginkgo 30mg+Cyanocobalamin 2.5mcg+Lycopene 5000mcg+Lutein 20mcg+Green Tea 50mg+Grape Seed 50mg+Ginseng 42.5mg+ALA 100mg+Biotin 30mcg. Preventive 35+. MRP Rs.160`;
+    const quizPrompt = prodContext + "\n\nUser: " + user.name + ", MBE, " + user.hq + " territory. Weak products needing focus: " + weakStr + ".\n\nGenerate exactly 5 MCQ questions in Hinglish. Mix these 8 categories: Composition, MRP, Dose/Timing, Indication, Evidence, Product Choice, Objection Handling, Catch Line. Weight 2 questions on weak products (" + weakStr + "). Vary difficulty: 2 easy, 2 medium, 1 hard.\n\nSTRICT RULE: ONLY about these 12 Aldan WomEm products. ZERO generic pharma, music theory, research methodology or unrelated topics.\n\nReturn ONLY valid JSON array of exactly 5 objects:\n[{\"cat\":\"Composition\",\"product\":\"ovalux\",\"q\":\"Hinglish question\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanation\":\"1-2 line Hinglish explanation\",\"difficulty\":\"easy\"}]";
+
+    try {
+      const res = await fetch("/api/ai.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 2000,
+          messages: [{role: "user", content: quizPrompt}]
+        })
+      });
+      const data = await res.json();
+      const raw = (data.content && data.content[0] && data.content[0].text) || "[]";
+      const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+      const aiQs = parsed.slice(0,5).map(function(q,i) { return {...q, id:i}; });
+      if (aiQs.length === 0) throw new Error("Empty response");
+      setQd({
+        questions: aiQs,
+        answers: [],
+        score: null,
+        alreadyDone: false
+      });
+    } catch(e) {
+      console.error("AI quiz failed, using static:", e);
+      // Fallback to static pool
+      const weak2 = weakProds.map(w => PROD_RX_KEY[w]).filter(Boolean);
+      let pool = [...SQ];
+      weak2.forEach(pid => { pool = [...pool, ...SQ.filter(q => q.product === pid)]; });
+      const shuffled = pool.sort(() => Math.random() - 0.5);
+      const seen = new Set(); const q3 = [];
+      for (const q of shuffled) { if (!seen.has(q.q) && q3.length < 5) { seen.add(q.q); q3.push({...q, id:q3.length}); } }
+      if (q3.length < 5) { for (const q of shuffled) { if (q3.length >= 5) break; q3.push({...q, id:q3.length}); } }
+      setQd({questions: q3, answers: [], score: null, alreadyDone: false});
     }
-    // Fill to 5 if needed
-    if (q3.length < 5) {
-      for (const q of shuffled) {
-        if (q3.length >= 5) break;
-        q3.push({...q, id: q3.length});
-      }
-    }
-    setQd({
-      questions: q3,
-      answers: [],
-      score: null,
-      alreadyDone: false
-    });
     setQload(false);
   };
   const submitQuiz = async (answers, score) => {
