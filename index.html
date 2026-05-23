@@ -2035,7 +2035,8 @@ function Today({
   // Load today's MBE beat log on mount
   useEffect(() => {
     if (!isMbe) return;
-    DB.ref(`${BASE}/beat_log/${todayStr()}/${user.mobile}`).once("value").then(s => {
+    const ref = DB.ref(BASE + "/beat_log/" + todayStr() + "/" + user.mobile);
+    ref.on("value", function(s) {
       const raw = s.val();
       if (raw) {
         setVisitLog(toObj(raw.visits || {}));
@@ -2045,6 +2046,7 @@ function Today({
         setPhase("beat");
       }
     });
+    return function() { ref.off(); };
   }, []);
 
   // Load MBE list with today status for manager monitor
