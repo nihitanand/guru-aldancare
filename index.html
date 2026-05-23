@@ -2710,6 +2710,27 @@ function Today({
         weakP.map(p=>React.createElement("div",{key:p.id,className:"text-xs mb-1",style:{color:"var(--sl)"}},`${p.em} ${p.name} -- ${p.catch}`))
       ),
       React.createElement("div",{className:"card p-4 mb-4"},
+        React.createElement("div",{className:"text-xs font-bold uppercase tracking-widest mb-3",style:{color:"var(--sl)"}},
+          "\uD83D\uDCC8 RX HISTORY (JAN 2024 - FEB 2026)"
+        ),
+        (function(){
+          var rx = toObj(selDoc.rx || {});
+          var rxEntries = Object.entries(rx).filter(function(e){return e[1]>0;}).sort(function(a,b){return b[1]-a[1];});
+          if(rxEntries.length === 0) return React.createElement("div",{className:"text-xs",style:{color:"#4a5568"}},"Koi Rx history nahi -- new doctor");
+          return React.createElement("div",{className:"space-y-2"},
+            rxEntries.map(function(e){
+              var prod=e[0], qty=e[1];
+              var pid = PROD_RX_KEY[prod];
+              var pp = P.find(function(x){return x.id===pid;});
+              return React.createElement("div",{key:prod,className:"flex items-center justify-between"},
+                React.createElement("div",{className:"text-xs",style:{color:"var(--sl)"}}, pp ? pp.em+" "+pp.name : prod),
+                React.createElement("div",{className:"text-xs font-bold",style:{color:"var(--o)"}}, qty+" units")
+              );
+            })
+          );
+        })()
+      ),
+      React.createElement("div",{className:"card p-4 mb-4"},
         React.createElement("div",{className:"text-xs font-bold uppercase tracking-widest mb-3",style:{color:"var(--sl)"}},"Visit Log"),
         React.createElement("div",{className:"flex gap-2 mb-4"},
           ["visited","not_visited"].map(s=>React.createElement("button",{key:s,onClick:()=>setVs(v=>({...v,status:s})),className:"flex-1 py-2 rounded-xl text-sm font-bold",style:{background:vs.status===s?(s==="visited"?"rgba(32,191,107,0.2)":"rgba(239,68,68,0.2)"):"rgba(255,255,255,0.05)",color:vs.status===s?(s==="visited"?"#20BF6B":"#EF4444"):"var(--sl)",border:`1px solid ${vs.status===s?(s==="visited"?"rgba(32,191,107,0.4)":"rgba(239,68,68,0.4)"):"transparent"}`}},s==="visited"?"\u2705 Visited":"\u274C Not Visited"))
