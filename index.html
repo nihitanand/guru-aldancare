@@ -1239,6 +1239,8 @@ function Main({
   }, []);
   const loadQuiz = async () => {
     setTab("quiz");
+    // Don't reload if already loaded
+    if (qd !== null) return;
     setQload(true);
     const snap = await DB.ref(`${BASE}/quiz/${user.mobile}/${todayStr()}`).get();
     if (snap.exists()) {
@@ -1410,7 +1412,7 @@ function Main({
     id: "quiz",
     ic: "🧠",
     l: "Quiz",
-    act: loadQuiz
+    act: function() { if (!qd) loadQuiz(); else setTab("quiz"); }
   }, {
     id: "practice",
     ic: "🎯",
