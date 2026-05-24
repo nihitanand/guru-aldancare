@@ -85,8 +85,12 @@ const {
 } = React;
 const toArr = v => {
   if (!v) return [];
-  if (Array.isArray(v)) return v.filter(Boolean);
-  if (typeof v === "object") return Object.values(v).filter(Boolean);
+  if (Array.isArray(v)) return v.filter(x => x !== null && x !== undefined);
+  if (typeof v === "object") {
+    // Preserve numeric key order for arrays stored as objects
+    const keys = Object.keys(v).sort((a,b) => Number(a)-Number(b));
+    return keys.map(k => v[k]).filter(x => x !== null && x !== undefined);
+  }
   return [];
 };
 const toObj = v => {
