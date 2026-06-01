@@ -2003,7 +2003,7 @@ function Today({
   const yyyy = d.getFullYear();
   const todayFmt = `${dd}-${mm}-${yyyy}`;
   const todayTP = tpData[todayFmt] || null;
-  const beatName = todayTP ? (todayTP.beat && todayTP.beat !== "nan" ? todayTP.beat : todayTP.area && todayTP.area !== "nan" ? todayTP.area : "Field") : "Field";
+  const beatName = todayTP ? (todayTP.beat && todayTP.beat !== "nan" ? todayTP.beat : todayTP.area && todayTP.area !== "nan" ? todayTP.area : "Field") : "Manual Beat";
 
   const isMgr = ["asm","rsm","zsm","admin"].includes(user.role);
   const isMbe = user.role === "mbe";
@@ -2120,9 +2120,10 @@ function Today({
     // Use update() to preserve existing visits when editing beat
     await DB.ref(BASE + "/beat_log/" + todayStr() + "/" + user.mobile).update({
       confirmedAt: new Date().toISOString(),
-      tp: todayTP,
+      tp: todayTP || {activity:"Manual", area:"Manual", beat:"Manual"},
       devNote: devNote,
-      selectedDocs: selectedCodes
+      selectedDocs: selectedCodes,
+      isManualBeat: !todayTP || todayTP.activity !== "Field"
     });
     if (devNote) await DB.ref(`${BASE}/deviations/${todayStr()}/${user.mobile}`).set({note:devNote,ts:new Date().toISOString()});
     setBeatDocs(selectedCodes); setSaving(false); setConfirmed(true); setPhase("beat");
@@ -2612,11 +2613,36 @@ function Today({
   }
 
   if (!todayTP || todayTP.activity !== "Field") {
-    return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto text-center py-16"},
-      React.createElement("div", {className:"text-4xl mb-4"}, "\uD83D\uDCC5"),
-      React.createElement("div", {className:"serif text-xl text-white font-bold mb-2"}, "Aaj Field Nahi"),
-      React.createElement("div", {className:"text-sm",style:{color:"var(--sl)"}},
-        todayTP ? `Activity: ${todayTP.activity}` : "TP data available nahi hai aaj ke liye")
+    // TP missing or non-field day - show fallback with manual beat option
+    const reason = !todayTP ? "Aaj ka TP upload nahi hua" :
+      todayTP.activity === "Sunday" || new Date().getDay() === 0 ? "Aaj Sunday hai" :
+      `Activity: ${todayTP.activity}`;
+    return React.createElement("div", {className:"px-4 pt-6 max-w-lg mx-auto"},
+      notifBanner,
+      React.createElement("div", {className:"text-center py-8"},
+        React.createElement("div", {className:"text-4xl mb-3"}, "\uD83D\uDCC5"),
+        React.createElement("div", {className:"serif text-xl text-white font-bold mb-2"}, "Aaj Field Nahi"),
+        React.createElement("div", {className:"text-sm mb-6",style:{color:"var(--sl)"}}, reason)
+      ),
+      React.createElement("div", {className:"card p-5",style:{border:"1px solid rgba(255,107,53,0.2)"}},
+        React.createElement("div", {className:"text-sm font-bold text-white mb-1"}, "\uD83D\uDEA8 Manual Beat"),
+        React.createElement("div", {className:"text-xs mb-4",style:{color:"var(--sl)"}},
+          "TP nahi hai phir bhi field mein jaana hai? Manual beat shuru karo."
+        ),
+        React.createElement("textarea", {
+          value:devNote, onChange:function(e){setDevNote(e.target.value);},
+          placeholder:"Reason for manual beat (e.g. doctor follow-up, special visit)...",
+          rows:2, className:"w-full rounded-xl px-3 py-2 text-sm text-white focus:outline-none resize-none mb-3",
+          style:{background:"rgba(255,255,255,0.05)",border:"1px solid var(--bd)"}
+        }),
+        React.createElement("button", {
+          onClick: function() {
+            setSelectedCodes([]);
+            setPhase("select");
+          },
+          className:"btn-o w-full"
+        }, "\uD83D\uDC69\u200D\u2695\uFE0F Select Doctors \u2192 Start Manual Beat")
+      )
     );
   }
 
