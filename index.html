@@ -1328,6 +1328,7 @@ function Main({
   const [tpData, setTpData] = useState({});
   const [tpLoading, setTpLoading] = useState(true);
   const [beatDocCount, setBeatDocCount] = useState(0);
+  const [productDeepLink, setProductDeepLink] = useState(null);
   const [weakProds, setWeakProds] = useState([]);
   useEffect(() => {
     DB.ref(`${BASE}/users`).on("value", snap => {
@@ -1505,7 +1506,8 @@ function Main({
     onStartQuiz: loadQuiz,
     lb: lb,
     tpData: tpData,
-    beatDocCount: beatDocCount
+    beatDocCount: beatDocCount,
+    onGoToProduct: function(pid) { setProductDeepLink(pid); setTab("products"); }
   }), /*#__PURE__*/React.createElement("div", {style:{display:tab==="quiz"?"block":"none",minHeight:"100%"}}, qload ? /*#__PURE__*/React.createElement(Loading, {msg: "Quiz load ho raha hai..."}) : (qd && qd.showResult) ? /*#__PURE__*/React.createElement(QuizResult, {qd: qd}) : /*#__PURE__*/React.createElement(Quiz, {qd: qd, user: user, onSubmit: submitQuiz, weakProds: weakProds})), /*#__PURE__*/React.createElement("div", {style:{display:tab==="today"?"block":"none",minHeight:"100%"}},
     /*#__PURE__*/React.createElement(Today, {
       user: user,
@@ -1515,7 +1517,9 @@ function Main({
       tpLoading: tpLoading
     })
   ), tab === "products" && /*#__PURE__*/React.createElement(Products, {
-    user: user
+    user: user,
+    deepLinkId: productDeepLink,
+    onDeepLinkConsumed: function() { setProductDeepLink(null); }
   }), tab === "leaderboard" && /*#__PURE__*/React.createElement(LB, {
     user: user,
     lb: lb,
@@ -1613,7 +1617,7 @@ function LevelUpOverlay({
 
 /* HOME  */
 
-function NewLaunchBanner() {
+function NewLaunchBanner({onGoToProduct}) {
   var [dismissed, setDismissed] = React.useState(false);
   React.useEffect(function() {
     try { if (localStorage.getItem('menofixBannerSeen')) setDismissed(true); } catch(e) {}
@@ -1623,8 +1627,9 @@ function NewLaunchBanner() {
   if (!menofix) return null;
 
   return React.createElement('div', {
-    className: 'card p-4 mb-4',
-    style: {border: '1px solid rgba(155,89,182,0.4)', background: 'rgba(155,89,182,0.08)'}
+    className: 'card p-4 mb-4 cursor-pointer',
+    style: {border: '1px solid rgba(155,89,182,0.4)', background: 'rgba(155,89,182,0.08)'},
+    onClick: function() { if (onGoToProduct) onGoToProduct('menofix'); }
   },
     React.createElement('div', {className: 'flex items-start gap-3'},
       React.createElement('div', {className: 'text-2xl shrink-0'}, menofix.em),
@@ -1640,7 +1645,7 @@ function NewLaunchBanner() {
         React.createElement('div', {className: 'text-xs', style: {color: '#9B59B6'}}, 'Products tab mein details dekho \u2192')
       ),
       React.createElement('button', {
-        onClick: function() { try { localStorage.setItem('menofixBannerSeen','1'); } catch(e) {} setDismissed(true); },
+        onClick: function(e) { e.stopPropagation(); try { localStorage.setItem('menofixBannerSeen','1'); } catch(e2) {} setDismissed(true); },
         style: {color: '#4a5568', fontSize: '16px'}
       }, '\u2715')
     )
@@ -1653,7 +1658,8 @@ function Home({
   onStartQuiz,
   lb,
   tpData,
-  beatDocCount
+  beatDocCount,
+  onGoToProduct
 }) {
   const [tq, setTq] = useState(null);
   const [ck, setCk] = useState(true);
@@ -1827,7 +1833,7 @@ function Home({
     style: {
       color: "#4a5568"
     }
-  }, "Aaj ka Focus Product"), /*#__PURE__*/React.createElement(NewLaunchBanner, null), /*#__PURE__*/React.createElement("div", {
+  }, "Aaj ka Focus Product"), /*#__PURE__*/React.createElement(NewLaunchBanner, {onGoToProduct: onGoToProduct}), /*#__PURE__*/React.createElement("div", {
     className: "card p-4 flex items-center gap-4"
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0",
@@ -2999,11 +3005,23 @@ function Today({
 }
 
 function Products({
-  user
+  user,
+  deepLinkId,
+  onDeepLinkConsumed
 }) {
   const [sel, setSel] = useState(null);
   const [flt, setFlt] = useState("all");
   const [viewed, setViewed] = useState(new Set());
+
+  useEffect(function() {
+    if (deepLinkId) {
+      const prod = P.find(function(p) { return p.id === deepLinkId; });
+      if (prod) {
+        setSel(prod);
+        if (onDeepLinkConsumed) onDeepLinkConsumed();
+      }
+    }
+  }, [deepLinkId]);
   const fp = flt === "all" ? P : flt === "core" ? P.filter(p => p.pri === 3) : flt === "focus" ? P.filter(p => p.pri === 2) : P.filter(p => p.pri === 1);
   const openCard = async p => {
     setSel(p);
