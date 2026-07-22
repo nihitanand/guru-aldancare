@@ -1398,7 +1398,7 @@ function Main({
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 2000,
           messages: [{role: "user", content: quizPrompt}]
         })
@@ -1974,7 +1974,7 @@ function Quiz({qd, user, onSubmit, weakProds}) {
     try {
       const pp = P.find(function(x) { return x.id === cq.product; });
       const rPrompt = "You are Aldan Healthcare WomEm Bihar trainer. Generate 1 NEW replacement MCQ. STRICT: ONLY about Aldan WomEm products (Ovalux/Lacoria/Myolife Plus/Aldova/Aldova-DS/Argilux/Myolife/LOQ-10 Plus/Utilac/Myo-GDM/Osteofem/Aldanvit). Product: " + (pp ? pp.name + " Composition: " + pp.comp.map(function(c){return c.n;}).join(", ") + " MRP: " + pp.mrp : "any WomEm product") + ". Category: " + cq.cat + ". Difficulty: " + cq.difficulty + ". Return ONLY JSON: {\"cat\":\"" + cq.cat + "\",\"product\":\"" + (cq.product || "ovalux") + "\",\"q\":\"Hinglish question about this WomEm product\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanation\":\"1-2 lines\",\"difficulty\":\"" + cq.difficulty + "\"}";
-      const res = await fetch("/api/ai.php", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({model:"claude-sonnet-4-20250514", max_tokens:500, messages:[{role:"user", content:rPrompt}]})});
+      const res = await fetch("/api/ai.php", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({model:"claude-sonnet-4-6", max_tokens:500, messages:[{role:"user", content:rPrompt}]})});
       const d = await res.json();
       const newQ = JSON.parse(((d.content && d.content[0] && d.content[0].text) || "").replace(/```json|```/g,"").trim());
       if (newQ && newQ.q) {
@@ -4265,7 +4265,7 @@ function PracticeMode({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 2000,
           messages: [{
             role: "user",
@@ -4322,7 +4322,7 @@ function PracticeMode({
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
+            model: "claude-sonnet-4-6",
             max_tokens: 500,
             messages: [{
               role: "user",
@@ -4656,7 +4656,7 @@ function PracticeMode({
         try {
           const pp2 = P.find(x => x.id === cq.product);
           const rPrompt = "You are Aldan Healthcare WomEm Bihar trainer. Generate 1 NEW replacement MCQ. STRICT: ONLY about Aldan WomEm products (Ovalux/Lacoria/Myolife Plus/Aldova/Aldova-DS/Argilux/Myolife/LOQ-10 Plus/Utilac/Myo-GDM/Osteofem/Aldanvit). Product: " + (pp2 ? pp2.name + " Composition: " + pp2.comp.map(c=>c.n).join(", ") + " MRP: " + pp2.mrp : "any WomEm product") + ". Category: " + cq.cat + ". Difficulty: " + cq.difficulty + ". Return ONLY JSON: {\"cat\":\"" + cq.cat + "\",\"product\":\"" + (cq.product||"ovalux") + "\",\"q\":\"Hinglish question about this WomEm product\",\"options\":[\"A\",\"B\",\"C\",\"D\"],\"correct\":0,\"explanation\":\"1-2 lines\",\"difficulty\":\"" + cq.difficulty + "\"}";
-          const res2 = await fetch("/api/ai.php", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,messages:[{role:"user",content:rPrompt}]})});
+          const res2 = await fetch("/api/ai.php", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:500,messages:[{role:"user",content:rPrompt}]})});
           const d2 = await res2.json();
           const newQ = JSON.parse((d2.content?.[0]?.text||"").replace(/```json|```/g,"").trim());
           if(newQ && newQ.q){const upd=[...session.questions];upd[qi]=newQ;setSession(s=>({...s,questions:upd}));setSel(null);setRev(false);}
@@ -5070,7 +5070,7 @@ Current tone level: ${toneLevel < 33 ? "FRIENDLY/YAAR" : toneLevel < 66 ? "BALAN
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-sonnet-4-6",
           max_tokens: 400,
           system: sysWithContext,
           messages: apiMsgs
